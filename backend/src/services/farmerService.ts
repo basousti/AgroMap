@@ -1,13 +1,12 @@
-import mongoose from 'mongoose';
 const bcrypt =require('bcrypt') ; 
+import mongoose from "mongoose";
 const Farmer =require('../models/farmer') ;          
-const User =require('../models/users') ;           // Utilisateur model
+const User =require('../models/users') ;
 
 interface FarmerInput {
   name: string;
   prenom: string;
   email: string;
-  password: string;
   localite: string;
   telephone: string;
   adresse: string;
@@ -15,23 +14,22 @@ interface FarmerInput {
 
 // 🧑‍🌾 Get all farmers with pagination
 export const getAllFarmers = async (
-  userId: string,
   page = 1,
   limit = 10,
-  sortField = 'name',
+  sortField = 'localite',
   sortOrder: 1 | -1 = 1
 ) => {
   const skip = (page - 1) * limit;
-  const sort: any = {};
-  sort[sortField] = sortOrder;
+  const sort: Record<string, 1 | -1> = { [sortField]: sortOrder };
 
-  const farmers = await Farmer.find({ createdBy: userId })
-    .sort(sort)
-    .skip(skip)
-    .limit(limit)
-    .populate('_id', 'name prenom email'); // populate Utilisateur data
-
-  const total = await Farmer.countDocuments({ createdBy: userId });
+  const [farmers, total] = await Promise.all([
+    Farmer.find()
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .populate('_id', 'name prenom email'), // since `_id` in Farmer refers to the user
+    Farmer.countDocuments(),
+  ]);
 
   return {
     farmers,
@@ -44,59 +42,58 @@ export const getAllFarmers = async (
   };
 };
 
+
 // 🔎 Get a farmer by ID
 export const getFarmerById = async (id: string) => {
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  if (!User.Types.ObjectId.isValid(id)) {
     throw new Error("ID d'agriculteur invalide");
   }
 
   return await Farmer.findById(id).populate('_id', 'name prenom email');
 };
 
-// ➕ Create a user + farmer
+
+// Create a user + farmer
 export const createFarmer = async (data: FarmerInput) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
-    const { name, prenom, email, password, localite, telephone, adresse } = data;
+    const { name, prenom, email, localite, telephone, adresse } = data;
 
-    const existingUser = await User.findOne({ email }).session(session);
+    // Check if email already used
+    const existingUser = await User.findOne({ email });
     if (existingUser) throw new Error('Email déjà utilisé.');
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Encrypt the password
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create the user
     const newUser = new User({
       name,
       prenom,
       email,
-      password: hashedPassword,
+      // password: hashedPassword,
       role: 'agriculteur',
     });
 
-    const savedUser = await newUser.save({ session });
+    const savedUser = await newUser.save();
 
+    // Create the farmer linked to the user
     const newFarmer = new Farmer({
-      _id: savedUser._id,
+      _id: savedUser._id, // Link farmer to user
       localite,
       telephone,
       adresse,
       state: 'inactif',
     });
 
-    await newFarmer.save({ session });
+    const savedFarmer = await newFarmer.save();
 
-    await session.commitTransaction();
-    session.endSession();
-
-    return { user: savedUser, farmer: newFarmer };
-
+    return { user: savedUser, farmer: savedFarmer };
   } catch (err: any) {
-    await session.abortTransaction();
-    session.endSession();
-    throw new Error(err.message);
+    throw new Error(`Erreur création farmer: ${err.message}`);
   }
 };
+
+
 
 // ✏️ Update farmer
 export const updateFarmer = async (id: string, updateData: any) => {
@@ -112,7 +109,7 @@ export const updateFarmer = async (id: string, updateData: any) => {
 
 // ❌ Delete farmer
 export const deleteFarmer = async (id: string) => {
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  if (!User.Types.ObjectId.isValid(id)) {
     throw new Error("ID d'agriculteur invalide");
   }
 

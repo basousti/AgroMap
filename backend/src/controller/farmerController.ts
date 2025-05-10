@@ -5,18 +5,17 @@ import * as farmerService from '../services/farmerService';
 // 🔐 Simulated auth for development
 const getUserId = (req: Request): string => {
   return (req.headers['x-user-id'] as string) || 'mock-user-id';
-};
+}; 
 
 // 📄 Get all farmers (with pagination and sorting)
 export const getAllFarmersController = async (req: Request, res: Response) => {
   try {
-    const userId = getUserId(req);
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    const sortField = (req.query.sortField as string) || 'name';
+    const sortField = (req.query.sortField as string) || 'localite';
     const sortOrder = parseInt(req.query.sortOrder as string) as 1 | -1 || 1;
 
-    const result = await farmerService.getAllFarmers(userId, page, limit, sortField, sortOrder);
+    const result = await farmerService.getAllFarmers(page, limit, sortField, sortOrder);
 
     res.status(200).json({
       success: true,

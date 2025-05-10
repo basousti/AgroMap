@@ -5,7 +5,7 @@ const userSchema = new mongos.Schema({
     name: { type: String, required: true },
     prenom:{ type: String, required: true },
     email: { type: String, unique: true }, 
-    password:{ type: String, required: true },
+    password:{ type: String, required: false},
     role:{ type: String, enum:["admin","employer","agriculteur"], required: true},
     
 });

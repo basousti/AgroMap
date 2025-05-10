@@ -49,7 +49,7 @@ const Login1: React.FC = () => {
 
       if (!response.ok) { 
         setError(result.message); // e.g., "Wrong password" or "User not found"
-        toast.error("Verify you password or your matriculate");
+        toast.error("Verify your Email or your password");
         return;
       }
 
