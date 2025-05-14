@@ -70,36 +70,27 @@ const ResetPassword: React.FC = () => {
     return (
         <div className="page">
             <div className="containers">
-                <div className="sign-in">
-                    <form onSubmit={handleSubmit}>
-                        <h2>Reset Password</h2>
-                        <br />
+                    <form className="formula" onSubmit={handleSubmit}>
+                        <h1 className="signup-title">Reset Password</h1>
                         <div className='Elements'>
                             <label>New password</label>
-                            <input type={showPassword ? 'text' : 'password'} placeholder="New Password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+                            <input className='auth-input' type={showPassword ? 'text' : 'password'} placeholder="New Password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
                             <label>Confirm your new password</label>
-                            <input type={showPassword ? 'text' : 'password'} placeholder="Confirm Password" value={ConfirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-                            <div className="d-flex align-items-center gap-2 ">
-                                <input
-                                    type="checkbox"
-                                    className="form-check-input m-0"
-                                    id="showPassword"
+                            <input className='auth-input' type={showPassword ? 'text' : 'password'} placeholder="Confirm Password" value={ConfirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                            <label className="d-flex align-items-center gap-2 ">
+                                <input className="custom-checkbox" type="checkbox" id="showPassword"
                                     checked={showPassword}
-                                    onChange={() => setShowPassword(!showPassword)}
-                                />
-                                <label className="form-check-label" htmlFor="showPassword">
-                                    Show Password
-                                </label>
-                            </div>
+                                    onChange={() => setShowPassword(!showPassword)} />
+                                <span>Show Password</span>
+                            </label>
                         </div>
                         <button className="button-clr" type="submit">Submit</button>
                         <ToastContainer />
                     </form>
-                </div>
             </div>
             <div className="card">
                 <div className="bg">
-                <img className='image' src="/ResetPassword.gif" alt="Illustration" />
+                    <img className='image' src="/ResetPassword.gif" alt="Illustration" />
                 </div>
                 <div className="blob"></div>
             </div>

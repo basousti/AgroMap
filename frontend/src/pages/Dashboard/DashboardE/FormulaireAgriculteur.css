@@ -61,13 +61,14 @@
     padding: 10px;
 }
 
-form{
+/* ****************** */
+.forms{
     display: flex;
     flex-direction: column;
     gap: 20px;
     animation: fadeIn 0.6s ease-in;
 }
-
+ 
 .form-section{
     background-color: #f9f9f9;
     padding: 20px;
@@ -93,14 +94,14 @@ form{
     flex-direction: column;
     margin-bottom: 15px;
 }
-
-label{
+/*hhhhhhhhhhhhhhhhhh*/
+.label-form{
     margin-bottom: 8px;
     font-weight: 500;
     color: #555;
 }
 
-input{
+.input-label{
     padding: 10px 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -108,18 +109,18 @@ input{
     transition: border-color 0.2s, box-shadow 0.3s, transform 0.2s;
 }
 
-input:focus {
+.input-label:focus {
     border-color: #4caf50;
     outline: none;
     box-shadow: 0 0 0 2px rgba(76,175,80,0.2);
 }
 
 /* Style pour les champs obligatoires */
-input:required{
+.input-label:required{
     border-left: 3px solid #4caf50;
 }
 
-input:hover {
+.input-label:hover {
     transform: scale(1.01);
 }
   

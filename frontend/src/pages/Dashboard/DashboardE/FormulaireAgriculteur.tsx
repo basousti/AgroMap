@@ -1,212 +1,254 @@
-import './styleEmpl.css';
-import { useEffect, useState } from "react";
-import UserProfile from './profil/UserProfile';
-import { useNavigate } from 'react-router-dom';
-import DeleteAlertDialog from './DeleteAlertDialog';
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import "./FormulaireAgriculteur.css";
 
-interface Farmer {
-  _id?: string | null;
-  nom?: string;
-  prenom?: string;
-  localite?: string;
-  telephone?: string;
-  adresse?: string;
+// Définition du type Farmer
+interface FarmerData {
+  name: string;
+  prenom: string;
+  email:string;
+  localite: string;
+  telephone: string;
+  adresse: string;
 }
 
-function listAgriculteur() {
-  const [farmers, setFarmers] = useState<Farmer[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filteredFarmers, setFilteredFarmers] = useState<Farmer[]>([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-  const [showDeleteAlert, setShowDeleteAlert] = useState<boolean>(false);
-  const [farmerToDelete, setFarmerToDelete] = useState<Farmer | null>(null);
-  const [showProfile, setShowProfile] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [unreadMessageCount, setUnreadMessageCount] = useState<number>(0);
-
+const FormulaireAgriculteur: React.FC = () => {
   const navigate = useNavigate();
+  const [farmerData, setFarmerData] = useState<FarmerData>({
+    name: "",
+    prenom: "",
+    email:"",
+    localite: "",
+    telephone: "",
+    adresse: "",
+  });
+  
+  // État pour les champs en erreur
+  const [errorFields, setErrorFields] = useState<Record<string, boolean>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false); // Pour gérer l'état de soumission
 
-  const handleAddFarmerClick = () => {
-    console.log("Bouton Ajouter Agriculteur cliqué, mais aucune action n'est exécutée");
+  // Fonction pour valider un caractère en fonction du champ
+  const validateCharacter = (name: string, char: string): boolean => {
+    switch (name) {
+      case "name":
+      case "prenom":
+        // Validation pour nom et prénom: seulement des lettres, espaces et tirets
+        return /^[a-zA-ZÀ-ÿ\s-]$/.test(char);
+      case "localite":
+        // Validation pour localité: lettres, espaces, tirets
+        return /^[a-zA-ZÀ-ÿ\s-]$/.test(char);
+      case "telephone":
+        // Validation pour téléphone: seulement des chiffres, +, espaces et tirets
+        return /^[0-9+\s-]$/.test(char);
+      case "adresse":
+        // Adresse plus permissive mais pas de caractères spéciaux dangereux
+        return !/^[*#$%^&()_={}[\]|\\;:"<>?]$/.test(char);
+      default:
+        return true;
+    }
   };
 
-  const handlePlusButtonClick = () => navigate('/FormulaireAgriculteur');
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
-  const handleMessagesClick = () => navigate('/messages');
-  const handleProfileClick = () => navigate('/DashboardE');
-  const handleLogout = () => window.location.href = '/login';
-
-  useEffect(() => {
-    setError(null);
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setError("Vous devez être connecté pour voir les agriculteurs.");
+  // Fonction de changement des valeurs d'entrée avec validation
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
+    // Si le champ est vide ou a été modifié par suppression, accepter le changement
+    if (value.length === 0 || value.length < farmerData[name as keyof FarmerData].length) {
+      setFarmerData(prev => ({ ...prev, [name]: value }));
+      setErrorFields(prev => ({ ...prev, [name]: false }));
       return;
     }
-
-    fetch('http://localhost:5000/api/farmers', {
-      headers: {
-        Authorization: `Bearer ${token}`
+    
+    // Valider uniquement le dernier caractère entré
+    const lastChar = value.charAt(value.length - 1);
+    if (!validateCharacter(name, lastChar)) {
+      // Afficher une alerte avec le message d'erreur approprié
+      let fieldLabel = "";
+      let invalidCharMessage = "";
+      
+      switch (name) {
+        case "name":
+          fieldLabel = "Name";
+          invalidCharMessage = "ne peut contenir que des lettres";
+          break;
+        case "prenom":
+          fieldLabel = "Prénom";
+          invalidCharMessage = "ne peut contenir que des lettres";
+          break;
+        case "localite":
+          fieldLabel = "Localité";
+          invalidCharMessage = "ne peut contenir que des lettres";
+          break;
+        case "telephone":
+          fieldLabel = "Téléphone";
+          invalidCharMessage = "ne peut contenir que des chiffres, +, espaces et tirets";
+          break;
+        case "adresse":
+          fieldLabel = "Adresse";
+          invalidCharMessage = "contient un caractère non autorisé";
+          break;
       }
-    })
-      .then(async res => {
-        if (!res.ok) {
-          const errorText = await res.text();
-          throw new Error(`Erreur (${res.status}): ${errorText || "aucune info d'erreur"}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        const farmerArray = Array.isArray(data.farmers)
-          ? data.farmers
-          : Array.isArray(data.data)
-            ? data.data
-            : [];
-
-        const sanitizedFarmers = farmerArray.map((farmer: Farmer, index: number) => ({
-          ...farmer,
-          _id: farmer._id ?? `generated-${index}-${Date.now()}`
-        }));
-
-        setFarmers(sanitizedFarmers);
-        setFilteredFarmers(sanitizedFarmers);
-      })
-      .catch(err => {
-        console.error("Erreur lors de la récupération:", err);
-        setError("Impossible de récupérer les agriculteurs. Réessayez.");
-      });
-
-    setUnreadMessageCount(3); // Stubbed value
-  }, []);
-
-  useEffect(() => {
-    const searchValue = searchTerm.toLowerCase().trim();
-    setFilteredFarmers(
-      farmers.filter(farmer =>
-        (farmer.nom || '').toLowerCase().includes(searchValue) ||
-        (farmer.prenom || '').toLowerCase().includes(searchValue) ||
-        (farmer.localite || '').toLowerCase().includes(searchValue) ||
-        (farmer.telephone || '').toLowerCase().includes(searchValue) ||
-        (farmer.adresse || '').toLowerCase().includes(searchValue)
-      )
-    );
-  }, [searchTerm, farmers]);
-
-  const handleEditClick = (farmer: Farmer) => navigate('/EditAgriculteur', { state: { farmer } });
-  const handleDeleteClick = (farmer: Farmer) => {
-    setFarmerToDelete(farmer);
-    setShowDeleteAlert(true);
+      
+      alert(`Caractère invalide: Le champ ${fieldLabel} ${invalidCharMessage}`);
+      
+      // Mettre le champ en erreur temporairement pour l'affichage visuel
+      setErrorFields(prev => ({ ...prev, [name]: true }));
+      
+      // Réinitialiser l'état d'erreur visuelle après un court délai
+      setTimeout(() => {
+        setErrorFields(prev => ({ ...prev, [name]: false }));
+      }, 1500);
+      
+      return; // Ne pas mettre à jour les données
+    }
+    
+    // Si le caractère est valide, mettre à jour les données
+    setFarmerData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleConfirmDelete = async (deletedId: string) => {
+  const handleBack = () => {
+    navigate("/dashboardE");
+  };
+  
+  // Fonction pour soumettre le formulaire 
+  const handleSave = async (event: FormEvent) => {
+    event.preventDefault();
+    
+    // Désactivation du bouton pendant la soumission 
+    setIsSubmitting(true);
     try {
-      const updated = farmers.filter(f => f._id !== deletedId);
-      setFarmers(updated);
-      setFilteredFarmers(updated);
-      setFarmerToDelete(null);
-      setShowDeleteAlert(false);
-    } catch (error) {
-      console.error("Erreur lors de la suppression :", error);
+      const response = await fetch("http://localhost:5000/api/farmers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(farmerData),
+      });
+
+      // Bloc de gestion des erreurs de réponse serveur 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erreur serveur: ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log("Ajout réussi:", data);
+      alert("Agriculteur ajouté avec succès ✅");
+      navigate("/DashboardE", { state: { successMessage: "Agriculteur ajouté avec succès ✅" } });
+    } catch (err: any) {
+      console.error("Erreur:", err);
+      alert(err.message || "Une erreur est survenue");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleCancelDelete = () => {
-    setShowDeleteAlert(false);
-    setFarmerToDelete(null);
+  // Fonction pour déterminer la classe CSS en fonction de l'état d'erreur
+  const getInputClassName = (fieldName: string) => {
+    return errorFields[fieldName] ? "input-error" : "";
   };
 
   return (
-    <div className="dashboard-unified">
-      <div className={`sidebar-unified ${isSidebarOpen ? "open" : "closed"}`}>
-        <button className="toggle-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-          {isSidebarOpen ? "⬅" : "➡"}
+    <div className="formulaire-container">
+      <div className="formulaire-header">
+        <button className="back-btn" onClick={handleBack}>
+          <FaArrowLeft />
         </button>
-        {isSidebarOpen && (
-          <div>
-            <img alt="" src="/AgroMap.png" width="190" height="150" className="d-inline-block align-top" />
-          </div>
-        )}
-
-        <nav className="sidebar-menu">
-          <ul>
-            <li className="menu-item"><span className="menu-icon">📊</span><span className="menu-text">Dashboard</span></li>
-            <li className="menu-item" onClick={handleMessagesClick}>
-              <span className="menu-icon">✉️</span>
-              <span className="menu-text">Messages</span>
-              {unreadMessageCount > 0 && <span className="badge">{unreadMessageCount}</span>}
-            </li>
-            <li className="menu-item"><span className="menu-icon">❓</span><span className="menu-text">Help</span></li>
-            <li className="menu-item active" onClick={handleAddFarmerClick}>
-              <span className="menu-icon">👤</span><span className="menu-text">Ajouter Agriculteur</span>
-            </li>
-            <li className="menu-item"><span className="menu-icon">🏞️</span><span className="menu-text">Ajouter Parcelle</span></li>
-          </ul>
-        </nav>
+        <h1>Ajouter un nouvel agriculteur</h1>
       </div>
 
-      <div className="main-content-unified">
-        <header className="header-unified">
-          <div className="search-container-unified">
-            <input type="text" placeholder="Recherche avancée..." className="search-input" value={searchTerm} onChange={handleSearch} />
-            <button className="search-btn">🔍</button>
-          </div>
-          <div className="header-actions">
-            <button className="profile-toggle-btn" onClick={handleProfileClick}><span>👤</span> Profil</button>
-            <button className="logout-btn-new" onClick={handleLogout}><span>🔒</span> Déconnexion</button>
-          </div>
-        </header>
+      <div className="formulaire-content">
+        <form className="forms" onSubmit={handleSave}>
+          <div className="form-section">
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="prenom">Prénom</label>
+                <input 
+                  type="text"
+                  id="prenom"
+                  name="prenom"
+                  value={farmerData.prenom}
+                  onChange={handleInputChange}
+                  className={`input-label ${getInputClassName("prenom")}`}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="Name">Nom</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={farmerData.name}
+                  onChange={handleInputChange}
+                  className={`input-label ${getInputClassName("name")}`}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-group">
+                <label htmlFor="email">Email Aderess</label>
+                <input
+                  type="text"
+                  id="email"
+                  name="email"
+                  value={farmerData.email}
+                  onChange={handleInputChange}
+                  className={`input-label ${getInputClassName("email")}`}
+                  required
+                />
+              </div>
+            <div className="form-group">
+              <label htmlFor="localite">Locality</label>
+              <input
+                type="text"
+                id="localite"
+                name="localite"
+                value={farmerData.localite}
+                onChange={handleInputChange}
+                className={`input-label ${getInputClassName("localite")}`}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="telephone">Téléphone</label>
+              <input
+                type="tel"
+                id="telephone"
+                name="telephone"
+                value={farmerData.telephone}
+                onChange={handleInputChange}
+                className={`input-label ${getInputClassName("telephone")}`}
+                required
+              />
+            </div>
 
-        <section className="content-area">
-          <div className="content-header">
-            <h1>Liste des agriculteurs</h1>
-            <button className="add-button" onClick={handlePlusButtonClick}>+</button>
+            <div className="form-group">
+              <label htmlFor="adresse">Adresse</label>
+              <input
+                type="text"
+                id="adresse"
+                name="adresse"
+                value={farmerData.adresse}
+                onChange={handleInputChange}
+                className={`input-label ${getInputClassName("adresse")}`}
+                required
+              />
+            </div>
           </div>
-
-          <div className="data-table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Nom</th>
-                  <th>Prénom</th>
-                  <th>Localité</th>
-                  <th>Téléphone</th>
-                  <th>Adresse</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredFarmers.length === 0 ? (
-                  <tr><td colSpan={6} className="no-data">Aucun résultat trouvé</td></tr>
-                ) : (
-                  filteredFarmers.map((farmer, index) => (
-                    <tr key={farmer._id || `fallback-${index}`}>
-                      <td>{farmer.nom || '—'}</td>
-                      <td>{farmer.prenom || '—'}</td>
-                      <td>{farmer.localite || '—'}</td>
-                      <td>{farmer.telephone || '—'}</td>
-                      <td>{farmer.adresse || '—'}</td>
-                      <td className="actions">
-                        <button className="action-btn edit" onClick={() => handleEditClick(farmer)}>✏️</button>
-                        <button className="action-btn delete" onClick={() => handleDeleteClick(farmer)}>🗑️</button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <div className="form-actions">
+            <button type="button" onClick={handleBack} className="cancel-btn">
+              Annuler
+            </button>
+            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+              {isSubmitting ? "Enregistrement..." : "Enregistrer"}
+            </button>
           </div>
-        </section>
+        </form>
       </div>
-
-      {showProfile && <UserProfile onClose={() => setShowProfile(false)} />}
-      <DeleteAlertDialog
-        isOpen={showDeleteAlert}
-        onCancel={handleCancelDelete}
-        onConfirm={handleConfirmDelete}
-        farmer={farmerToDelete || undefined}
-      />
     </div>
   );
-}
+};
 
-export default listAgriculteur;
+export default FormulaireAgriculteur;

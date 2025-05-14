@@ -26,18 +26,16 @@ const EnterCode: React.FC = () => {
     return (
         <div className="page">
             <div className="containers">
-                <div className="sign-in">
-                    <form onSubmit={handleSubmit}>
-                        <h2>Enter Confirmation Code</h2>
+                    <form className="formula" onSubmit={handleSubmit}>
+                        <h1 className="signup-title">Enter Confirmation Code</h1>
                         <br />
                         <div className='Elements'>
                             <label>Verification code</label>
-                            <input type="text" placeholder="Enter verification code" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} required />
+                            <input className='auth-input' type="text" placeholder="Enter verification code" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} required />
                         </div>
                         <button className="button-clr" type="submit">Submit</button>
                     </form>
                     <p>{message}</p>
-                </div>
             </div>
             <div className="card">
                 <div className="bg">

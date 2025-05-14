@@ -76,14 +76,13 @@ const Login1: React.FC = () => {
   return (
     <div className="page">
       <div className="containers">
-        <div className="sign-in">
-          <form action="#" onSubmit={handleSubmit}>
-            <h1>Sign In</h1>
+          <form className="formula" action="#" onSubmit={handleSubmit}>
+          <h1 className="signup-title">Welcome Back</h1>
             <div className='Elements'>
               <label>Your email</label>
-              <input type="email" name="email" placeholder="email" autoComplete="email" value={formatData.email} onChange={handleInputChange} required />
+              <input className='auth-input' type="email" name="email" placeholder="email" autoComplete="email" value={formatData.email} onChange={handleInputChange} required />
               <label>Password</label>
-              <input type="password" name="password" placeholder="Password" autoComplete="password" value={formatData.password} onChange={handleInputChange} required />
+              <input className='auth-input' type="password" name="password" placeholder="Password" autoComplete="password" value={formatData.password} onChange={handleInputChange} required />
             </div>
             <a href="#" onClick={ForgetPassword}>Forgot password?</a>
 
@@ -93,7 +92,6 @@ const Login1: React.FC = () => {
             </div>
             <ToastContainer />
           </form>
-        </div>
       </div>
       <div className="card">
         <div className="bg">

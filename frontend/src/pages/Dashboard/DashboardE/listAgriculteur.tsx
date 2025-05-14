@@ -9,7 +9,7 @@ interface Farmer {
   nom: string;
   prenom: string;
   localite: string;
-  telephone: string;
+  telephone: string; 
   adresse: string;
 }
 
@@ -83,14 +83,15 @@ function listAgriculteur() {
     const searchValue = searchTerm.toLowerCase().trim();
     setFilteredFarmers(
       farmers.filter(farmer =>
-        farmer.nom.toLowerCase().includes(searchValue) ||
-        farmer.prenom.toLowerCase().includes(searchValue) ||
-        farmer.localite.toLowerCase().includes(searchValue) ||
-        farmer.telephone.toLowerCase().includes(searchValue) ||
-        farmer.adresse.toLowerCase().includes(searchValue)
+        farmer.nom?.toLowerCase().includes(searchValue) ||
+        farmer.prenom?.toLowerCase().includes(searchValue) ||
+        farmer.localite?.toLowerCase().includes(searchValue) ||
+        farmer.telephone?.toLowerCase().includes(searchValue) ||
+        farmer.adresse?.toLowerCase().includes(searchValue)
       )
     );
   }, [searchTerm, farmers]);
+  
 
   const handleEditClick = (farmer: Farmer) => navigate('/EditAgriculteur', { state: { farmer } });
 
@@ -180,7 +181,7 @@ function listAgriculteur() {
                   <tr><td colSpan={6} className="no-data">Aucun résultat trouvé</td></tr>
                 ) : (
                   filteredFarmers.map(farmer => (
-                    <tr key={farmer._id}>
+                    <tr key={farmer._id || `${farmer.nom}-${farmer.telephone}`}>
                       <td>{farmer.nom}</td>
                       <td>{farmer.prenom}</td>
                       <td>{farmer.localite}</td>

@@ -80,6 +80,7 @@
     transform: rotate(180deg);
 
   }
+  
   .sidebar ul {
     list-style-type: none;
     padding: 0;
@@ -351,7 +352,7 @@
     color: #555;
     font-size: 0.9rem;
 }
-.profile-field input{
+.profile-field .inputAdmin{
     width: 100%;
     padding: 10px 12px;
     border : 1px solid #ddd;
@@ -359,7 +360,7 @@
     font-size: 0.95rem;
     transition: all 0.3s ease;
 }
-.profile-field input :focus {
+.profile-field .inputAdmin :focus {
     outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 0 3px rgba(76,175,80,0.2);

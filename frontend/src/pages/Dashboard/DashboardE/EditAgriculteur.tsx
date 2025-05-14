@@ -115,7 +115,7 @@ const EditAgriculteur: React.FC = () =>{
                         <input
                             type="text"
                             id="nom"
-                            name="nom"
+                            name="nom" 
                             value={farmer.nom}
                             onChange={handleInputChange}
                             required

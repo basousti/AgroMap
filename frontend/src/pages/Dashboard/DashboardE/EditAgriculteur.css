@@ -51,14 +51,15 @@
     display:flex;
     flex-direction: column;
   }
-  
+   
   .form-group label {
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: #555;
-  }
+  } 
   
-  .form-group input {
+  /*4444444444444444444444444444444444*/
+  .form-group .inputAgr {
     padding: 0.8rem;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -66,7 +67,7 @@
     transition: border-color 0.3s;
   }
   
-  .form-group input:focus {
+  .form-group .inputAgr:focus {
     border-color: #4CAF50;
     outline: none;
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);

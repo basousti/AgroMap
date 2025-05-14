@@ -47,14 +47,13 @@ const ForgotPassword: React.FC = () =>{
     
 <div className="page">
 <div className="containers">
-  <div className="sign-in">
-    <form  onSubmit={handleSubmit}>
-      <h1>Forgot Password</h1>
+    <form className="formula" onSubmit={handleSubmit}>
+    <h1 className="signup-title">Forgot Password</h1>
       <p>Enter the email address you use.<br/> We'll send you a code to reset your password.</p>
-       <br/>
-      <div className='Elements'>
+       <div className='Elements'>
         <label>Email</label>
         <input
+          className='auth-input'
           type="email"
           name="email"
           placeholder="Enter your email"
@@ -63,7 +62,6 @@ const ForgotPassword: React.FC = () =>{
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-
         {message && <p className="message">{message}</p>}
       </div>
       <button className="button-clr" type="submit">Send Code</button>
@@ -71,7 +69,6 @@ const ForgotPassword: React.FC = () =>{
       <p>Back to <span style={{ cursor: 'pointer', color: 'rgba(8, 109, 3, 0.977)' , textDecorationLine: 'underline'}} onClick={onLoginClick}>Login</span></p>
       </div>
     </form>
-  </div>
 </div>
 <div className="card">
   <div className="bg">

@@ -9,7 +9,7 @@ a:hover {
 
 body {
   background-color: #c9d6ff;
-  background: linear-gradient(to right, #e1d7d7, #80af83);
+  background: linear-gradient(to right, #d5d5d5, #e9ffe2);
   margin: 0;
 }
 
@@ -23,20 +23,3 @@ body {
   color: whitesmoke;
   margin-top: 20px;
 }
-
-/* button {
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-} */
