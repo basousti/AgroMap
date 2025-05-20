@@ -12,7 +12,7 @@ async function loginS(email: string, password: string) {
     const existingUser = await Users.findOne({ email });
 
     if (!existingUser) {
-      throw new Error("Utilisateur introuvable.");
+      throw new Error("Utilisateur introuvable");
     } 
 
     // Fetch employer-specific data
@@ -22,13 +22,14 @@ async function loginS(email: string, password: string) {
         throw new Error("Compte en attente de validation.");
       }
     }
-
+ 
     const isPWvalid = await bcrypte.compare(password, existingUser.password);
     if (!isPWvalid) {
       throw new Error("Mot de passe incorrect.");
     }
 
     const token = generateToken(existingUser);
+    console.log("Token \t",token);
     return token;
 
   } catch (error: any) {

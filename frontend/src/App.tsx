@@ -4,8 +4,9 @@ import DashboardA from './pages/Dashboard/DashboardA/dashboardA';
 import Login1 from "./pages/auth/login1";
 import Signup1 from "./pages/auth/signup1";
 import ForgotPassword from "./pages/auth/ForgotPW";
-import EnterCode from "./pages/auth/EnterCode"
-import ResetPassword from "./pages/auth/ResetPassword"
+import EnterCode from "./pages/auth/EnterCode";
+import ResetPassword from "./pages/auth/ResetPassword";
+import Statistics from './pages/Dashboard/DashboardA/Statistics';
 
 import ListAgriculteur from './pages/Dashboard/DashboardE/listAgriculteur';
 import EditAgriculteur from './pages/Dashboard/DashboardE/EditAgriculteur';
@@ -25,6 +26,7 @@ function App() {
         <Route path="EnterCode" element={<EnterCode/>}/>
         <Route path="ResetPassword" element={<ResetPassword/>}/>
         <Route path='DashboardA' element={<DashboardA/>}/>
+        <Route path='Statistics' element={<Statistics/>}/>
         <Route path='DashboardE' element={<DashboardE/>}/>
 
         <Route path="/listAgriculteur" element={<ListAgriculteur />} />

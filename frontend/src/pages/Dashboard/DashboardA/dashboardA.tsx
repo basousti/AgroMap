@@ -1,6 +1,7 @@
 import './styleAdmin.css';
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight} from 'lucide-react';
 
 interface Employer {
   _id: string;
@@ -18,6 +19,10 @@ const DashboardA:React.FC = () =>{
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   const navigate = useNavigate();
+
+  const Dashboard = () => {
+    navigate("/Statistics");
+  };
 
   //the role of token discribed in the end of the code 
   const token = localStorage.getItem("token");
@@ -115,21 +120,34 @@ const DashboardA:React.FC = () =>{
   return (
     <div className="dashboard-container">
       <div className={`sidebar ${isSidebarOpen ? "open" : "closed"}`}>
-        <button className="toggle-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-          {isSidebarOpen ? "⬅" : "➡"}
-        </button>
+      <div className="toggle-container">
+      <button className="sidebar-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+        {isSidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+      </button>
+    </div>
+
         {isSidebarOpen && (
-          <div>
+        <div >
           <img
           alt=""
           src="/AgroMap.png"
           width="190"
           height="150"
-          className="d-inline-block align-top"
+          className="d-inline-block align-top mb-5"
         />
-        <p className='prgs'>L'application révolutionne la gestion agricole en offrant une visualisation claire 
-          des parcelles via Google Maps, avec des informations détaillées . Elle intègre aussi un outil pratique pour
-           gérer les données des agriculteurs, rendant l’organisation plus simple, rapide et efficace.</p>
+        <nav className="sidebar-nav">
+          <ul className="nav-list" onClick={Dashboard}>
+            <li className="nav-item">
+              <span className="nav-icon">📊</span>
+              <span className="nav-text">Dashboard</span>
+            </li>
+
+            <li className="nav-item">
+              <span className="nav-icon">👤</span>
+              <span className="nav-text">Employee List</span>
+            </li>
+          </ul>
+        </nav>
         </div>
         )}
       </div>

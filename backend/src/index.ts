@@ -13,6 +13,7 @@ const bodyParser = require("body-parser");
 const createAdmin = require("./script/admin");
 const ForgetPw = require("./ConfigPassword/Route");
 const Status = require("./routes/RequestR");
+const Profile =require("./routes/ProfileR")
 import farmerRoutes from './routes/farmerRoutes';
 
 // Middleware "use" permet de traiter le requeste it's like "Every time someone visits, do this first!"
@@ -27,6 +28,7 @@ app.use("/auth",loginRoute);
 app.use("/api",userRoute);
 app.use("/Verif",ForgetPw);
 app.use("/Request",Status);
+app.use("/api/user",Profile);
 
 app.use('/api/farmers', farmerRoutes);
 

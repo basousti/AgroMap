@@ -12,7 +12,7 @@ interface Contact {
   id: string;
   nom: string;
   titre: string;
-  email: string;
+  email: string; 
   telephone: string;
   adresse: string;
   photo: string;
