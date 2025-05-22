@@ -1,665 +1,823 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaPen, FaEllipsisH, FaParagraph, FaCalendarAlt, FaSave, FaTimes, FaArrowUp, FaArrowDown, FaTrashAlt } from 'react-icons/fa';
-import { BsPlusSquareFill, BsCardText, BsPinAngleFill, BsClipboardData } from 'react-icons/bs';
-import { BiSearch, BiBold, BiItalic, BiUnderline, BiChevronDown } from 'react-icons/bi';
-import { AiOutlineUnorderedList, AiOutlineOrderedList } from 'react-icons/ai';
-import './dashboardEmpl.css';
-import UserProfile from '../profil/UserProfile';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { 
+  Search, 
+  Bell, 
+  User, 
+  Phone, 
+  Mail, 
+  MapPin, 
+  Briefcase, 
+  ChevronLeft, 
+  ChevronRight,
+  Edit2,
+  Trash2,
+  MoreHorizontal,
+  Menu,
+  Calendar,
+  MessageSquare,
+  Building,
+  Clock,
+  CheckCircle,
+  Plus
+} from 'lucide-react';
+import UserProfile from "../profil/UserProfile"; // Importez le composant UserProfile
+import './dashboardEmpl.css';
 
-// Interfaces
-interface Contact {
+// Type definitions
+interface EmployeeData {
   id: string;
-  nom: string;
-  titre: string;
-  email: string; 
-  telephone: string;
-  adresse: string;
-  photo: string;
+  name: string;
+  position: string;
+  email: string;
+  phone: string;
+  location: string;
+  department: string;
+  company: string;
+  companyDescription: string;
+  status?: string;
+  joinDate?: string;
+  avatarUrl?: string; // Ajouté pour la synchronisation des avatars
 }
 
 interface Note {
   id: string;
-  contactId: string;
-  contenu: string;
-  dateCreation: Date;
+  content: string;
+  date: string;
+  type?: string;
 }
 
-interface Entreprise {
-  nom: string;
-  logo: string;
-  description: string;
+interface Task {
+  id: string;
+  title: string;
+  due: string;
+  status: 'pending' | 'completed';
 }
 
-// Composant principal
-const DashboardEmploye: React.FC = () => {
+// Clés pour la synchronisation
+const DASHBOARD_EMPLOYEE_KEY = 'dashboard_employee_data';
+const USER_INFO_STORAGE_KEY = 'user_profile_info';
+const AVATAR_STORAGE_KEY = 'user_avatar';
 
+// Demo data - Sera remplacé par les données synchronisées
+const getDefaultEmployee = (): EmployeeData => ({
+  id: 'emp001',
+  name: 'Maouia Nouha',
+  position: 'Chef département',
+  email: 'moauianouha2@gmail.com',
+  phone: '+216 29 220 752',
+  location: 'Tunis Menzeh 8',
+  department: 'Agriculteur',
+  company: 'SICAM',
+  companyDescription: 'SICAM Société Industrielle des Conserves Alimentaires de Medjez El Beb, fleuron de l\'Industrie tunisienne depuis 1969 célèbre cette année ses 50 ans',
+  status: 'Actif',
+  joinDate: '15 Mars 2022',
+  avatarUrl: ''
+});
 
-  const [utilisateurActuel] = useState<string>("nouha")
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [notes, setNotes] = useState<Map<string, Note[]>>(new Map());
-  const [entreprise] = useState<Entreprise>({
-    nom: "Arman Studio",
-    logo: "assets/images/sicam.jpg",
-    description: "Spécialiste en solutions numériques innovantes depuis 2010. Notre entreprise propose des services de conception et développement sur mesure."
+const defaultNotes: Note[] = [
+  {
+    id: '1',
+    content: 'Réunion prévue pour discuter des nouvelles maquettes du projet client.',
+    date: '10 août 2022',
+    type: 'meeting'
+  },
+  {
+    id: '2',
+    content: 'A terminé la formation sur les nouvelles techniques de design UX. Excellente participation et résultats.',
+    date: '05 août 2022',
+    type: 'training'
+  }
+];
+
+const defaultTasks: Task[] = [
+  {
+    id: 't1',
+    title: 'Finaliser les maquettes pour le projet AgriApp',
+    due: 'Demain',
+    status: 'pending'
+  },
+  {
+    id: 't2',
+    title: 'Réunion avec l\'équipe de développement',
+    due: 'Aujourd\'hui',
+    status: 'completed'
+  },
+  {
+    id: 't3',
+    title: 'Préparer la présentation client',
+    due: '23 Mai 2025',
+    status: 'pending'
+  }
+];
+
+const EmployeeDashboard: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [currentNote, setCurrentNote] = useState('');
+  const [notes, setNotes] = useState<Note[]>(defaultNotes);
+  const [tasks, setTasks] = useState<Task[]>(defaultTasks);
+  const [activeTab, setActiveTab] = useState('notes');
+  const [unreadMessageCount, setUnreadMessageCount] = useState(3);
+  const [newTaskTitle, setNewTaskTitle] = useState('');
+  
+  // État pour les données employé - initialisé avec synchronisation
+  const [employee, setEmployee] = useState<EmployeeData>(() => {
+    const savedEmployeeData = localStorage.getItem(DASHBOARD_EMPLOYEE_KEY);
+    const savedUserInfo = localStorage.getItem(USER_INFO_STORAGE_KEY);
+    const savedAvatar = localStorage.getItem(AVATAR_STORAGE_KEY);
+    
+    if (savedEmployeeData) {
+      const employeeData = JSON.parse(savedEmployeeData);
+      // Ajouter l'avatar s'il existe
+      if (savedAvatar) {
+        employeeData.avatarUrl = savedAvatar;
+      }
+      return employeeData;
+    } else if (savedUserInfo) {
+      // Créer les données employé à partir des informations utilisateur
+      const userInfo = JSON.parse(savedUserInfo);
+      return {
+        id: 'emp001',
+        name: `${userInfo.firstName} ${userInfo.lastName}`,
+        position: userInfo.position || userInfo.role,
+        email: userInfo.email,
+        phone: userInfo.phone,
+        location: userInfo.address,
+        department: userInfo.department || userInfo.role,
+        company: userInfo.company || "SICAM",
+        companyDescription: userInfo.companyDescription || "SICAM Société Industrielle des Conserves Alimentaires de Medjez El Beb, fleuron de l'Industrie tunisienne depuis 1969 célèbre cette année ses 50 ans",
+        status: userInfo.status || "Actif",
+        joinDate: userInfo.joinDate || userInfo.dateCreation,
+        avatarUrl: savedAvatar || userInfo.avatarUrl || ''
+      };
+    }
+    
+    return getDefaultEmployee();
   });
-  const [contactActuel, setContactActuel] = useState<Contact | null>(null);
-  const [nouvelleNote, setNouvelleNote] = useState<string>("");
-  const [filtrePeriode, setFiltrePeriode] = useState<string>("Ce mois");
-  const [ongletActif, setOngletActif] = useState<string>("ajouter-note");
-  const [showUserProfile, setShowUserProfile] = useState<boolean>(false);
-
-  // États pour l'édition des notes
-  const [noteEnEdition, setNoteEnEdition] = useState<string | null>(null);
-  const [contenuEdite, setContenuEdite] = useState<string>("");
-
-  // État pour la suppression des notes (nouveau)
-  const [noteASupprimer, setNoteASupprimer] = useState<string | null>(null);
-  const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
-
-  // Nouvel état pour afficher le bouton de défilement
-  const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
-
-  // Nouveaux états pour le formatage de texte
-  const [selection, setSelection] = useState<{ start: number, end: number }>({ start: 0, end: 0 });
-  const [lastFormatting, setLastFormatting] = useState<{ format: string | null, newPos: number | null }>({ format: null, newPos: null });
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  // État pour contrôler l'affichage du composant UserProfile
+  const [showUserProfile, setShowUserProfile] = useState(false);
 
   const navigate = useNavigate();
 
-  // États pour la barre latérale
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-  const [unreadMessageCount, setUnreadMessageCount] = useState<number>(3);
-
-  // Fonctions pour la barre latérale
-  const handleMessagesClick = () => {
-    navigate("/messages");
-    setUnreadMessageCount(0);
+  // Fonction pour synchroniser les données depuis InformationsUtilisateur
+  const syncFromUserInfo = () => {
+    const savedUserInfo = localStorage.getItem(USER_INFO_STORAGE_KEY);
+    const savedAvatar = localStorage.getItem(AVATAR_STORAGE_KEY);
+    
+    if (savedUserInfo) {
+      const userInfo = JSON.parse(savedUserInfo);
+      const updatedEmployee: EmployeeData = {
+        id: employee.id,
+        name: `${userInfo.firstName} ${userInfo.lastName}`,
+        position: userInfo.position || userInfo.role,
+        email: userInfo.email,
+        phone: userInfo.phone,
+        location: userInfo.address,
+        department: userInfo.department || userInfo.role,
+        company: userInfo.company || employee.company,
+        companyDescription: userInfo.companyDescription || employee.companyDescription,
+        status: userInfo.status || employee.status,
+        joinDate: userInfo.joinDate || userInfo.dateCreation,
+        avatarUrl: savedAvatar || userInfo.avatarUrl || ''
+      };
+      
+      setEmployee(updatedEmployee);
+      localStorage.setItem(DASHBOARD_EMPLOYEE_KEY, JSON.stringify(updatedEmployee));
+    }
   };
+
+  // Effect pour écouter les changements d'informations utilisateur
+  useEffect(() => {
+    const handleUserInfoChange = (event: CustomEvent) => {
+      const { employeeData } = event.detail;
+      setEmployee(employeeData);
+    };
+
+    const handleAvatarChange = (event: CustomEvent) => {
+      const { avatarUrl } = event.detail;
+      setEmployee(prev => ({
+        ...prev,
+        avatarUrl: avatarUrl
+      }));
+    };
+
+    // Écouter les événements personnalisés
+    window.addEventListener('userInfoChanged', handleUserInfoChange as EventListener);
+    window.addEventListener('avatarChanged', handleAvatarChange as EventListener);
+
+    // Synchronisation périodique pour s'assurer de la cohérence
+    const syncInterval = setInterval(() => {
+      syncFromUserInfo();
+    }, 2000);
+
+    // Synchronisation initiale
+    syncFromUserInfo();
+
+    // Nettoyage
+    return () => {
+      window.removeEventListener('userInfoChanged', handleUserInfoChange as EventListener);
+      window.removeEventListener('avatarChanged', handleAvatarChange as EventListener);
+      clearInterval(syncInterval);
+    };
+  }, []);
+
+  // Sauvegarder les données employé quand elles changent
+  useEffect(() => {
+    localStorage.setItem(DASHBOARD_EMPLOYEE_KEY, JSON.stringify(employee));
+  }, [employee]);
 
   const handleAddFarmerClick = () => {
     navigate('/listAgriculteur');
   };
 
-  // Initialisation des données
-  useEffect(() => {
-    initialiserDonnees();
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  
+  // Fonction modifiée pour afficher correctement les notifications
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    if (showProfileMenu) setShowProfileMenu(false);
+  };
+  
+  // Modifié pour ouvrir le composant UserProfile
+  const toggleProfileMenu = () => {
+    setShowUserProfile(true);
+    if (showNotifications) setShowNotifications(false);
+  };
 
-    // Ajout de l'écouteur de défilement pour afficher/masquer le bouton de défilement
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowScrollButton(true);
-        // Définir la direction de défilement en fonction de la position de défilement
-        if (window.scrollY > document.body.scrollHeight / 2) {
-          setScrollDirection('up');
-        } else {
-          setScrollDirection('down');
-        }
-      } else {
-        setShowScrollButton(false);
+  // Fonction pour fermer le modal de profil utilisateur
+  const closeUserProfile = () => {
+    setShowUserProfile(false);
+  };
+
+  const handleMessagesClick = () => {
+    console.log('Messages clicked');
+    setUnreadMessageCount(0);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+
+      const notificationButton = document.querySelector('.notification-container');
+      const notificationMenu = document.querySelector('.notification-dropdown-menu');
+
+      if(notificationButton && notificationMenu &&
+        !notificationButton.contains(target) &&
+        !notificationMenu.contains(target)){
+        setShowNotifications(false);
+      }
+
+      if(!target.closest('.profile-container')){
+        setShowProfileMenu(false);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-
-    // Nettoyage
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  // Effet pour gérer le focus et la position du curseur après la mise à jour du texte
-  useEffect(() => {
-    // Cette fonction s'exécute après chaque rendu si nouvelleNote change et qu'un formatage a été appliqué
-    if (textareaRef.current && lastFormatting.format !== null && lastFormatting.newPos !== null) {
-      textareaRef.current.focus();
-      textareaRef.current.setSelectionRange(lastFormatting.newPos, lastFormatting.newPos);
-      // Réinitialiser lastFormatting après avoir appliqué le positionnement
-      setLastFormatting({ format: null, newPos: null });
-    }
-  }, [nouvelleNote, lastFormatting]);
-
-  const initialiserDonnees = () => {
-    // Exemple de contact
-    const contact: Contact = {
-      id: "c1",
-      nom: "moauia nouha",
-      titre: "Designer UI/UX",
-      email: "maouianouha2@gmail.com",
-      telephone: "+12 3456 7890",
-      adresse: "Tunis Menzeh 8",
-      photo: "/assets/images/profile.jpg"
-    };
-
-    // Exemple de notes pour ce contact
-    const notesContact: Note[] = [
-      {
-        id: "n1",
-        contactId: "c1",
-        contenu: "Réunion prévue pour discuter des nouvelles maquettes du projet client.",
-        dateCreation: new Date(2022, 7, 10) // 10 août 2022
-      },
-      {
-        id: "n2",
-        contactId: "c1",
-        contenu: "A partagé des idées intéressantes sur l'amélioration de l'expérience utilisateur pour notre application mobile.",
-        dateCreation: new Date(2022, 7, 10) // 10 août 2022
-      }
-    ];
-
-    setContacts([contact]);
-    setContactActuel(contact);
-
-    const nouvellesNotes = new Map<string, Note[]>();
-    nouvellesNotes.set(contact.id, notesContact);
-    setNotes(nouvellesNotes);
-  };
-
-  const formaterDate = (date: Date): string => {
-    const jour = date.getDate();
-    const mois = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-      'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'][date.getMonth()];
-    const annee = date.getFullYear();
-    return `${jour} ${mois} ${annee}`;
-  };
-
-  const ajouterNote = () => {
-    if (!contactActuel || !nouvelleNote.trim()) return;
-
-    const nouvelleNoteObj: Note = {
-      id: `n${Date.now()}`,
-      contactId: contactActuel.id,
-      contenu: nouvelleNote.trim(),
-      dateCreation: new Date()
-    };
-
-    const notesActuelles = notes.get(contactActuel.id) || [];
-    const notesMAJ = [...notesActuelles, nouvelleNoteObj];
-
-    const nouvellesNotes = new Map(notes);
-    nouvellesNotes.set(contactActuel.id, notesMAJ);
-
-    setNotes(nouvellesNotes);
-    setNouvelleNote("");
-  };
-
-  // Fonction pour commencer l'édition d'une note
-  const commencerEdition = (note: Note) => {
-    setNoteEnEdition(note.id);
-    setContenuEdite(note.contenu);
-  };
-
-  // Fonction pour annuler l'édition
-  const annulerEdition = () => {
-    setNoteEnEdition(null);
-    setContenuEdite("");
-  };
-
-  // Fonction pour sauvegarder les modifications
-  const sauvegarderModification = (noteId: string) => {
-    if (!contactActuel) return;
-
-    const notesActuelles = notes.get(contactActuel.id) || [];
-    const notesMAJ = notesActuelles.map(note =>
-      note.id === noteId ? { ...note, contenu: contenuEdite } : note
-    );
-
-    const nouvellesNotes = new Map(notes);
-    nouvellesNotes.set(contactActuel.id, notesMAJ);
-
-    setNotes(nouvellesNotes);
-    setNoteEnEdition(null);
-    setContenuEdite("");
-  };
-
-  // Fonction pour confirmer la suppression d'une note
-  const confirmerSuppression = (noteId: string) => {
-    setNoteASupprimer(noteId);
-    setShowConfirmDelete(true);
-  };
-
-  // Fonction pour annuler la suppression
-  const annulerSuppression = () => {
-    setNoteASupprimer(null);
-    setShowConfirmDelete(false);
-  };
-
-  // Fonction pour supprimer une note
-  const supprimerNote = () => {
-    if (!contactActuel || !noteASupprimer) return;
-
-    const notesActuelles = notes.get(contactActuel.id) || [];
-    const notesMAJ = notesActuelles.filter(note => note.id !== noteASupprimer);
-
-    const nouvellesNotes = new Map(notes);
-    nouvellesNotes.set(contactActuel.id, notesMAJ);
-
-    setNotes(nouvellesNotes);
-    setNoteASupprimer(null);
-    setShowConfirmDelete(false);
-  };
-
-  // Nouvelle fonction pour faire défiler la page
-  const handleScroll = () => {
-    if (scrollDirection === 'up') {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-      setScrollDirection('down');
-    } else {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-      });
-      setScrollDirection('up');
+  const addNote = () => {
+    if (currentNote.trim()) {
+      const newNote: Note = {
+        id: Date.now().toString(),
+        content: currentNote,
+        date: new Date().toLocaleDateString('fr-FR', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }),
+        type: 'note'
+      };
+      setNotes([newNote, ...notes]);
+      setCurrentNote('');
     }
   };
 
-  // Fonction pour suivre la sélection de texte
-  const handleSelectionChange = () => {
-    if (textareaRef.current) {
-      const start = textareaRef.current.selectionStart;
-      const end = textareaRef.current.selectionEnd;
-      setSelection({ start, end });
+  const deleteNote = (id: string) => {
+    setNotes(notes.filter(note => note.id !== id));
+  };
+
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('');
+  };
+
+  const toggleTaskStatus = (id: string) => {
+    setTasks(tasks.map(task => 
+      task.id === id 
+        ? {...task, status: task.status === 'completed' ? 'pending' : 'completed'} 
+        : task
+    ));
+  };
+
+  const addTask = (title: string) => {
+    if (title.trim()) {
+      const newTask: Task = {
+        id: `t${Date.now()}`,
+        title: title,
+        due: 'À définir',
+        status: 'pending'
+      };
+      setTasks([...tasks, newTask]);
+      setNewTaskTitle('');
     }
   };
 
-  // Fonction pour appliquer le formatage de texte - Corrigée
-  const applyFormatting = (format: string) => {
-    if (!textareaRef.current) return;
+  const deleteTask = (id: string) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
 
-    const textarea = textareaRef.current;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = nouvelleNote;
-
-    let formattedText = '';
-    let newCursorPos = end;
-
-    switch (format) {
-      case 'bold':
-        formattedText = text.substring(0, start) + '**' + text.substring(start, end) + '**' + text.substring(end);
-        newCursorPos = end + 4; // Position après les marqueurs **
-        break;
-      case 'italic':
-        formattedText = text.substring(0, start) + '*' + text.substring(start, end) + '*' + text.substring(end);
-        newCursorPos = end + 2; // Position après les marqueurs *
-        break;
-      case 'underline':
-        formattedText = text.substring(0, start) + '__' + text.substring(start, end) + '__' + text.substring(end);
-        newCursorPos = end + 4; // Position après les marqueurs __
-        break;
-      case 'paragraph':
-        formattedText = text.substring(0, start) + '\n\n' + text.substring(start, end) + '\n\n' + text.substring(end);
-        newCursorPos = end + 4; // Position après les deux sauts de ligne
-        break;
-      case 'unordered-list':
-        if (start === end) {
-          // Pas de sélection, ajouter juste un élément de liste
-          formattedText = text.substring(0, start) + '\n- ' + text.substring(end);
-          newCursorPos = start + 3; // Position après "- "
-        } else {
-          // Sélection, transformer chaque ligne en élément de liste
-          const selectedText = text.substring(start, end);
-          const lines = selectedText.split('\n');
-          const formattedLines = lines.map(line => `- ${line}`).join('\n');
-          formattedText = text.substring(0, start) + formattedLines + text.substring(end);
-          newCursorPos = start + formattedLines.length;
-        }
-        break;
-      case 'ordered-list':
-        if (start === end) {
-          // Pas de sélection, ajouter juste un élément de liste
-          formattedText = text.substring(0, start) + '\n1. ' + text.substring(end);
-          newCursorPos = start + 4; // Position après "1. "
-        } else {
-          // Sélection, transformer chaque ligne en élément de liste
-          const selectedText = text.substring(start, end);
-          const lines = selectedText.split('\n');
-          const formattedLines = lines.map((line, index) => `${index + 1}. ${line}`).join('\n');
-          formattedText = text.substring(0, start) + formattedLines + text.substring(end);
-          newCursorPos = start + formattedLines.length;
-        }
-        break;
+  const renderNoteIcon = (type?: string) => {
+    switch(type) {
+      case 'meeting':
+        return <Calendar size={18} />;
+      case 'training':
+        return <Briefcase size={18} />;
       default:
-        return;
+        return <MessageSquare size={18} />;
     }
+  };
 
-    // Mettre à jour l'état avec le texte formaté
-    setNouvelleNote(formattedText);
-
-    // Stocker le format et la nouvelle position du curseur pour que useEffect puisse les utiliser
-    setLastFormatting({ format, newPos: newCursorPos });
+  // Fonction pour marquer toutes les notifications comme lues
+  const markAllNotificationsAsRead = () => {
+    setUnreadMessageCount(0);
   };
 
   return (
-    <div className={`dashboard-container ${showUserProfile ? 'blur-background' : ''}`}>
-      {/* Barre latérale */}
-      <div className="dashboard-unified">
-        <div className={`sidebar ${isSidebarOpen ? "open" : "closed"}`}>
-          <button className="toggle-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-            {isSidebarOpen ? "⬅" : "➡"}
-          </button>
-          {isSidebarOpen && (
-            <div>
-              <img
-                alt=""
-                src="/AgroMap.png"
-                width="190"
-                height="150"
-                className="d-inline-block align-top"
-              />
-            </div>
-          )}
-
-          <nav className="sidebar-menu">
-            <ul>
-              <li className="menu-item active">📊 Dashboard</li>
-              <li className="menu-item" onClick={handleMessagesClick}>
-                ✉️ Messages {unreadMessageCount > 0 && <span className="badge">{unreadMessageCount}</span>}
-              </li>
-              <li className="menu-item">❓ Help</li>
-              <li className="menu-item" onClick={handleAddFarmerClick}>👤 Ajouter Agriculteur</li>
-              <li className="menu-item">🏞️ Ajouter Parcelle</li>
-            </ul>
-          </nav>
-        </div>
-
-        {/* Contenu principal */}
-        <div className="dashboard-main-content">
-          <header className="dashboard-header">
-            <div className="header-content">
-              <h1>Bienvenue, {utilisateurActuel}</h1>
-              <div className="date">
-                {new Date().toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}
-              </div>
-              <div className="recherche">
-                <input type="text" placeholder="Rechercher" />
-                <button className="btn-recherche">
-                  <BiSearch />
-                </button>
-              </div>
-              <div className="notifications">
-                <span className="icon-notification">🔔</span>
-              </div>
-              <div
-                className="profil-utilisateur"
-                onClick={() => {
-                  console.log("Profil cliqué, showUserProfile avant:", showUserProfile);
-                  setShowUserProfile(true)
-                }}
-                style={{ cursor: 'pointer' }}
-              >
-                <img src="/assets/images/profile.jpg" alt="Avatar utilisateur" />
-              </div>
-            </div>
-          </header>
-
-          <div className="dashboard-content">
-            <div className="layout">
-              {contactActuel && (
-                <>
-                  <div className="section-contact">
-                    <div className="carte-contact">
-                      <div className="photo-contact">
-                        <img src={contactActuel.photo} alt={contactActuel.nom} />
-                      </div>
-                      <h2>{contactActuel.nom}</h2>
-                      <p className="titre">{contactActuel.titre}</p>
-
-                      <div className="actions-contact">
-                        <button className="btn-appel">
-                          <FaPhoneAlt className="icon-telephone" />
-                          Appeler {contactActuel.nom.split(' ')[0]}
-                        </button>
-                      </div>
-
-                      <div className="info-contact">
-                        <div className="info-ligne">
-                          <FaEnvelope className="icon-email" />
-                          <a href={`mailto:${contactActuel.email}`}>{contactActuel.email}</a>
-                        </div>
-                        <div className="info-ligne">
-                          <FaPhoneAlt className="icon-telephone" />
-                          <span>{contactActuel.telephone}</span>
-                        </div>
-                        <div className="info-ligne">
-                          <FaMapMarkerAlt className="icon-lieu" />
-                          <span>{contactActuel.adresse}</span>
-                        </div>
-                      </div>
-
-                      <div className="section-entreprise">
-                        <h3>À propos de l'entreprise</h3>
-                        <div className="info-entreprise">
-                          <img src={entreprise.logo} alt={entreprise.nom} className="logo-entreprise" />
-                          <h4>{entreprise.nom}</h4>
-                        </div>
-                        <p className="description-entreprise">{entreprise.description}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="section-notes">
-                    <div className="en-tete-notes">
-                      <div className="actions-notes">
-                        <button
-                          className={`btn-action ${ongletActif === 'ajouter-note' ? 'active' : ''}`}
-                          onClick={() => setOngletActif('ajouter-note')}
-                        >
-                          <BsPlusSquareFill className="icon-action" />
-                          <span>Ajouter une note</span>
-                        </button>
-                        <button
-                          className={`btn-action ${ongletActif === 'assigner' ? 'active' : ''}`}
-                          onClick={() => setOngletActif('assigner')}
-                        >
-                          <BsPinAngleFill className="icon-action" />
-                          <span>Assigner à</span>
-                        </button>
-                        <button
-                          className={`btn-action ${ongletActif === 'appeler' ? 'active' : ''}`}
-                          onClick={() => setOngletActif('appeler')}
-                        >
-                          <FaPhoneAlt className="icon-action" />
-                          <span>Appeler</span>
-                        </button>
-                        <button
-                          className={`btn-action ${ongletActif === 'journal' ? 'active' : ''}`}
-                          onClick={() => setOngletActif('journal')}
-                        >
-                          <BsClipboardData className="icon-action" />
-                          <span>Journal d'activité</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="editeur-notes">
-                      <div className="zone-saisie">
-                        <textarea
-                          ref={textareaRef}
-                          placeholder="Commencez à saisir pour laisser une note..."
-                          value={nouvelleNote}
-                          onChange={(e) => setNouvelleNote(e.target.value)}
-                          onSelect={handleSelectionChange}
-                          onKeyUp={handleSelectionChange}
-                          onMouseUp={handleSelectionChange}
-                        ></textarea>
-                        <div className="outils-formatage">
-                          <button
-                            className="outil-texte"
-                            onClick={() => applyFormatting('paragraph')}
-                            title="Paragraphe"
-                          >
-                            <FaParagraph />
-                          </button>
-                          <button
-                            className="outil-texte"
-                            onClick={() => applyFormatting('unordered-list')}
-                            title="Liste à puces"
-                          >
-                            <AiOutlineUnorderedList />
-                          </button>
-                          <button
-                            className="outil-texte"
-                            onClick={() => applyFormatting('ordered-list')}
-                            title="Liste numérotée"
-                          >
-                            <AiOutlineOrderedList />
-                          </button>
-                          <span className="separateur"></span>
-                          <button
-                            className="outil-texte"
-                            onClick={() => applyFormatting('italic')}
-                            title="Italique"
-                          >
-                            <BiItalic />
-                          </button>
-                          <button
-                            className="outil-texte"
-                            onClick={() => applyFormatting('bold')}
-                            title="Gras"
-                          >
-                            <BiBold />
-                          </button>
-                          <button
-                            className="outil-texte"
-                            onClick={() => applyFormatting('underline')}
-                            title="Souligné"
-                          >
-                            <BiUnderline />
-                          </button>
-                        </div>
-                        <div className="actions-editeur">
-                          <button className="btn-creer-note" onClick={ajouterNote}>
-                            Créer une note
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="liste-activites">
-                      <div className="en-tete-activites">
-                        <h3>Activité</h3>
-                        <div className="filtre-periode">
-                          <FaCalendarAlt style={{ marginRight: '5px' }} />
-                          <span>{filtrePeriode}</span>
-                          <BiChevronDown className="icon-deroulant" />
-                        </div>
-                      </div>
-
-                      <div className="activites">
-                        {notes.get(contactActuel.id)?.map((note) => (
-                          <div className="activite" key={note.id}>
-                            <div className="icone-activite">
-                              <BsCardText className="icon-note" />
-                            </div>
-                            <div className="contenu-activite">
-                              <div className="en-tete-activite">
-                                <span className="type-activite">Note ajoutée</span>
-                                <span className="date-activite">{formaterDate(note.dateCreation)}</span>
-                              </div>
-
-                              {noteEnEdition === note.id ? (
-                                // Mode Édition
-                                <div className="note-edition">
-                                  <textarea
-                                    className="champ-edition"
-                                    value={contenuEdite}
-                                    onChange={(e) => setContenuEdite(e.target.value)}
-                                  ></textarea>
-                                  <div className="actions-edition">
-                                    <button
-                                      className="btn-sauvegarder"
-                                      title="Sauvegarder"
-                                      onClick={() => sauvegarderModification(note.id)}
-                                    >
-                                      <FaSave className="icon-sauvegarder" />
-                                    </button>
-                                    <button
-                                      className="btn-annuler"
-                                      title="Annuler"
-                                      onClick={annulerEdition}
-                                    >
-                                      <FaTimes className="icon-annuler" />
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : (
-                                // Mode Affichage
-                                <>
-                                  <p>{note.contenu}</p>
-                                  <div className="actions-activite">
-                                    <button
-                                      className="btn-modifier"
-                                      title="Modifier"
-                                      onClick={() => commencerEdition(note)}
-                                    >
-                                      <FaPen className="icon-modifier" />
-                                    </button>
-                                    <button
-                                      className="btn-supprimer"
-                                      title="Supprimer"
-                                      onClick={() => confirmerSuppression(note.id)}
-                                    >
-                                      <FaTrashAlt className="icon-supprimer" />
-                                    </button>
-                                    <button className="btn-options" title="Plus d'options">
-                                      <FaEllipsisH className="icon-options" />
-                                    </button>
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bouton de défilement */}
-      {showScrollButton && (
-        <button className="scroll-button" onClick={handleScroll}>
-          {scrollDirection === 'up' ? <FaArrowUp /> : <FaArrowDown />}
-        </button>
-      )}
-
-      {/* Modale de confirmation de suppression */}
-      {showConfirmDelete && (
-        <div className="modal-overlay">
-          <div className="modal-confirm-delete">
-            <h3>Confirmer la suppression</h3>
-            <p>Êtes-vous sûr de vouloir supprimer cette note ?</p>
-            <div className="modal-actions">
-              <button className="btn-annuler" onClick={annulerSuppression}>
-                Annuler
-              </button>
-              <button className="btn-supprimer" onClick={supprimerNote}>
-                Supprimer
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
+    <div className="dashboard-container">
+      {/* UserProfile Modal */}
       {showUserProfile && (
-        <UserProfile
-          onClose={() => setShowUserProfile(false)}
-          userName="Nouha"
-          userEmail="maouianouha2@gmail.com"
-          avatarUrl="/assets/images/profile.jpg"
+        <UserProfile 
+          onClose={closeUserProfile} 
+          userName={employee.name}
+          userEmail={employee.email}
+          avatarUrl={employee.avatarUrl || "/images/employe.jpg"}
         />
       )}
+      
+      {/* Sidebar */}
+      <div className={`sidebar-unified ${isSidebarOpen ? '' : 'closed'}`}>
+        {/*Logo Header -Using image exactly as in AgroMap */}
+        <div className='logo-header'>
+            <img src = "/AgroMap.png" width = "190" height = "150" className='logo-image ' alt = "AgroMap Logo" />
+        </div>
+
+        {/* Navigation Menu - Matching exact style and order from AgroMap */}
+        <nav className="sidebar-menu">
+          <ul>
+            <li className="menu-item">
+              <span className="menu-icon">📊</span>
+              <span className="menu-text">Dashboard</span>
+            </li>
+            <li className="menu-item" onClick={() => { handleMessagesClick(); navigate('/messages'); }}>
+              {/*this item has no visible text in collapsed moder, only badge */}
+              <span className="menu-icon" >✉️</span>
+               <span className="menu-text">Messages</span>
+              {unreadMessageCount > 0 && (
+                <span className="badge">{unreadMessageCount}</span>
+              )}
+            </li>
+
+            <li className="menu-item">
+              <span className="menu-icon">❓</span>
+              <span className="menu-text">Help</span>
+            </li>
+
+            <li className="menu-item ajouter-agriculteur active" onClick={handleAddFarmerClick}>
+              <span className="menu-icon">👤</span>
+             <span className="menu-text">Ajouter Agriculteur</span>
+            </li>
+
+            <li className="menu-item">
+              <span className="menu-icon">🏞️</span>
+              <span className="menu-text">Ajouter Parcelle</span>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Sidebar Footer - Weather Info */}
+            <div className="weather-info">
+              <span className="notification-icon">🔔</span>
+              <span className="weather-icone">🌡️</span>
+              <span className='weather-temp'>27°C</span>
+              <span className="weather-desc">Pluie fine</span>
+            </div>
+
+
+          {/*Toggle button -positioned as a floating button on right edge */}
+
+          <button 
+            className='toggle-btn'
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            aria-label ={isSidebarOpen ? "Réduire la barre latérale" : "Étendre la barre latérale"}
+          >
+            {isSidebarOpen ? "⬅" : "➡"}
+          </button>
+      </div>
+
+      {/* Main Content */}
+      <div className={`main-content ${isSidebarOpen ? 'with-expanded-sidebar' : 'with-collapsed-sidebar'}`}>
+        {/* Header */}
+        <header className="main-header">
+          <div className="header-container">
+            <div className="header-left">
+              <button 
+                className="mobile-menu-button"
+                aria-label="Menu mobile"
+              >
+                <Menu size={24} />
+              </button>
+              <div className="search-container">
+                <input 
+                  type="text" 
+                  placeholder="Rechercher..." 
+                  className="search-input"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  aria-label="Rechercher"
+                />
+                <button className='search-button' aria-label ="Lancer la recherhe">
+                  <Search size={18} className="search-icon" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="header-right">
+              {/* SECTION MODIFIÉE - Conteneur de Notifications avec position relative */}
+              <div className="notification-container relative">
+                <button 
+                  className="icon-button"
+                  onClick={toggleNotifications}
+                  aria-label="Notifications"
+                >
+                  <Bell size={20} />
+                  {unreadMessageCount > 0 && <span className="badge absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full">3</span>}
+                </button>
+                
+                {/* Menu déroulant de notifications - Modifié avec une classe explicite */}
+                {showNotifications && (
+                  <div className="notification-dropdown-menu">
+                    <div className="notification-header">
+                      <h3>Notifications</h3>
+                      <button 
+                        className="mark-read-button"
+                        onClick={markAllNotificationsAsRead}
+                      >
+                        Tout marquer comme lu
+                      </button>
+                    </div>
+                    <div className="notification-list">
+                      <div className="notification-item unread">
+                        <p className="notification-text">Nouvelle tâche assignée</p>
+                        <p className="notification-time">Il y a 2 heures</p>
+                      </div>
+                      <div className="notification-item unread">
+                        <p className="notification-text">Rappel: Réunion à 14h</p>
+                        <p className="notification-time">Il y a 4 heures</p>
+                      </div>
+                      <div className="notification-item">
+                        <p className="notification-text">Document partagé par Thomas</p>
+                        <p className="notification-time">Il y a 1 jour</p>
+                      </div>
+                    </div>
+                    <div className="notification-footer">
+                      <a href="#" className="view-all-link">Voir toutes les notifications</a>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="profile-container">
+                <button 
+                  className="profile-button"
+                  onClick={toggleProfileMenu}
+                  aria-label="Menu de profil"
+                >
+                  {employee.avatarUrl ? (
+                    <img 
+                      src={employee.avatarUrl} 
+                      alt={employee.name}
+                      className="profile-avatar-small"
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                  ) : (
+                    getInitials(employee.name)
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+        
+        {/* Employee Profile Content */}
+        <div className="content-wrapper">
+          {/* Profile Header Card */}
+          <div className="profile-card">
+            <div className="profile-header">
+              <div className="profile-avatar-large">
+                {employee.avatarUrl ? (
+                  <img 
+                    src={employee.avatarUrl} 
+                    alt={employee.name}
+                    className="profile-avatar-image"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '50%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                ) : (
+                  getInitials(employee.name)
+                )}
+              </div>
+              <div className="profile-details">
+                <h1 className="profile-name-large">{employee.name}</h1>
+                <p className="profile-position-info">{employee.position}</p>
+                <div className="profile-status-info">
+                  <span className="status-badge active">{employee.status}</span>
+                  <span className="join-date">Depuis {employee.joinDate}</span>
+                </div>
+                <div className="profile-actions">
+                  <button className="action-button green">
+                    <Phone size={18} className="action-icon" />
+                    Appeler
+                  </button>
+                  <button className="action-button blue">
+                    <Mail size={18} className="action-icon" />
+                    Email
+                  </button>
+                  <button className="action-button gray">
+                    <Calendar size={18} className="action-icon" />
+                    Planifier
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Profile Info Cards */}
+          <div className="info-cards-grid">
+            {/* Contact Info Card */}
+            <div className="info-card">
+              <h2 className="card-title">
+                <User size={20} className="card-title-icon" />
+                Informations de contact
+              </h2>
+              <div className="contact-info">
+                <div className="contact-item">
+                  <Mail size={18} className="contact-icon" />
+                  <div className="contact-details">
+                    <p className="contact-label">Email</p>
+                    <p className="contact-value">{employee.email}</p>
+                  </div>
+                </div>
+                <div className="contact-item">
+                  <Phone size={18} className="contact-icon" />
+                  <div className="contact-details">
+                    <p className="contact-label">Téléphone</p>
+                    <p className="contact-value">{employee.phone}</p>
+                  </div>
+                </div>
+                <div className="contact-item">
+                  <MapPin size={18} className="contact-icon" />
+                  <div className="contact-details">
+                    <p className="contact-label">Adresse</p>
+                    <p className="contact-value">{employee.location}</p>
+                  </div>
+                </div>
+                <div className="contact-item">
+                  <Briefcase size={18} className="contact-icon" />
+                  <div className="contact-details">
+                    <p className="contact-label">Département</p>
+                    <p className="contact-value">{employee.department}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Company Info Card */}
+            <div className="info-card">
+              <h2 className="card-title">
+                <Building size={20} className="card-title-icon" />
+                À propos de l'entreprise
+              </h2>
+              <h3 className="company-name">{employee.company}</h3>
+              <p className="company-description">{employee.companyDescription}</p>
+            </div>
+          </div>
+          
+          {/* Tabs for Notes and Tasks */}
+          <div className="tabs-container">
+            <div className="tabs-header">
+              <button 
+                className={`tab-button ${activeTab === 'notes' ? 'active' : ''}`}
+                onClick={() => setActiveTab('notes')}
+              >
+                <MessageSquare size={18} />
+                Notes et activités
+              </button>
+              <button 
+                className={`tab-button ${activeTab === 'tasks' ? 'active' : ''}`}
+                onClick={() => setActiveTab('tasks')}
+              >
+                <Clock size={18} />
+                Tâches assignées
+              </button>
+            </div>
+            
+            {activeTab === 'notes' && (
+              <div className="notes-container">
+                {/* Note Input */}
+                <div className="note-input-container">
+                  <textarea 
+                    placeholder="Commencez à saisir pour laisser une note..."
+                    value={currentNote}
+                    onChange={(e) => setCurrentNote(e.target.value)}
+                    className="note-textarea"
+                    rows={3}
+                    aria-label="Texte de la note"
+                  ></textarea>
+                  <div className="note-input-actions">
+                    <button 
+                      onClick={addNote}
+                      className="add-note-button"
+                      disabled={!currentNote.trim()}
+                    >
+                      <Plus size={18} className="add-note-icon" />
+                      Ajouter une note
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Notes List */}
+                <div className="notes-list-container">
+                  <div className="notes-list-header">
+                    <h3 className="notes-history-title">Historique des notes</h3>
+                    <div className="notes-filter-pill">
+                      Ce mois-ci
+                    </div>
+                  </div>
+                  
+                  <div className="notes-list">
+                    {notes.length > 0 ? (
+                      notes.map(note => (
+                        <div key={note.id} className="note-item">
+                          <div className="note-header">
+                            <div className="note-type">
+                              <div className="note-type-icon">
+                                {renderNoteIcon(note.type)}
+                              </div>
+                              <span className="note-type-label">
+                                {note.type === 'meeting' ? 'Réunion' : 
+                                note.type === 'training' ? 'Formation' : 'Note ajoutée'}
+                              </span>
+                            </div>
+                            <span className="note-date">{note.date}</span>
+                          </div>
+                          <p className="note-content">{note.content}</p>
+                          <div className="note-actions">
+                            <button 
+                              className="note-action-button"
+                              aria-label="Modifier la note"
+                            >
+                              <Edit2 size={16} className="note-action-icon" />
+                            </button>
+                            <button 
+                              className="note-action-button"
+                              onClick={() => deleteNote(note.id)}
+                              aria-label="Supprimer la note"
+                            >
+                              <Trash2 size={16} className="note-action-icon" />
+                            </button>
+                            <button 
+                              className="note-action-button"
+                              aria-label="Plus d'options"
+                            >
+                              <MoreHorizontal size={16} className="note-action-icon" />
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="empty-notes">
+                        Aucune note pour le moment. Ajoutez votre première note !
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {activeTab === 'tasks' && (
+              <div className="tasks-container">
+                <h3 className="tasks-title">Tâches à réaliser</h3>
+                <div className="tasks-list">
+                  {tasks.length > 0 ? (
+                    tasks.map(task => (
+                      <div 
+                        key={task.id} 
+                        className={`task-item ${task.status === 'completed' ? 'completed' : ''}`}
+                      >
+                        <div className="task-checkbox">
+                          <button 
+                            className="checkbox-button"
+                            onClick={() => toggleTaskStatus(task.id)}
+                            aria-label={`Marquer la tâche comme ${task.status === 'completed' ? 'non complétée' : 'complétée'}`}
+                          >
+                            {task.status === 'completed' ? (
+                              <CheckCircle size={18} className="checkbox-icon checked" />
+                            ) : (
+                              <div className="checkbox-icon unchecked" />
+                            )}
+                          </button>
+                        </div>
+                        <div className="task-content">
+                          <div className="task-title">
+                            {task.title}
+                          </div>
+                          <div className="task-due">
+                            <Clock size={14} className="task-due-icon" />
+                            <span className="task-due-text">Échéance: {task.due}</span>
+                          </div>
+                        </div>
+                        <div className="task-actions">
+                          <button 
+                            className="task-action-button"
+                            onClick={() => deleteTask(task.id)}
+                            aria-label="Supprimer la tâche"
+                          >
+                            <Trash2 size={16} className="task-action-icon" />
+                          </button>
+                          <button 
+                            className="task-action-button"
+                            aria-label="Modifier la tâche"
+                          >
+                            <Edit2 size={16} className="task-action-icon" />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="empty-tasks">
+                      Aucune tâche assignée pour le moment.
+                    </div>
+                  )}
+                </div>
+                
+                {/* Add Task Section */}
+                <div className="add-task-section">
+                  <h4 className="add-task-title">Ajouter une nouvelle tâche</h4>
+                  <div className="add-task-form">
+                    <input 
+                      type="text" 
+                      placeholder="Titre de la tâche..." 
+                      className="add-task-input"
+                      value={newTaskTitle}
+                      onChange={(e) => setNewTaskTitle(e.target.value)}
+                      aria-label="Titre de la nouvelle tâche"
+                    />
+                    <button 
+                      className="add-task-button"
+                      onClick={() => addTask(newTaskTitle)}
+                      disabled={!newTaskTitle.trim()}
+                    >
+                      <Plus size={18} />
+                      Ajouter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Footer */}
+          <footer className="dashboard-footer">
+            <div className="footer-content">
+              <p className="footer-copyright">
+                © 2025 AgriApp. Tous droits réservés.
+              </p>
+              <div className="footer-links">
+                <a href="#" className="footer-link">Politique de confidentialité</a>
+                <a href="#" className="footer-link">Conditions d'utilisation</a>
+                <a href="#" className="footer-link">Support</a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default DashboardEmploye;
+export default EmployeeDashboard;

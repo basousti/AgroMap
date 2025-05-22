@@ -108,7 +108,7 @@ const FormulaireAgriculteur: React.FC = () => {
   };
 
   const handleBack = () => {
-    navigate("/dashboardE");
+    navigate("/listAgriculteur");
   };
   
   // Fonction pour soumettre le formulaire 

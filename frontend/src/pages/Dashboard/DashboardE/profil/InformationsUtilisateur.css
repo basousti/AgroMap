@@ -26,6 +26,53 @@
   display: flex;
   gap: 10px;
 }
+/* Container pour le mot de passe avec bouton à droite */
+.password-display-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 200px;
+}
+
+.password-display-container span {
+  flex: 1;
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+/* Style pour le bouton d'affichage/masquage du mot de passe */
+.toggle-password-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #6b7280;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.toggle-password-btn:hover {
+  background-color: #e5e7eb;
+  color: #4f46e5;
+}
+
+.toggle-password-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+}
+
+.toggle-password-btn:active {
+  transform: scale(0.95);
+}
 
 .save-profile-btn,
 .cancel-edit-btn {
