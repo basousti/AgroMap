@@ -1,0 +1,361 @@
+/* Ajouts pour InformationsUtilisateur.css */
+
+.avatar-display {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.remove-photo-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+.remove-photo-btn:hover {
+  background: #c82333;
+}
+
+.button-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+/* Ajouts pour ChangeAvatar.css */
+
+.avatar-preview-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.current-avatar, .new-avatar {
+  text-align: center;
+}
+
+.current-avatar h3, .new-avatar h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.avatar-preview {
+  width: 200px;
+  height: 200px;
+  border: 2px dashed #ddd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #f9f9f9;
+  position: relative;
+}
+
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.preview-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.preview-container img {
+  max-width: 100%;
+  max-height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.upload-placeholder {
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-placeholder:hover {
+  color: #007bff;
+}
+
+.upload-placeholder svg {
+  font-size: 2rem;
+}
+
+.default-avatar {
+  font-size: 6rem;
+  color: #ccc;
+}
+
+.image-controls {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.transform-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.control-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+}
+
+.control-btn:hover:not(:disabled) {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.control-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.image-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.change-image-btn, .remove-image-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.change-image-btn {
+  background: #28a745;
+  color: white;
+}
+
+.change-image-btn:hover {
+  background: #218838;
+}
+
+.remove-image-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.remove-image-btn:hover {
+  background: #c82333;
+}
+
+.remove-current-avatar-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.remove-current-avatar-btn:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.remove-current-avatar-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.avatar-upload-info {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.avatar-upload-info h3 {
+  color: #495057;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.avatar-upload-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.avatar-upload-info li {
+  padding: 5px 0;
+  color: #666;
+  position: relative;
+  padding-left: 20px;
+}
+
+.avatar-upload-info li:before {
+  content: "✓";
+  color: #28a745;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.save-avatar-btn, .cancel-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 150px;
+  justify-content: center;
+}
+
+.save-avatar-btn {
+  background: #007bff;
+  color: white;
+}
+
+.save-avatar-btn:hover:not(:disabled) {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.save-avatar-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: #545b62;
+}
+
+.cancel-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .avatar-preview-section {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .avatar-preview {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .transform-controls {
+    justify-content: center;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .save-avatar-btn, .cancel-btn {
+    width: 100%;
+    max-width: 250px;
+  }
+}

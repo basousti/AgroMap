@@ -1,0 +1,161 @@
+.edit-page-container {
+    max-width: 900px;
+    margin: 0 auto ;
+    padding: 2rem;
+    font-family: 'Arial', sans-serif;
+}
+
+.edit-page-header {
+    display: flex ;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom:2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e9e9e9;
+}
+.edit-page-header h1 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin: 0;
+  }
+  
+  .return-btn {
+    padding: 0.5rem 1rem;
+    background-color: #607d8b;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s
+  }
+  
+  .return-btn:hover {
+    background-color: #455a64;
+  }
+  
+  .edit-form-wrapper {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1)
+  }
+  
+  .edit-farmer-form {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1.5rem;
+  }
+  
+  /* Styles pour les groupes de formulaire */
+  .form-group {
+    display:flex;
+    flex-direction: column;
+  }
+   
+  .form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #555;
+  } 
+  
+  /*4444444444444444444444444444444444*/
+  .form-group .inputAgr {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  .form-group .inputAgr:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+  }
+  
+  /* Boutons du formulaire */
+  .form-buttons {
+    grid-column: span 2;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .save-btn, .cancel-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight:600;
+    cursor:pointer;
+    transition: background-color 0.3s, transform 0.1s;
+  }
+  
+  .save-btn {
+    background-color: #45a049;
+    color: white;
+    
+  }
+  
+  .save-btn:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px);
+  }
+  
+  .cancel-btn {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+  }
+
+  /* Styles pour l'alerte de confiemation de suppression*/
+
+  .delete-alert-overly {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+
+  .delete-alert{
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    padding: 2rem;
+    max-width: 450px;
+    width: 90%;
+    animation: sideIn 0.3s ease-out;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .edit-page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .edit-farmer-form {
+      grid-template-columns: 1fr;
+    }
+
+    
+    .form-button{
+      grid-column: 1;
+
+    }
+    
+  }
+ 
