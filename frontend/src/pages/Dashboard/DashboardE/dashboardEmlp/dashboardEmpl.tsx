@@ -10,7 +10,7 @@ import {
   Briefcase,
   ChevronLeft,
   ChevronRight,
-  Edit2,
+  Edit2,  
   Trash2,
   MoreHorizontal,
   Menu,
@@ -34,7 +34,6 @@ interface EmployeeData {
   location: string;
   department: string;
   company: string;
-  companyDescription: string;
   status?: string;
   joinDate?: string;
   avatarUrl?: string; // Ajouté pour la synchronisation des avatars
@@ -69,7 +68,6 @@ const getDefaultEmployee = (): EmployeeData => ({
   location: 'Tunis Menzeh 8',
   department: 'Agriculteur',
   company: 'SICAM',
-  companyDescription: 'SICAM Société Industrielle des Conserves Alimentaires de Medjez El Beb, fleuron de l\'Industrie tunisienne depuis 1969 célèbre cette année ses 50 ans',
   status: 'Actif',
   joinDate: '15 Mars 2022',
   avatarUrl: ''
@@ -148,7 +146,6 @@ const EmployeeDashboard: React.FC = () => {
         location: userInfo.address,
         department: userInfo.department || userInfo.role,
         company: userInfo.company || "SICAM",
-        companyDescription: userInfo.companyDescription || "SICAM Société Industrielle des Conserves Alimentaires de Medjez El Beb, fleuron de l'Industrie tunisienne depuis 1969 célèbre cette année ses 50 ans",
         status: userInfo.status || "Actif",
         joinDate: userInfo.joinDate || userInfo.dateCreation,
         avatarUrl: savedAvatar || userInfo.avatarUrl || ''
@@ -163,6 +160,11 @@ const EmployeeDashboard: React.FC = () => {
 
   const navigate = useNavigate();
 
+  // Track active item:::::::::::::::::::::::::::::::::
+  const [activeItem, setActiveItem] = useState(''); 
+  const handleMenuItemClick = (item:any) => {
+    setActiveItem(item); // Update active item
+  };
   // Fonction pour synchroniser les données depuis InformationsUtilisateur
   const syncFromUserInfo = () => {
     const savedUserInfo = localStorage.getItem(USER_INFO_STORAGE_KEY);
@@ -179,7 +181,6 @@ const EmployeeDashboard: React.FC = () => {
         location: userInfo.address,
         department: userInfo.department || userInfo.role,
         company: userInfo.company || employee.company,
-        companyDescription: userInfo.companyDescription || employee.companyDescription,
         status: userInfo.status || employee.status,
         joinDate: userInfo.joinDate || userInfo.dateCreation,
         avatarUrl: savedAvatar || userInfo.avatarUrl || ''
@@ -381,38 +382,51 @@ const EmployeeDashboard: React.FC = () => {
            alt="AgroMap Logo" />
         </div>
 
-        {/* Navigation Menu - Matching exact style and order from AgroMap */}
         <nav className="sidebar-menu">
-          <ul>
-            <li className="menu-item">
-              <span className="menu-icon">📊</span>
-              <span className="menu-text">Dashboard</span>
-            </li>
-            <li className="menu-item" onClick={() => { handleMessagesClick(); navigate('/messages'); }}>
-              {/*this item has no visible text in collapsed moder, only badge */}
-              <span className="menu-icon" >✉️</span>
-              <span className="menu-text">Messages</span>
-              {unreadMessageCount > 0 && (
+      <ul>
+        <li 
+          className={`menu-item ajouter-agriculteur ${activeItem === 'dashboard' ? 'active' : ''}`}
+          onClick={() => handleMenuItemClick('DashboardE')}
+        >
+          <span className="menu-icon">📊</span>
+          <span className="menu-text">Dashboard</span>
+        </li>
+        <li 
+          className={`menu-item ajouter-agriculteur ${activeItem === 'messages' ? 'active' : ''}`}
+          onClick={() => {
+            handleMenuItemClick('messages');
+            navigate('/messages');
+          }}
+        >
+          <span className="menu-icon">✉️</span>
+          <span className="menu-text">Messages</span>
+          {unreadMessageCount > 0 && (
                 <span className="badge">{unreadMessageCount}</span>
               )}
-            </li>
-
-            <li className="menu-item">
-              <span className="menu-icon">❓</span>
-              <span className="menu-text">Help</span>
-            </li>
-
-            <li className="menu-item ajouter-agriculteur active" onClick={handleAddFarmerClick}>
-              <span className="menu-icon">👤</span>
-              <span className="menu-text">Ajouter Agriculteur</span>
-            </li>
-
-            <li className="menu-item">
-              <span className="menu-icon">🏞️</span>
-              <span className="menu-text">Ajouter Parcelle</span>
-            </li>
-          </ul>
-        </nav>
+        </li>
+        <li 
+          className={`menu-item ajouter-agriculteur ${activeItem === 'help' ? 'active' : ''}`}
+          onClick={() => handleMenuItemClick('help')}
+        >
+          <span className="menu-icon">❓</span>
+          <span className="menu-text">Help</span>
+        </li>
+        <li 
+          className={`menu-item ajouter-agriculteur ${activeItem === 'addFarmer' ? 'active' : ''}`}
+          onClick={handleAddFarmerClick}
+        >
+          <span className="menu-icon">👤</span>
+          <span className="menu-text">Add Farmer</span>
+        </li>
+        <li 
+          className={`menu-item ajouter-agriculteur ${activeItem === 'addParcel' ? 'active' : ''}`}
+          onClick={() => handleMenuItemClick('addParcel')}
+        >
+          <span className="menu-icon">🏞️</span>
+          <span className="menu-text">Add Parcel</span>
+        </li>
+      </ul>
+    </nav>
 
         </div>
         )}
@@ -465,25 +479,25 @@ const EmployeeDashboard: React.FC = () => {
                         className="mark-read-button"
                         onClick={markAllNotificationsAsRead}
                       >
-                        Tout marquer comme lu
+                        Mark all as read
                       </button>
                     </div>
                     <div className="notification-list">
                       <div className="notification-item unread">
-                        <p className="notification-text">Nouvelle tâche assignée</p>
-                        <p className="notification-time">Il y a 2 heures</p>
+                        <p className="notification-text"> New task assigned</p>
+                        <p className="notification-time">2 houres ago</p>
                       </div>
                       <div className="notification-item unread">
-                        <p className="notification-text">Rappel: Réunion à 14h</p>
-                        <p className="notification-time">Il y a 4 heures</p>
+                        <p className="notification-text">Reminder: Meeting at 2:00 PM</p>
+                        <p className="notification-time">4 houres ago</p>
                       </div>
                       <div className="notification-item">
-                        <p className="notification-text">Document partagé par Thomas</p>
-                        <p className="notification-time">Il y a 1 jour</p>
+                        <p className="notification-text">Document shared by Thomas</p>
+                        <p className="notification-time">1 day ago</p>
                       </div>
                     </div>
                     <div className="notification-footer">
-                      <a href="#" className="view-all-link">Voir toutes les notifications</a>
+                      <a href="#" className="view-all-link">View all notifications</a>
                     </div>
                   </div>
                 )}
@@ -521,45 +535,7 @@ const EmployeeDashboard: React.FC = () => {
           {/* Profile Header Card */}
           <div className="profile-card">
             <div className="profile-header">
-              <div className="profile-avatar-large">
-                {employee.avatarUrl ? (
-                  <img
-                    src={employee.avatarUrl}
-                    alt={employee.name}
-                    className="profile-avatar-image"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '50%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                ) : (
-                  getInitials(employee.name)
-                )}
-              </div>
-              <div className="profile-details">
-                <h1 className="profile-name-large">{employee.name}</h1>
-                <p className="profile-position-info">{employee.position}</p>
-                <div className="profile-status-info">
-                  <span className="status-badge active">{employee.status}</span>
-                  <span className="join-date">Depuis {employee.joinDate}</span>
-                </div>
-                <div className="profile-actions">
-                  <button className="action-button green">
-                    <Phone size={18} className="action-icon" />
-                    Appeler
-                  </button>
-                  <button className="action-button blue">
-                    <Mail size={18} className="action-icon" />
-                    Email
-                  </button>
-                  <button className="action-button gray">
-                    <Calendar size={18} className="action-icon" />
-                    Planifier
-                  </button>
-                </div>
-              </div>
+              <h1 className="profile-name-large">Welcome {employee.name}</h1>
             </div>
           </div>
 
@@ -569,7 +545,7 @@ const EmployeeDashboard: React.FC = () => {
             <div className="info-card">
               <h2 className="card-title">
                 <User size={20} className="card-title-icon" />
-                Informations de contact
+                Contact information
               </h2>
               <div className="contact-info">
                 <div className="contact-item">
@@ -582,7 +558,7 @@ const EmployeeDashboard: React.FC = () => {
                 <div className="contact-item">
                   <Phone size={18} className="contact-icon" />
                   <div className="contact-details">
-                    <p className="contact-label">Téléphone</p>
+                    <p className="contact-label">Phone number</p>
                     <p className="contact-value">{employee.phone}</p>
                   </div>
                 </div>
@@ -607,10 +583,10 @@ const EmployeeDashboard: React.FC = () => {
             <div className="info-card">
               <h2 className="card-title">
                 <Building size={20} className="card-title-icon" />
-                À propos de l'entreprise
+                About company
               </h2>
               <h3 className="company-name">{employee.company}</h3>
-              <p className="company-description">{employee.companyDescription}</p>
+              <p className="company-description">SICAM (Société Industrielle des Conserves Alimentaires de Medjez El Beb), a flagship of Tunisian industry since 1969, proudly celebrates its 50th anniversary this year. Looking ahead, SICAM is committed to further advancing the agricultural sector, fostering innovation, and promoting sustainable practices to enhance both local and global food security</p>
             </div>
           </div>
 
@@ -622,14 +598,14 @@ const EmployeeDashboard: React.FC = () => {
                 onClick={() => setActiveTab('notes')}
               >
                 <MessageSquare size={18} />
-                Notes et activités
+                Notes and activities
               </button>
               <button
                 className={`tab-button ${activeTab === 'tasks' ? 'active' : ''}`}
                 onClick={() => setActiveTab('tasks')}
               >
                 <Clock size={18} />
-                Tâches assignées
+                Assigned tasks
               </button>
             </div>
 
@@ -652,7 +628,7 @@ const EmployeeDashboard: React.FC = () => {
                       disabled={!currentNote.trim()}
                     >
                       <Plus size={18} className="add-note-icon" />
-                      Ajouter une note
+                      Add note
                     </button>
                   </div>
                 </div>
@@ -660,9 +636,9 @@ const EmployeeDashboard: React.FC = () => {
                 {/* Notes List */}
                 <div className="notes-list-container">
                   <div className="notes-list-header">
-                    <h3 className="notes-history-title">Historique des notes</h3>
+                    <h3 className="notes-history-title">history of notes</h3>
                     <div className="notes-filter-pill">
-                      Ce mois-ci
+                      This month
                     </div>
                   </div>
 
@@ -708,7 +684,7 @@ const EmployeeDashboard: React.FC = () => {
                       ))
                     ) : (
                       <div className="empty-notes">
-                        Aucune note pour le moment. Ajoutez votre première note !
+                        No notes yet. Add your first note!
                       </div>
                     )}
                   </div>
@@ -718,7 +694,7 @@ const EmployeeDashboard: React.FC = () => {
 
             {activeTab === 'tasks' && (
               <div className="tasks-container">
-                <h3 className="tasks-title">Tâches à réaliser</h3>
+                <h3 className="tasks-title">Tasks to be completed</h3>
                 <div className="tasks-list">
                   {tasks.length > 0 ? (
                     tasks.map(task => (
@@ -745,7 +721,7 @@ const EmployeeDashboard: React.FC = () => {
                           </div>
                           <div className="task-due">
                             <Clock size={14} className="task-due-icon" />
-                            <span className="task-due-text">Échéance: {task.due}</span>
+                            <span className="task-due-text">Deadline: {task.due}</span>
                           </div>
                         </div>
                         <div className="task-actions">
@@ -767,14 +743,14 @@ const EmployeeDashboard: React.FC = () => {
                     ))
                   ) : (
                     <div className="empty-tasks">
-                      Aucune tâche assignée pour le moment.
+                      No task assigned .
                     </div>
                   )}
                 </div>
 
                 {/* Add Task Section */}
                 <div className="add-task-section">
-                  <h4 className="add-task-title">Ajouter une nouvelle tâche</h4>
+                  <h4 className="add-task-title">Add new Task</h4>
                   <div className="add-task-form">
                     <input
                       type="text"
@@ -790,7 +766,7 @@ const EmployeeDashboard: React.FC = () => {
                       disabled={!newTaskTitle.trim()}
                     >
                       <Plus size={18} />
-                      Ajouter
+                      Add
                     </button>
                   </div>
                 </div>
@@ -802,7 +778,7 @@ const EmployeeDashboard: React.FC = () => {
           <footer className="dashboard-footer">
             <div className="footer-content">
               <p className="footer-copyright">
-                © 2025 AgriApp. Tous droits réservés.
+                © 2025 AgroMapp. All rights are reserved .
               </p>
               <div className="footer-links">
                 <a href="#" className="footer-link">Politique de confidentialité</a>
