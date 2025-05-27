@@ -75,38 +75,40 @@ const getDefaultEmployee = (): EmployeeData => ({
 
 const defaultNotes: Note[] = [
   {
-    id: '1',
-    content: 'Réunion prévue pour discuter des nouvelles maquettes du projet client.',
-    date: '10 août 2022',
-    type: 'meeting'
-  },
-  {
-    id: '2',
-    content: 'A terminé la formation sur les nouvelles techniques de design UX. Excellente participation et résultats.',
-    date: '05 août 2022',
-    type: 'training'
-  }
+  id: '1',
+  content: 'Meeting scheduled to discuss the new mockups for the client project.',
+  date: 'August 10, 2022',
+  type: 'meeting'
+},
+{
+  id: '2',
+  content: 'Completed training on new UX design techniques. Excellent participation and results.',
+  date: 'August 5, 2022',
+  type: 'training'
+}
+
 ];
 
 const defaultTasks: Task[] = [
   {
-    id: 't1',
-    title: 'Finaliser les maquettes pour le projet AgriApp',
-    due: 'Demain',
-    status: 'pending'
-  },
-  {
-    id: 't2',
-    title: 'Réunion avec l\'équipe de développement',
-    due: 'Aujourd\'hui',
-    status: 'completed'
-  },
-  {
-    id: 't3',
-    title: 'Préparer la présentation client',
-    due: '23 Mai 2025',
-    status: 'pending'
-  }
+  id: 't1',
+  title: 'Finalize the mockups for the AgriApp project',
+  due: 'Tomorrow',
+  status: 'pending'
+},
+{
+  id: 't2',
+  title: 'Meeting with the development team',
+  due: 'Today',
+  status: 'completed'
+},
+{
+  id: 't3',
+  title: 'Prepare the client presentation',
+  due: 'May 23, 2025',
+  status: 'pending'
+}
+
 ];
 
 const EmployeeDashboard: React.FC = () => {
@@ -572,7 +574,7 @@ const EmployeeDashboard: React.FC = () => {
                 <div className="contact-item">
                   <Briefcase size={18} className="contact-icon" />
                   <div className="contact-details">
-                    <p className="contact-label">Département</p>
+                    <p className="contact-label">Departement</p>
                     <p className="contact-value">{employee.department}</p>
                   </div>
                 </div>
