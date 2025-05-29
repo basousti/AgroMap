@@ -45,23 +45,23 @@ const ChangePassword: React.FC = () => {
     const errors: string[] = [];
     
     if (password.length < 8) {
-      errors.push('Le mot de passe doit contenir au moins 8 caractères');
+      errors.push('The password must contain at least 8 characters.');
     }
     
     if (!/[A-Z]/.test(password)) {
-      errors.push('Le mot de passe doit contenir au moins une lettre majuscule');
+      errors.push('The password must contain at least one uppercase letter.');
     }
     
     if (!/[a-z]/.test(password)) {
-      errors.push('Le mot de passe doit contenir au moins une lettre minuscule');
+      errors.push('The password must contain at least one lowercase letter.');
     }
     
     if (!/\d/.test(password)) {
-      errors.push('Le mot de passe doit contenir au moins un chiffre');
+      errors.push('The password must contain at least one number.');
     }
     
     if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-      errors.push('Le mot de passe doit contenir au moins un caractère spécial');
+      errors.push('The password must contain at least one special character.');
     }
     
     return {
@@ -72,14 +72,14 @@ const ChangePassword: React.FC = () => {
 
   const validateForm = (): boolean => {
     if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
-      toast.error('Tous les champs sont obligatoires');
+      toast.error('All fields are required.');
       return false;
     }
 
     // Vérifier si le mot de passe actuel correspond à celui stocké
-    const storedPassword = localStorage.getItem(PASSWORD_STORAGE_KEY) || 'MonMotDePasse123';
+    const storedPassword = localStorage.getItem(PASSWORD_STORAGE_KEY);
     if (formData.currentPassword !== storedPassword) {
-      toast.error('Le mot de passe actuel est incorrect');
+      toast.error('The current password is incorrect.');
       return false;
     }
 
@@ -91,12 +91,12 @@ const ChangePassword: React.FC = () => {
     }
 
     if (formData.newPassword !== formData.confirmPassword) {
-      toast.error('Les nouveaux mots de passe ne correspondent pas');
+      toast.error('The new passwords do not match.');
       return false;
     }
 
     if (formData.currentPassword === formData.newPassword) {
-      toast.error('Le nouveau mot de passe doit être différent de l\'ancien');
+      toast.error('The new password must be different from the old one');
       return false;
     }
 
@@ -120,7 +120,7 @@ const ChangePassword: React.FC = () => {
       const success = Math.random() > 0.1; // 90% de chance de succès pour la démonstration
       
       if (!success) {
-        throw new Error('Erreur serveur lors du changement de mot de passe');
+        throw new Error('Server error occurred during the password change.');
       }
 
       // Sauvegarder le nouveau mot de passe dans localStorage
@@ -131,7 +131,7 @@ const ChangePassword: React.FC = () => {
         detail: { newPassword: formData.newPassword }
       }));
 
-      toast.success('Mot de passe modifié avec succès');
+      toast.success('Password changed successfully.');
       
       // Réinitialiser le formulaire
       setFormData({
@@ -158,7 +158,7 @@ const ChangePassword: React.FC = () => {
       
       <div className="change-password-header">
         <button className="back-btn" onClick={handleBack}><FaArrowLeft /></button>
-        <h1>Changer le mot de passe</h1>
+        <h1>Change password</h1>
       </div>
       
       <div className="change-password-container">
@@ -166,7 +166,7 @@ const ChangePassword: React.FC = () => {
           <div className="form-group">
             <label htmlFor="currentPassword">
               <FaLock className="input-icon" />
-              Mot de passe actuel
+              Current password.
             </label>
             <div className="password-input-container">
               <input
@@ -175,7 +175,7 @@ const ChangePassword: React.FC = () => {
                 name="currentPassword"
                 value={formData.currentPassword}
                 onChange={handleInputChange}
-                placeholder="Entrez votre mot de passe actuel"
+                placeholder="Enter your current password."
                 required
               />
               <button
@@ -191,7 +191,7 @@ const ChangePassword: React.FC = () => {
           <div className="form-group">
             <label htmlFor="newPassword">
               <FaLock className="input-icon" />
-              Nouveau mot de passe
+              New Password
             </label>
             <div className="password-input-container">
               <input
@@ -200,7 +200,7 @@ const ChangePassword: React.FC = () => {
                 name="newPassword"
                 value={formData.newPassword}
                 onChange={handleInputChange}
-                placeholder="Entrez votre nouveau mot de passe"
+                placeholder="Enter your new password."
                 required
               />
               <button
@@ -216,7 +216,7 @@ const ChangePassword: React.FC = () => {
           <div className="form-group">
             <label htmlFor="confirmPassword">
               <FaLock className="input-icon" />
-              Confirmer le nouveau mot de passe
+              Confirm your new password
             </label>
             <div className="password-input-container">
               <input
@@ -225,7 +225,7 @@ const ChangePassword: React.FC = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                placeholder="Confirmez votre nouveau mot de passe"
+                placeholder="Confirm your new password"
                 required
               />
               <button
@@ -243,19 +243,19 @@ const ChangePassword: React.FC = () => {
             className="change-password-btn"
             disabled={isLoading}
           >
-            {isLoading ? 'Changement en cours...' : 'Changer le mot de passe'}
+            {isLoading ? 'Changing...' : 'Change Password'}
           </button>
         </form>
         
         <div className="password-guidelines">
-          <h3>Conseils pour un mot de passe sécurisé:</h3>
-          <ul>
-            <li>Utilisez au moins 8 caractères</li>
-            <li>Combinez des lettres majuscules et minuscules</li>
-            <li>Incluez des chiffres et des caractères spéciaux</li>
-            <li>Évitez les informations personnelles faciles à deviner</li>
-            <li>N'utilisez pas le même mot de passe pour plusieurs sites</li>
-          </ul>
+          <h3>Tips for a secure password:</h3>
+            <ul>
+              <li>Use at least 8 characters</li>
+              <li>Combine uppercase and lowercase letters</li>
+              <li>Include numbers and special characters</li>
+              <li>Avoid easily guessable personal information</li>
+              <li>Do not use the same password for multiple sites</li>
+            </ul>
         </div>
       </div>
     </div>

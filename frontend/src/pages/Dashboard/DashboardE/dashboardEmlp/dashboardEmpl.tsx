@@ -439,25 +439,14 @@ const EmployeeDashboard: React.FC = () => {
         {/* Header */}
         <header className="header-unifiedE">
           <div className="header-container">
-            <div className="header-left">
-              <button
-                className="mobile-menu-button"
-                aria-label="Menu mobile">
-                <Menu size={24} />
-              </button>
               <div className="search-container">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="search-input"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  aria-label="Rechercher"
-                />
-                <button className='search-button' aria-label="Lancer la recherhe">
-                  <Search size={18} className="search-icon" />
-                </button>
-              </div>
+                <input type="text"
+                 placeholder="Search..." 
+                className="search-input"
+                 value={searchTerm} 
+                 onChange={(e) => setSearchTerm(e.target.value)}
+                  aria-label="Rechercher" />
+                <button className="search-btn">🔍</button>
             </div>
 
             <div className="header-right">

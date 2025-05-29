@@ -15,7 +15,7 @@ import FormulaireAgriculteur from './pages/Dashboard/DashboardE/FormulaireAgricu
 import UserProfile from './pages/Dashboard/DashboardE/profil/UserProfile';
 import InformationsUtilisateur from './pages/Dashboard/DashboardE/profil/InformationsUtilisateur';
 import ChangePassword from './pages/Dashboard/DashboardE/profil/ChangePassword/ChangePassword';
-import ChangeAvatar from './pages/Dashboard/DashboardE/profil/ChangeAvatar/ChangeAvatar';
+
 
 function App() {
 
@@ -36,7 +36,6 @@ function App() {
         <Route path="/formulaireAgriculteur" element={<FormulaireAgriculteur/>}/>
         <Route path="/UserProfile" element={<UserProfile/>}/>
         <Route path="/Change-Password" element={<ChangePassword/>}/>
-        <Route path="/Change-Avatar" element={<ChangeAvatar/>}/>
         <Route path="/InformationsUtilisateur" element={<InformationsUtilisateur/>}/>
         <Route path="/messages" element={<Message/>}/>
       </Routes>

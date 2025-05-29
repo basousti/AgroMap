@@ -181,7 +181,7 @@ function listAgriculteur() {
       <div className="main-content-unified">
         <header className="header-unified">
           <div className="search-container-unified">
-            <input type="text" placeholder="Recherche avancée..." className="search-input" value={searchTerm} onChange={handleSearch} />
+            <input type="text" placeholder="Search..." className="search-input" value={searchTerm} onChange={handleSearch} />
             <button className="search-btn">🔍</button>
           </div>
         </header>

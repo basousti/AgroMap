@@ -236,28 +236,28 @@ const InformationsUtilisateur: React.FC = () => {
         
         // Validation du prénom
         if (!validateName(editedInfo.firstName.trim())) {
-          toast.error("Le prénom doit contenir uniquement des lettres");
+          toast.error("The first name must contain letters only.");
           setIsSaving(false);
           return;
         }
         
         // Validation du nom
         if (!validateName(editedInfo.lastName.trim())) {
-          toast.error("Le nom doit contenir uniquement des lettres");
+          toast.error("The last name must contain letters only.");
           setIsSaving(false);
           return;
         }
         
         // Validation de l'email
         if (!validateEmail(editedInfo.email.trim())) {
-          toast.error("L'email doit être au format: exemple@gmail.com ou exemple@yahoo.com");
+          toast.error("The email must be in the format: [example@gmail.com](mailto:example@gmail.com) or [example@yahoo.com](mailto:example@yahoo.com).");
           setIsSaving(false);
           return;
         }
         
         // Validation du téléphone
         if (editedInfo.phone && !validatePhone(editedInfo.phone.trim())) {
-          toast.error("Le téléphone doit contenir exactement 8 chiffres");
+          toast.error("The phone number must contain exactly 8 digits.");
           setIsSaving(false);
           return;
         }
@@ -265,7 +265,7 @@ const InformationsUtilisateur: React.FC = () => {
         // Mettre à jour l'état principal avec les nouvelles valeurs
         setUserInfo({...editedInfo});
         setIsEditing(false);
-        toast.success("Profil mis à jour avec succès");
+        toast.success("Profile successfully updated.");
       } catch (error) {
         toast.error("Une erreur est survenue lors de la sauvegarde");
         console.error("Erreur de sauvegarde:", error);
@@ -283,7 +283,7 @@ const InformationsUtilisateur: React.FC = () => {
     // Réinitialiser les valeurs éditées et quitter le mode édition
     setEditedInfo({...userInfo});
     setIsEditing(false);
-    toast.info("Modifications annulées");
+    toast.info("Changes canceled.");
   };
   
   // Fonction pour gérer les changements d'input avec filtrage en temps réel
@@ -350,13 +350,13 @@ const InformationsUtilisateur: React.FC = () => {
     
     // Valider le type de fichier
     if (!file.type.startsWith('image/')) {
-      toast.error("Veuillez sélectionner une image valide");
+      toast.error("Please select a valid image.");
       return;
     }
     
     // Limiter la taille du fichier (5MB par exemple)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("L'image ne doit pas dépasser 5MB");
+      toast.error("The image must not exceed 5MB.");
       return;
     }
     
@@ -395,7 +395,7 @@ const InformationsUtilisateur: React.FC = () => {
         window.dispatchEvent(avatarChangeEvent);
       }
       
-      toast.success("Photo de profil mise à jour avec succès!");
+      toast.success("Profile picture  updated successfully!");
     } catch (error) {
       console.error("Erreur lors du traitement de l'image:", error);
       toast.error("Erreur lors du traitement de l'image");
@@ -410,7 +410,7 @@ const InformationsUtilisateur: React.FC = () => {
   
   const handleChangeAvatar = (): void => {
     if (isUploadingAvatar) {
-      toast.info("Upload en cours, veuillez patienter...");
+      toast.info("Uploading in progress, please wait...");
       return;
     }
     
@@ -422,7 +422,7 @@ const InformationsUtilisateur: React.FC = () => {
 
   // Fonction pour supprimer l'avatar
   const handleRemoveAvatar = (): void => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer votre photo de profil?")) {
+    if (window.confirm("Are you sure you want to delete your profile picture?")) {
       const emptyAvatarUrl = "";
       
       if (isEditing) {
@@ -446,7 +446,7 @@ const InformationsUtilisateur: React.FC = () => {
       // Nettoyer le localStorage
       localStorage.removeItem(AVATAR_STORAGE_KEY);
       
-      toast.success("Photo de profil supprimée");
+      toast.success("Profile picture deleted.");
     }
   };
 
@@ -459,7 +459,7 @@ const InformationsUtilisateur: React.FC = () => {
       // Nettoyer les données stockées
       localStorage.removeItem(AVATAR_STORAGE_KEY);
       
-      toast.info("Profil réinitialisé aux valeurs par défaut");
+      toast.info("Profile reset to default values.");
     }
   };
 
@@ -469,7 +469,7 @@ const InformationsUtilisateur: React.FC = () => {
       <div className="info-header">
         <div className="header-left">
           <button className="back-btn" onClick={handleBack}><FaArrowLeft /></button>
-          <h1>Informations du Profil</h1>
+          <h1>Profile informations</h1>
         </div>
         {isEditing ? (
           <div className="edit-actions">
@@ -480,11 +480,11 @@ const InformationsUtilisateur: React.FC = () => {
             >
               {isSaving ? (
                 <>
-                  <div className="button-spinner"></div> Sauvegarde...
+                  <div className="button-spinner"></div> Saving...
                 </>
               ) : (
                 <>
-                  <FaSave /> Sauvegarder
+                  <FaSave /> Saving
                 </>
               )}
             </button>
@@ -493,12 +493,12 @@ const InformationsUtilisateur: React.FC = () => {
               onClick={handleCancelEdit}
               disabled={isSaving}
             >
-              <FaTimes /> Annuler
+              <FaTimes /> Cancel
             </button>
           </div>
         ) : (
           <button className="edit-profile-main-btn" onClick={handleEditProfile}>
-            <FaPencilAlt /> Modifier le profil
+            <FaPencilAlt /> Edit profile
           </button>
         )}
       </div>
@@ -524,7 +524,7 @@ const InformationsUtilisateur: React.FC = () => {
                   onError={(e) => {
                     // Fallback en cas d'erreur de chargement de l'image
                     console.error("Erreur de chargement de l'image");
-                    toast.error("Erreur de chargement de l'image");
+                    toast.error("Image loading error.");
                     // Réinitialiser l'URL d'avatar
                     if (!isEditing) {
                       setUserInfo({
@@ -557,7 +557,7 @@ const InformationsUtilisateur: React.FC = () => {
                 disabled={isUploadingAvatar}
               >
                 <FaUpload /> 
-                {isUploadingAvatar ? "Upload..." : (userInfo.avatarUrl ? "Modifier la photo" : "Ajouter une photo")}
+                {isUploadingAvatar ? "Upload..." : (userInfo.avatarUrl ? "Edit photo" : "Add a photo")}
               </button>
               
               {userInfo.avatarUrl && (
@@ -576,27 +576,27 @@ const InformationsUtilisateur: React.FC = () => {
             <h2>{userInfo.firstName} {userInfo.lastName}</h2>
             <span className="user-role">{userInfo.position || userInfo.role}</span>
             <div className="user-since">
-              <span>Membre depuis:</span>
+              <span>Member since:</span>
               <p>{userInfo.joinDate || userInfo.dateCreation}</p>
             </div>
             <button 
               className="reset-profile-btn"
               onClick={handleResetProfile}
             >
-              Réinitialiser le profil
+              Reset profile
             </button>
           </div>
         </div>
         
         <div className="info-main">
           <div className="info-section">
-            <h3>Informations Personnelles</h3>
+            <h3>Personal Information</h3>
             
             <div className="info-grid">
               <div className="info-item">
                 <div className="info-label">
                   <FaIdCard className="info-icon" />
-                  <span>Prénom</span>
+                  <span>Family name</span>
                 </div>
                 <div className="info-value">
                   {isEditing ? (
@@ -607,15 +607,15 @@ const InformationsUtilisateur: React.FC = () => {
                         onChange={(e) => handleInputChange('firstName', e.target.value)} 
                         className="editable-input"
                         required
-                        placeholder="Prénom (lettres uniquement)"
+                        placeholder="Family name (letters only)"
                         pattern="[a-zA-ZÀ-ÿ\s]+"
-                        title="Le prénom doit contenir uniquement des lettres"
+                        title="The family name must contain letters only."
                       />
                       {editedInfo.firstName !== userInfo.firstName && (
                         <span className="field-changed-indicator"><FaCheck /></span>
                       )}
                       {editedInfo.firstName && !validateName(editedInfo.firstName) && (
-                        <small className="validation-hint">Lettres uniquement</small>
+                        <small className="validation-hint">letters only</small>
                       )}
                     </div>
                   ) : (
@@ -627,7 +627,7 @@ const InformationsUtilisateur: React.FC = () => {
               <div className="info-item">
                 <div className="info-label">
                   <FaIdCard className="info-icon" />
-                  <span>Nom</span>
+                  <span>Name</span>
                 </div>
                 <div className="info-value">
                   {isEditing ? (
@@ -638,15 +638,15 @@ const InformationsUtilisateur: React.FC = () => {
                         onChange={(e) => handleInputChange('lastName', e.target.value)} 
                         className="editable-input"
                         required
-                        placeholder="Nom (lettres uniquement)"
+                        placeholder="Name"
                         pattern="[a-zA-ZÀ-ÿ\s]+"
-                        title="Le nom doit contenir uniquement des lettres"
+                        title="The name must contain letters only."
                       />
                       {editedInfo.lastName !== userInfo.lastName && (
                         <span className="field-changed-indicator"><FaCheck /></span>
                       )}
                       {editedInfo.lastName && !validateName(editedInfo.lastName) && (
-                        <small className="validation-hint">Lettres uniquement</small>
+                        <small className="validation-hint">Lettres only</small>
                       )}
                     </div>
                   ) : (
@@ -671,13 +671,13 @@ const InformationsUtilisateur: React.FC = () => {
                         required
                         placeholder="exemple@gmail.com ou exemple@yahoo.com"
                         pattern="[a-zA-Z0-9._%+-]+@(gmail|yahoo)\.com"
-                        title="L'email doit être au format: exemple@gmail.com ou exemple@yahoo.com"
+                        title="The email must be in the format: [example@gmail.com](mailto:example@gmail.com) or [example@yahoo.com](mailto:example@yahoo.com)."
                       />
                       {editedInfo.email !== userInfo.email && (
                         <span className="field-changed-indicator"><FaCheck /></span>
                       )}
                       {editedInfo.email && !validateEmail(editedInfo.email) && (
-                        <small className="validation-hint">Format: exemple@gmail.com ou exemple@yahoo.com</small>
+                        <small className="validation-hint">Format: exemple@gmail.com or exemple@yahoo.com</small>
                       )}
                     </div>
                   ) : (
@@ -686,10 +686,10 @@ const InformationsUtilisateur: React.FC = () => {
                 </div>
               </div>
               
-              <div className="info-item">
+              <div className="info-item ">
                 <div className="info-label">
                   <FaPhone className="info-icon" />
-                  <span>Téléphone</span>
+                  <span>Phone number </span>
                 </div>
                 <div className="info-value">
                   {isEditing ? (
@@ -702,13 +702,13 @@ const InformationsUtilisateur: React.FC = () => {
                         placeholder="12345678"
                         maxLength={8}
                         pattern="\d{8}"
-                        title="Le téléphone doit contenir exactement 8 chiffres"
+                        title="The phone number must contain exactly 8 digits."
                       />
                       {editedInfo.phone !== userInfo.phone && (
                         <span className="field-changed-indicator"><FaCheck /></span>
                       )}
                       {editedInfo.phone && editedInfo.phone.length < 8 && (
-                        <small className="validation-hint">Le téléphone doit contenir 8 chiffres</small>
+                        <small className="validation-hint">The phone number must contain exactly 8 digits.</small>
                       )}
                     </div>
                   ) : (
@@ -717,10 +717,10 @@ const InformationsUtilisateur: React.FC = () => {
                 </div>
               </div>
               
-              <div className="info-item full-width">
+              <div className="info-item ">
                 <div className="info-label">
                   <FaMapMarkerAlt className="info-icon" />
-                  <span>Adresse</span>
+                  <span>Adress</span>
                 </div>
                 <div className="info-value">
                   {isEditing ? (
@@ -739,43 +739,17 @@ const InformationsUtilisateur: React.FC = () => {
                   )}
                 </div>
               </div>
-
-              {/* Champ département maintenu */}
-              <div className="info-item">
-                <div className="info-label">
-                  <FaIdCard className="info-icon" />
-                  <span>Département</span>
-                </div>
-                <div className="info-value">
-                  {isEditing ? (
-                    <div className="input-wrapper">
-                      <input 
-                        type="text" 
-                        value={editedInfo.department || ''} 
-                        onChange={(e) => handleInputChange('department', e.target.value)} 
-                        className="editable-input"
-                        placeholder="Agriculteur"
-                      />
-                      {(editedInfo.department || '') !== (userInfo.department || '') && (
-                        <span className="field-changed-indicator"><FaCheck /></span>
-                      )}
-                    </div>
-                  ) : (
-                    userInfo.department || userInfo.role || "Non spécifié"
-                  )}
-                </div>
-              </div>
             </div>
           </div>
           
           <div className="info-section">
-            <h3>Sécurité</h3>
+            <h3>Security</h3>
             
             <div className="info-grid">
               <div className="info-item security-item">
                 <div className="info-label">
                   <FaKey className="info-icon" />
-                  <span>Mot de passe</span>
+                  <span>Password</span>
                 </div>
                 <div className="info-value password-value">
                   <div className="password-display-container">
@@ -783,14 +757,15 @@ const InformationsUtilisateur: React.FC = () => {
                     <button 
                       className="toggle-password-btn" 
                       onClick={togglePasswordVisibility}
-                      aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-                      title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      title={showPassword ? "Hide password" : "Show password"}
+
                     >
                       {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                   <button className="change-password-btn" onClick={handleChangePassword}>
-                    Changer le mot de passe
+                    Change password
                   </button>
                 </div>
               </div>
@@ -800,10 +775,11 @@ const InformationsUtilisateur: React.FC = () => {
           {/* Message d'aide */}
           {isEditing && (
             <div className="help-message">
-              <p>Modifiez vos informations puis cliquez sur "Sauvegarder" pour enregistrer vos changements.</p>
-              <p><FaCheck className="check-icon" /> indique les champs qui ont été modifiés.</p>
-              <p>Les modifications seront automatiquement synchronisées avec le dashboard.</p>
+              <p>Edit your information then click "Save" to record your changes.</p>
+              <p><FaCheck className="check-icon" /> indicates the fields that have been modified.</p>
+              <p>The changes will be automatically synchronized with the dashboard.</p>
             </div>
+
           )}
         </div>
       </div>

@@ -64,17 +64,20 @@ const UserProfile: FC<UserProfileProps> = ({
           >
             <FaCog />
           </button>
-        </header>
+        </header> 
 
         {/* Profile Info */}
         <section className="profile-info">
+          
           <div className="profile-avatar">
             <img src={avatarUrl} alt={`Avatar de ${userName}`} />
           </div>
+
           <div className="profile-details">
             <h3>{userName}</h3>
             <p>{userEmail}</p>
           </div>
+
         </section>
 
         {/* Profile Actions */}
