@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search,
   Bell,
-  User,
+  User, 
   Phone,
   Mail,
   MapPin,
@@ -448,7 +448,7 @@ const EmployeeDashboard: React.FC = () => {
               <div className="search-container">
                 <input
                   type="text"
-                  placeholder="Rechercher..."
+                  placeholder="Search..."
                   className="search-input"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -547,7 +547,7 @@ const EmployeeDashboard: React.FC = () => {
             <div className="info-card">
               <h2 className="card-title">
                 <User size={20} className="card-title-icon" />
-                Contact information
+                Employer informations
               </h2>
               <div className="contact-info">
                 <div className="contact-item">
@@ -616,7 +616,7 @@ const EmployeeDashboard: React.FC = () => {
                 {/* Note Input */}
                 <div className="note-input-container">
                   <textarea
-                    placeholder="Commencez à saisir pour laisser une note..."
+                    placeholder="Type here to add a note..."
                     value={currentNote}
                     onChange={(e) => setCurrentNote(e.target.value)}
                     className="note-textarea"
@@ -654,8 +654,8 @@ const EmployeeDashboard: React.FC = () => {
                                 {renderNoteIcon(note.type)}
                               </div>
                               <span className="note-type-label">
-                                {note.type === 'meeting' ? 'Réunion' :
-                                  note.type === 'training' ? 'Formation' : 'Note ajoutée'}
+                                {note.type === 'meeting' ? 'meeting' :
+                                  note.type === 'training' ? 'training' : 'Note ajoutée'}
                               </span>
                             </div>
                             <span className="note-date">{note.date}</span>
@@ -756,11 +756,11 @@ const EmployeeDashboard: React.FC = () => {
                   <div className="add-task-form">
                     <input
                       type="text"
-                      placeholder="Titre de la tâche..."
+                      placeholder="Task title..."
                       className="add-task-input"
                       value={newTaskTitle}
                       onChange={(e) => setNewTaskTitle(e.target.value)}
-                      aria-label="Titre de la nouvelle tâche"
+                      aria-label="New task title "
                     />
                     <button
                       className="add-task-button"
@@ -783,8 +783,8 @@ const EmployeeDashboard: React.FC = () => {
                 © 2025 AgroMapp. All rights are reserved .
               </p>
               <div className="footer-links">
-                <a href="#" className="footer-link">Politique de confidentialité</a>
-                <a href="#" className="footer-link">Conditions d'utilisation</a>
+                <a href="#" className="footer-link">Our Privacy Policy</a>
+                <a href="#" className="footer-link">Terms of Use</a>
                 <a href="#" className="footer-link">Support</a>
               </div>
             </div>

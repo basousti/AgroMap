@@ -4,7 +4,7 @@ import { FaArrowLeft, FaUpload, FaUserCircle, FaTrashAlt, FaUndo, FaRedo, FaSear
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ChangeAvatar.css';
-
+ 
 // Clés pour le stockage local
 const USER_INFO_STORAGE_KEY = 'user_profile_info';
 const AVATAR_STORAGE_KEY = 'user_avatar';

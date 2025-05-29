@@ -204,7 +204,7 @@ const InformationsUtilisateur: React.FC = () => {
   }, [password]);
   
   const handleBack = (): void => {
-    navigate('/UserProfile');
+    navigate('/DashboardE');
   };
 
   // Fonction de validation des noms (seulement des lettres)

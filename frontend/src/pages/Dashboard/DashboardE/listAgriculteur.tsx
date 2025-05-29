@@ -37,8 +37,6 @@ function listAgriculteur() {
   const handlePlusButtonClick = () => navigate('/FormulaireAgriculteur');
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
   const handleMessagesClick = () => navigate('/messages');
-  const handleProfileClick = () => navigate('/DashboardE');
-  const handleLogout = () => window.location.href = '/login';
 
   useEffect(() => {
     setError(null);
@@ -166,12 +164,12 @@ function listAgriculteur() {
 
             <li className="menu-item ajouter-agriculteur active" onClick={handleAddFarmerClick}>
               <span className="menu-icon">👤</span>
-              <span className="menu-text">Ajouter Agriculteur</span>
+              <span className="menu-text">Add Farmer</span>
             </li>
 
             <li className="menu-item">
               <span className="menu-icon">🏞️</span>
-              <span className="menu-text">Ajouter Parcelle</span>
+              <span className="menu-text">Add Parcel</span>
             </li>
           </ul>
         </nav>
@@ -186,15 +184,11 @@ function listAgriculteur() {
             <input type="text" placeholder="Recherche avancée..." className="search-input" value={searchTerm} onChange={handleSearch} />
             <button className="search-btn">🔍</button>
           </div>
-          <div className="header-actions">
-            <button className="profile-toggle-btn" onClick={handleProfileClick}><span>👤</span> Profil</button>
-            <button className="logout-btn-new" onClick={handleLogout}><span>🔒</span> Déconnexion</button>
-          </div>
         </header>
 
         <section className="content-area">
           <div className="content-header">
-            <h1>Liste des agriculteurs</h1>
+            <h1>Farmers List</h1>
             <button className="add-button" onClick={handlePlusButtonClick}>+</button>
           </div>
 
@@ -202,17 +196,17 @@ function listAgriculteur() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Nom</th>
-                  <th>Prénom</th>
-                  <th>Localité</th>
-                  <th>Téléphone</th>
-                  <th>Adresse</th>
-                  <th>Actions</th>
+                  <th>Name</th>
+                  <th>Family Name</th>
+                  <th>Locality</th>
+                  <th>Phone number</th>
+                  <th>Adress</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredFarmers.length === 0 ? (
-                  <tr><td colSpan={6} className="no-data">Aucun résultat trouvé</td></tr>
+                  <tr><td colSpan={6} className="no-data">No results found</td></tr>
                 ) : (
                   filteredFarmers.map(farmer => (
                     <tr key={farmer._id || `${farmer.nom}-${farmer.telephone}`}>

@@ -5,7 +5,7 @@ import './UserProfile.css';
 
 interface UserProfileProps {
   onClose?: () => void;
-  userName?: string; 
+  userName?: string;
   userEmail?: string;
   avatarUrl?: string;
 }
@@ -18,7 +18,7 @@ const UserProfile: FC<UserProfileProps> = ({
 }) => {
   const navigate = useNavigate();
   const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
-  
+
   const handleBack = useCallback((): void => {
     if (onClose) {
       onClose();
@@ -26,7 +26,7 @@ const UserProfile: FC<UserProfileProps> = ({
       navigate('/DashboardE');
     }
   }, [onClose, navigate]);
-  
+
   const handleProfileInfo = useCallback((): void => {
     navigate('/InformationsUtilisateur');
   }, [navigate]);
@@ -34,12 +34,12 @@ const UserProfile: FC<UserProfileProps> = ({
   const toggleSettingsModal = useCallback((): void => {
     setShowSettingsModal(prev => !prev);
   }, []);
-  
+
   const handleLogout = useCallback((): void => {
     // Implémentation de la déconnexion
-    navigate('/DashboardE');
+    navigate('/login1');
   }, [navigate]);
-  
+
   const handleDarkMode = useCallback((): void => {
     // Implémentation du mode sombre
   }, []);
@@ -49,23 +49,23 @@ const UserProfile: FC<UserProfileProps> = ({
       <div className="user-profile-container" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <header className="profile-header">
-          <button 
-            className="back-button" 
+          <button
+            className="back-button"
             onClick={handleBack}
             aria-label="Retour"
           >
             <FaArrowLeft />
           </button>
-          <h2>Mon Profil</h2>
-          <button 
-            className="settings-button" 
+          <h2>My profile</h2>
+          <button
+            className="settings-button"
             onClick={toggleSettingsModal}
             aria-label="Paramètres"
           >
             <FaCog />
           </button>
         </header>
-        
+
         {/* Profile Info */}
         <section className="profile-info">
           <div className="profile-avatar">
@@ -76,36 +76,36 @@ const UserProfile: FC<UserProfileProps> = ({
             <p>{userEmail}</p>
           </div>
         </section>
-        
+
         {/* Profile Actions */}
         <nav className="profile-actions">
           <button className="action-button" onClick={handleDarkMode}>
             <FaMoon />
-            <span>Mode Sombre</span>
+            <span>Dark Mode</span>
           </button>
           <button className="action-button" onClick={handleProfileInfo}>
             <FaUserEdit />
-            <span>Informations du profil</span>
+            <span>Profile</span>
           </button>
           <button className="action-button" onClick={toggleSettingsModal}>
             <FaCog />
-            <span>Paramètres</span>
+            <span>Settings</span>
           </button>
           <button className="action-button logout" onClick={handleLogout}>
             <FaSignOutAlt />
-            <span>Déconnexion</span>
+            <span>Disconnect</span>
           </button>
         </nav>
-        
+
         {/* Settings Modal */}
         {showSettingsModal && (
           <div className="modal-overlay" onClick={toggleSettingsModal}>
             <div className="modal" onClick={e => e.stopPropagation()}>
               <div className="modal-content">
                 <div className="modal-header">
-                  <h3>Paramètres</h3>
-                  <button 
-                    className="close-button" 
+                  <h3>Settings</h3>
+                  <button
+                    className="close-button"
                     onClick={toggleSettingsModal}
                     aria-label="Fermer"
                   >
@@ -115,7 +115,7 @@ const UserProfile: FC<UserProfileProps> = ({
                 <div className="modal-body">
                   {/* Contenu des paramètres */}
                   <div className="settings-section">
-                    <h4>Préférences d'affichage</h4>
+                    <h4>Display Preferences</h4>
                     <div className="setting-option">
                       <label htmlFor="darkMode">Mode Sombre</label>
                       <input type="checkbox" id="darkMode" />
@@ -124,14 +124,14 @@ const UserProfile: FC<UserProfileProps> = ({
                   <div className="settings-section">
                     <h4>Notifications</h4>
                     <div className="setting-option">
-                      <label htmlFor="emailNotif">Notifications par email</label>
+                      <label htmlFor="emailNotif">Email notifications</label>
                       <input type="checkbox" id="emailNotif" defaultChecked />
                     </div>
                   </div>
                 </div>
                 <div className="modal-footer">
                   <button className="btn btn-primary" onClick={toggleSettingsModal}>
-                    Enregistrer
+                    Save
                   </button>
                 </div>
               </div>
