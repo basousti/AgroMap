@@ -141,7 +141,7 @@ const MessageComponent: React.FC = () => {
   return (
     <div className="message-container">
       <div className="message-header">
-        <FaArrowLeft className="back-button" title="Retour" onClick={handleBack} />
+        <FaArrowLeft className="message-back-button" title="Retour" onClick={handleBack} />
         <div className="avatar">{group.icon}</div>
         <div className="header-info">
           <div className="group-name">{group.name}</div>

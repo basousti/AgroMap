@@ -180,7 +180,7 @@
   border-radius: 3px;
 }
 
-.back-button {
+.massege-back-button {
   font-size: 18px;
   margin-right: 12px;
   cursor: pointer;
@@ -188,6 +188,6 @@
   transition: color 0.2s ease-in-out;
 }
 
-.back-button:hover {
+.massege-back-button:hover {
   color: #1b5e20;
 }

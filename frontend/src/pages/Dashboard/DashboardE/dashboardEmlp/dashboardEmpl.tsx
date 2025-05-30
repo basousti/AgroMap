@@ -504,7 +504,7 @@ const EmployeeDashboard: React.FC = () => {
                     <img
                       src={employee.avatarUrl}
                       alt={employee.name}
-                      className="profile-avatar-small"
+                      className="profile-avatarE-small"
                       style={{
                         width: '32px',
                         height: '32px',

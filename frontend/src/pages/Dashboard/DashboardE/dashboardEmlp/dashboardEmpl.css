@@ -613,7 +613,7 @@ a {
   gap: 1.5rem;
 }
 
-.profile-avatar {
+.profile-avatarE {
   width: 42px;
   height: 42px;
   border-radius: 50%;
@@ -624,11 +624,6 @@ a {
   justify-content: center;
   font-weight: 600;
   font-size: 0.875rem;
-}
-
-.profile-info {
-  display: flex;
-  flex-direction: column;
 }
 
 .profile-name {
@@ -1582,7 +1577,7 @@ button.action-button svg{
     align-items: flex-start;
   }
 
-  .profile-avatar-large {
+  .profile-avatarE-large {
     margin-bottom: 1rem;
   }
 

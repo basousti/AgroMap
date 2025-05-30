@@ -134,7 +134,7 @@
   /* Section d'informations du profil avec animation d'entrée pour les éléments */
   .profile-info {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
@@ -166,7 +166,11 @@
 }
 
 .profile-details {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
   flex-grow: 1;
+  justify-content: center;
 }
 
 .profile-details h3 {
