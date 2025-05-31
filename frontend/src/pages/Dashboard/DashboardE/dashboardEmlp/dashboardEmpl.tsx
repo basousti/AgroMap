@@ -32,7 +32,7 @@ interface EmployeeData {
   email: string;
   phone: string;
   location: string;
-  department: string;
+  matriculate: string;
   company: string;
   status?: string;
   joinDate?: string;
@@ -66,7 +66,7 @@ const getDefaultEmployee = (): EmployeeData => ({
   email: 'moauianouha2@gmail.com',
   phone: '+216 29 220 752',
   location: 'Tunis Menzeh 8',
-  department: 'Agriculteur',
+  matriculate: '14411916',
   company: 'SICAM',
   status: 'Actif',
   joinDate: '15 Mars 2022',
@@ -92,7 +92,7 @@ const defaultNotes: Note[] = [
 const defaultTasks: Task[] = [
   {
   id: 't1',
-  title: 'Finalize the mockups for the AgriApp project',
+  title: 'Finalize the mockups for the AgroMap project',
   due: 'Tomorrow',
   status: 'pending'
 },
@@ -146,7 +146,7 @@ const EmployeeDashboard: React.FC = () => {
         email: userInfo.email,
         phone: userInfo.phone,
         location: userInfo.address,
-        department: userInfo.department || userInfo.role,
+        matriculate: userInfo.matriculate ,
         company: userInfo.company || "SICAM",
         status: userInfo.status || "Actif",
         joinDate: userInfo.joinDate || userInfo.dateCreation,
@@ -181,7 +181,7 @@ const EmployeeDashboard: React.FC = () => {
         email: userInfo.email,
         phone: userInfo.phone,
         location: userInfo.address,
-        department: userInfo.department || userInfo.role,
+        matriculate: userInfo.matriculate ,
         company: userInfo.company || employee.company,
         status: userInfo.status || employee.status,
         joinDate: userInfo.joinDate || userInfo.dateCreation,
@@ -563,8 +563,8 @@ const EmployeeDashboard: React.FC = () => {
                 <div className="contact-item">
                   <Briefcase size={18} className="contact-icon" />
                   <div className="contact-details">
-                    <p className="contact-label">Departement</p>
-                    <p className="contact-value">{employee.department}</p>
+                    <p className="contact-label">Matriculate</p>
+                    <p className="contact-value">{employee.matriculate}</p>
                   </div>
                 </div>
               </div>

@@ -26,7 +26,7 @@ export const getAllFarmersController = async (req: Request, res: Response) => {
     console.error('Erreur de récupération des agriculteurs:', error);
     res.status(500).json({ success: false, error: (error as Error).message });
   }
-};
+}; 
 
 // 🔍 Get farmer by ID
 export const getFarmerByIdController = async (req: Request, res: Response) => {

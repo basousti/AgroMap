@@ -16,7 +16,7 @@ interface UserInfo {
   role: string;
   dateCreation: string;
   position?: string; // Ajouté pour la synchronisation avec le dashboard
-  department?: string; // Ajouté pour la synchronisation avec le dashboard
+  matriculate?: string; // Ajouté pour la synchronisation avec le dashboard
   company?: string; // Ajouté pour la synchronisation avec le dashboard
   companyDescription?: string; // Ajouté pour la synchronisation avec le dashboard
   status?: string; // Ajouté pour la synchronisation avec le dashboard
@@ -62,7 +62,7 @@ const InformationsUtilisateur: React.FC = () => {
     role: "Employé",
     dateCreation: "15/03/2023",
     position: "Chef département",
-    department: "Agriculteur",
+    matriculate: "Agriculteur",
     company: "SICAM",
     companyDescription: "SICAM Société Industrielle des Conserves Alimentaires de Medjez El Beb, fleuron de l'Industrie tunisienne depuis 1969 célèbre cette année ses 50 ans",
     status: "Actif",
@@ -95,7 +95,7 @@ const InformationsUtilisateur: React.FC = () => {
       email: userData.email,
       phone: userData.phone,
       location: userData.address,
-      department: userData.department || userData.role,
+      matriculate: userData.matriculate ,
       company: userData.company || "SICAM",
       companyDescription: userData.companyDescription || "SICAM Société Industrielle des Conserves Alimentaires de Medjez El Beb, fleuron de l'Industrie tunisienne depuis 1969 célèbre cette année ses 50 ans",
       status: userData.status || "Actif",

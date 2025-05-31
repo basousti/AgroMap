@@ -4,6 +4,7 @@ const Farmer =require('../models/farmer') ;
 const User =require('../models/users') ;
 
 interface FarmerInput {
+  _id: mongoose.Types.ObjectId;
   name: string;
   prenom: string;
   email: string;
@@ -22,22 +23,30 @@ export const getAllFarmers = async (
   const skip = (page - 1) * limit;
   const sort: Record<string, 1 | -1> = { [sortField]: sortOrder };
 
+  // Find farmers with user populated, filtered by role 'agriculteur'
   const [farmers, total] = await Promise.all([
     Farmer.find()
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .populate('_id', 'name prenom email'), // since `_id` in Farmer refers to the user
+      .populate({
+        path: '_id',
+        select: 'name prenom role',
+        match: { role: 'agriculteur' },
+      }),
     Farmer.countDocuments(),
   ]);
 
+  // Filter out farmers whose user was not matched (no role or missing)
+  const filteredFarmers = farmers.filter((farmer: { _id: any }) => farmer._id !== null);
+
   return {
-    farmers,
+    farmers: filteredFarmers,
     pagination: {
-      total,
+      total: filteredFarmers.length,
       page,
       limit,
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(filteredFarmers.length / limit),
     },
   };
 };
@@ -98,7 +107,7 @@ export const createFarmer = async (data: FarmerInput) => {
 // ✏️ Update farmer
 export const updateFarmer = async (id: string, updateData: any) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("ID d'agriculteur invalide");
+    throw new Error("ID d'agriculteur invalide for update");
   }
 
   return await Farmer.findByIdAndUpdate(id, updateData, {
@@ -110,12 +119,14 @@ export const updateFarmer = async (id: string, updateData: any) => {
 // ❌ Delete farmer
 export const deleteFarmer = async (id: string) => {
   if (!User.Types.ObjectId.isValid(id)) {
-    throw new Error("ID d'agriculteur invalide");
+    throw new Error("ID d'agriculteur invalide for delete");
   }
 
   const farmer = await Farmer.findByIdAndDelete(id);
   return !!farmer;
 };
+
+
 
 // 🔍 Search farmers
 export const searchFarmers = async (searchTerm: string, userId: string) => {

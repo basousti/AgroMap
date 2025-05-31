@@ -2,9 +2,11 @@ import React from 'react';
 import './styleAlert.css';
 
 interface Farmer {
-  _id: string;
-  nom: string;
-  prenom: string;
+ _id: {
+    _id: string;
+    name: string;
+    prenom: string;
+  };
 }
 
 interface DeleteAlertDialogProps {
@@ -32,16 +34,16 @@ const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
       });
 
       if (response.ok) {
-        onConfirm(farmer._id);
-        alert('Agriculteur supprimé avec succès !'); // ✅ Suppression réussie
+        onConfirm(farmer._id._id);
+        alert('Farmer deleted successfully!'); // ✅ Suppression réussie
       } else {
         const errorData = await response.text();
         console.error('Erreur serveur :', errorData);
-        alert('Échec de la suppression');
+        alert('Deletion failed');
       }
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'agriculteur:', error);
-      alert('Une erreur réseau s\'est produite');
+      alert('A network error occurred.');
     }
   };
 
@@ -53,13 +55,13 @@ const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
         </div>
         <div className="delete-alert-content">
           <p>
-            Êtes-vous sûr de vouloir supprimer cet agriculteur :
-            <strong> {farmer.nom} {farmer.prenom} ?</strong>
+            Are you sure you want to delete this farmer:
+            <strong> {farmer._id.name} {farmer._id.prenom} ?</strong>
           </p>
         </div>
         <div className="delete-alert-buttons">
-          <button className="delete-alert-ok" onClick={handleConfirmDelete}>OK</button>
-          <button className="delete-alert-cancel" onClick={onCancel}>Annuler</button>
+          <button className="delete-alert-ok" onClick={handleConfirmDelete}>Yes</button>
+          <button className="delete-alert-cancel" onClick={onCancel}>Cancle</button>
         </div>
       </div>
     </div>

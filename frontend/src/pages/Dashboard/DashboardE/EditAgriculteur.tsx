@@ -3,12 +3,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './EditAgriculteur.css';
 
 interface Farmer {
-    _id: string,
-    nom : string;
+  _id: {
+    _id: string;  // or whatever type this is
+    name: string;
     prenom: string;
-    localite: string;
-    telephone: string;
-    adresse: string;
+    email:string;
+  };
+  localite: string;
+  telephone: string;
+  adresse: string;
 }
 
 interface LocationState {
@@ -20,13 +23,16 @@ const EditAgriculteur: React.FC = () =>{
     const location = useLocation();
 
     const [farmer, setFarmer] = useState<Farmer>({
-        _id:'',
-        nom: '',
-        prenom: '',
-        localite: '',
-        telephone: '',
-        adresse: ''
-    });
+    _id: {
+        _id: '',    // The MongoDB ID
+        name: '',   // First name
+        prenom: '',  // Last name
+        email: '',
+    },
+    localite: '',
+    telephone: '',
+    adresse: ''
+});
      // Récuperer les données de l'agriculteur depuis l'etat de navigation
 
      useEffect(() => {
@@ -53,8 +59,9 @@ const EditAgriculteur: React.FC = () =>{
      //Fonction pour enregistrer les données de l'agriculteur
      const handleSave = async () => {
         const updatedFarmer = {
-            nom: farmer.nom,
-            prenom: farmer.prenom,
+            name: farmer._id.name,
+            prenom: farmer._id.prenom,
+            email: farmer._id.email,
             localite: farmer.localite,
             telephone : farmer.telephone,
             adresse: farmer.adresse
@@ -77,11 +84,11 @@ const EditAgriculteur: React.FC = () =>{
                 //si la mis a jour réussie, rediriger ver le dashboard
                 throw new Error(data.message || "Erreur vvlorsv de la mise à jour.")
             }
-            alert("Mise à jour réussie !");
+            alert("Successfully updated !");
             navigate('/listAgriculteur');
         }catch (error){
             console.error("Erreur lors de la mise à jour des données de l'agriculteur:", error);
-            alert("Échec de la mise à jour. Veuillez réessayer.");
+            alert("Update failed. Please try again.");
         }
 
      };
@@ -104,38 +111,50 @@ const EditAgriculteur: React.FC = () =>{
      return (
         <div className='edit-page-container'>
             <div className='edit-page-header'>
-                <h1>Modifier les informations de l'agriculteur</h1>
-                <button className='return-btn' onClick={handleCancel}>Retour au dashboard</button>
+                <h1>Edit the farmer's information</h1>
+                <button className='return-btn' onClick={handleCancel}>Back to Dashboard</button>
             </div>
 
             <div className='edit-form-wrapper'>
                 <form onSubmit={handleSubmit} className='edit-farmer-form'>
                     <div className='form-group'>
-                        <label htmlFor='nom'>Nom:</label>
+                        <label htmlFor='name'>Family:</label>
                         <input
                             type="text"
-                            id="nom"
-                            name="nom" 
-                            value={farmer.nom}
+                            id="name"
+                            name="name" 
+                            value={farmer._id.name}
                             onChange={handleInputChange}
                             required
                         />
                     </div>
 
                     <div className='form-group'>
-                        <label htmlFor='prenom'>Prénom:</label>
+                        <label htmlFor='prenom'>Name:</label>
                         <input
                             type="text"
                             id="prenom"
                             name="prenom"
-                            value={farmer.prenom}
+                            value={farmer._id.prenom}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
+
+                    <div className='form-group'>
+                        <label htmlFor='email'>Eamil adress:</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={farmer._id.email}
                             onChange={handleInputChange}
                             required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="localite">Localité:</label>
+                        <label htmlFor="localite">Locality:</label>
                         <input
                             type="text"
                             id="localite"
@@ -147,7 +166,7 @@ const EditAgriculteur: React.FC = () =>{
                     </div>
 
                     <div className='form-group'>
-                        <label htmlFor='telephone'>Téléphone:</label>
+                        <label htmlFor='telephone'>Phone Number:</label>
                         <input
                             type="text"
                             id="telephone"
@@ -159,7 +178,7 @@ const EditAgriculteur: React.FC = () =>{
                     </div>
 
                     <div className='form-group'>
-                        <label htmlFor='adresse'>Adresse:</label>
+                        <label htmlFor='adresse'>Adress:</label>
                         <input
                             type="text"
                             id="adresse"
@@ -171,8 +190,8 @@ const EditAgriculteur: React.FC = () =>{
                     </div>
 
                     <div className='form-buttons'>
-                        <button type="submit" className='save-btn'>Enregistrer</button>
-                        <button type="button" className='cancel-btn' onClick={handleCancel}>Annuler</button>
+                        <button type="submit" className='save-btn'>Save</button>
+                        <button type="button" className='cancel-btn' onClick={handleCancel}>Cancle</button>
                     </div>
                 </form>
             </div>

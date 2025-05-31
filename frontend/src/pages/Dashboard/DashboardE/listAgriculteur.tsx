@@ -6,11 +6,13 @@ import DeleteAlertDialog from './DeleteAlertDialog';
 import { ChevronLeft, ChevronRight} from 'lucide-react';
 
 interface Farmer {
-  _id: string;
-  nom: string;
-  prenom: string;
+  _id: {
+    _id: string;  // or whatever type this is
+    name: string;
+    prenom: string;
+  };
   localite: string;
-  telephone: string; 
+  telephone: string;
   adresse: string;
 }
 
@@ -43,7 +45,7 @@ function listAgriculteur() {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error("No token found. User is probably not logged in.");
-      setError("Vous devez être connecté pour voir les agriculteurs.");
+      setError("You must be logged in to view the farmers.");
       return;
     }
   
@@ -69,12 +71,12 @@ function listAgriculteur() {
           setFilteredFarmers(data.data);
         } else {
           console.error("Format de données inattendu:", data);
-          setError("Format de données inattendu depuis le serveur.");
+          setError("Unexpected data format from the server.");
         }
       })
       .catch(err => {
         console.error("Erreur lors de la récupération:", err);
-        setError("Impossible de récupérer les agriculteurs. Réessayez.");
+        setError("Unable to fetch the farmers. Please try again.");
       });
   
     setUnreadMessageCount(3); // Optionally fetch unread messages later
@@ -85,8 +87,8 @@ function listAgriculteur() {
     const searchValue = searchTerm.toLowerCase().trim();
     setFilteredFarmers(
       farmers.filter(farmer =>
-        farmer.nom?.toLowerCase().includes(searchValue) ||
-        farmer.prenom?.toLowerCase().includes(searchValue) ||
+        farmer._id.name?.toLowerCase().includes(searchValue) ||
+        farmer._id.prenom?.toLowerCase().includes(searchValue) ||
         farmer.localite?.toLowerCase().includes(searchValue) ||
         farmer.telephone?.toLowerCase().includes(searchValue) ||
         farmer.adresse?.toLowerCase().includes(searchValue)
@@ -104,7 +106,7 @@ function listAgriculteur() {
 
   const handleConfirmDelete = async (deletedId: string) => {
     try {
-      const updated = farmers.filter(f => f._id !== deletedId);
+      const updated = farmers.filter(f => f._id._id !== deletedId);
       setFarmers(updated);
       setFilteredFarmers(updated);
       setFarmerToDelete(null);
@@ -196,8 +198,8 @@ function listAgriculteur() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Name</th>
                   <th>Family Name</th>
+                  <th>Name</th>
                   <th>Locality</th>
                   <th>Phone number</th>
                   <th>Adress</th>
@@ -208,14 +210,14 @@ function listAgriculteur() {
                 {filteredFarmers.length === 0 ? (
                   <tr><td colSpan={6} className="no-data">No results found</td></tr>
                 ) : (
-                  filteredFarmers.map(farmer => (
-                    <tr key={farmer._id || `${farmer.nom}-${farmer.telephone}`}>
-                      <td>{farmer.nom}</td>
-                      <td>{farmer.prenom}</td>
-                      <td>{farmer.localite}</td>
-                      <td>{farmer.telephone}</td>
-                      <td>{farmer.adresse}</td>
-                      <td className="actions">
+                  filteredFarmers.map((farmer) => (
+                    <tr key={farmer._id._id.toString()}>
+                        <td>{farmer._id.name}</td>
+                        <td>{farmer._id.prenom}</td>
+                        <td>{farmer.localite}</td>
+                        <td>{farmer.telephone}</td>
+                        <td>{farmer.adresse}</td>
+                        <td className="actions">
                         <button className="action-btn edit" onClick={() => handleEditClick(farmer)}>✏️</button>
                         <button className="action-btn delete" onClick={() => handleDeleteClick(farmer)}>🗑️</button>
                       </td>
