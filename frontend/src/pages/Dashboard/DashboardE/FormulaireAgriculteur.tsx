@@ -2,6 +2,8 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./FormulaireAgriculteur.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Définition du type Farmer
 interface FarmerData {
@@ -70,27 +72,25 @@ const FormulaireAgriculteur: React.FC = () => {
       switch (name) {
         case "name":
           fieldLabel = "Name";
-          invalidCharMessage = "ne peut contenir que des lettres";
+          invalidCharMessage = "Must be only lettres";
           break;
         case "prenom":
-          fieldLabel = "Prénom";
-          invalidCharMessage = "ne peut contenir que des lettres";
+          fieldLabel = "Family Name";
+          invalidCharMessage = "Must be only lettres";
           break;
         case "localite":
-          fieldLabel = "Localité";
-          invalidCharMessage = "ne peut contenir que des lettres";
+          fieldLabel = "Locality";
+          invalidCharMessage = "Must be only lettres";
           break;
         case "telephone":
-          fieldLabel = "Téléphone";
-          invalidCharMessage = "ne peut contenir que des chiffres, +, espaces et tirets";
+          fieldLabel = "Phone number";
+          invalidCharMessage = "Must be only numbers";
           break;
         case "adresse":
-          fieldLabel = "Adresse";
-          invalidCharMessage = "contient un caractère non autorisé";
+          fieldLabel = "Adress";
           break;
       }
-      
-      alert(`Caractère invalide: Le champ ${fieldLabel} ${invalidCharMessage}`);
+      toast.error(`Caractère invalide: Le champ ${fieldLabel} ${invalidCharMessage}`); 
       
       // Mettre le champ en erreur temporairement pour l'affichage visuel
       setErrorFields(prev => ({ ...prev, [name]: true }));
@@ -129,16 +129,20 @@ const FormulaireAgriculteur: React.FC = () => {
       // Bloc de gestion des erreurs de réponse serveur 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Erreur serveur: ${errorText}`);
+        toast.error(`Erreur serveur: ${errorText}`)
       }
 
       const data = await response.json();
       console.log("Ajout réussi:", data);
-      alert("Agriculteur ajouté avec succès ✅");
-      navigate("/DashboardE", { state: { successMessage: "Agriculteur ajouté avec succès ✅" } });
+      toast.success("Farmer added successfully");
+      setTimeout(() => {
+        navigate("/listAgriculteur", {
+          state: { successMessage: "Farmer added successfully" },
+        });
+      }, 1500); // Delay of 1.5 seconds
     } catch (err: any) {
       console.error("Erreur:", err);
-      alert(err.message || "Une erreur est survenue");
+      toast.error("Erreur serveur:"+ err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -155,7 +159,7 @@ const FormulaireAgriculteur: React.FC = () => {
         <button className="back-btn" onClick={handleBack}>
           <FaArrowLeft />
         </button>
-        <h1>Ajouter un nouvel agriculteur</h1>
+        <h1>Add new farmer</h1>
       </div>
 
       <div className="formulaire-content">
@@ -163,7 +167,7 @@ const FormulaireAgriculteur: React.FC = () => {
           <div className="form-section">
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="prenom">Prénom</label>
+                <label htmlFor="prenom">Family Name</label>
                 <input 
                   type="text"
                   id="prenom"
@@ -175,7 +179,7 @@ const FormulaireAgriculteur: React.FC = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="Name">Nom</label>
+                <label htmlFor="Name">Name</label>
                 <input
                   type="text"
                   id="name"
@@ -212,7 +216,7 @@ const FormulaireAgriculteur: React.FC = () => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="telephone">Téléphone</label>
+              <label htmlFor="telephone">Phone number</label>
               <input
                 type="tel"
                 id="telephone"
@@ -225,7 +229,7 @@ const FormulaireAgriculteur: React.FC = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="adresse">Adresse</label>
+              <label htmlFor="adresse">Adress</label>
               <input
                 type="text"
                 id="adresse"
@@ -245,6 +249,7 @@ const FormulaireAgriculteur: React.FC = () => {
               {isSubmitting ? "Enregistrement..." : "Enregistrer"}
             </button>
           </div>
+          <ToastContainer />
         </form>
       </div>
     </div>

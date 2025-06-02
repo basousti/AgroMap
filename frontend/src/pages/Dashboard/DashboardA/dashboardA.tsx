@@ -24,6 +24,10 @@ const DashboardA:React.FC = () =>{
     navigate("/Statistics");
   };
 
+  const EmplyeeList = () => {
+    navigate("/DashboardA");
+  };
+
   //the role of token discribed in the end of the code 
   const token = localStorage.getItem("token");
 
@@ -136,13 +140,13 @@ const DashboardA:React.FC = () =>{
           className="d-inline-block align-top mb-5"
         />
         <nav className="sidebar-nav">
-          <ul className="nav-list" onClick={Dashboard}>
-            <li className="nav-item">
+          <ul className="nav-list" >
+            <li className="nav-item" onClick={Dashboard}>
               <span className="nav-icon">📊</span>
               <span className="nav-text">Dashboard</span>
             </li>
 
-            <li className="nav-item">
+            <li className="nav-item" onClick={EmplyeeList}>
               <span className="nav-icon">👤</span>
               <span className="nav-text">Employee List</span>
             </li>

@@ -198,8 +198,8 @@ function listAgriculteur() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Family Name</th>
                   <th>Name</th>
+                  <th>Family Name</th>
                   <th>Locality</th>
                   <th>Phone number</th>
                   <th>Adress</th>

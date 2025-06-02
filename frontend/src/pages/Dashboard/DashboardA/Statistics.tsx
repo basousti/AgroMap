@@ -12,6 +12,9 @@ const Statistics:React.FC = () =>{
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   const navigate = useNavigate();
+  const Dashboard = () => {
+    navigate("/Statistics");
+  };
   const EmplyeeList = () => {
     navigate("/DashboardA");
   };
@@ -46,7 +49,7 @@ const Statistics:React.FC = () =>{
         />
         <nav className="sidebar-nav">
           <ul className="nav-list">
-            <li className="nav-item">
+            <li className="nav-item" onClick={Dashboard}>
               <span className="nav-icon">📊</span>
               <span className="nav-text">Dashboard</span>
             </li>
