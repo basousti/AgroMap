@@ -65,7 +65,7 @@ const FormulaireAgriculteur: React.FC = () => {
     // Valider uniquement le dernier caractère entré
     const lastChar = value.charAt(value.length - 1);
     if (!validateCharacter(name, lastChar)) {
-      // Afficher une alerte avec le message d'erreur approprié
+      // Afficher une toast avec le message d'erreur approprié
       let fieldLabel = "";
       let invalidCharMessage = "";
       

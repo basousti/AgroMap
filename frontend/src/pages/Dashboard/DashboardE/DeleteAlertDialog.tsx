@@ -1,5 +1,8 @@
 import React from 'react';
 import './styleAlert.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 interface Farmer {
  _id: {
@@ -35,15 +38,16 @@ const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
 
       if (response.ok) {
         onConfirm(farmer._id._id);
-        alert('Farmer deleted successfully!'); // ✅ Suppression réussie
+        toast.success('Farmer deleted successfully!')
       } else {
         const errorData = await response.text();
         console.error('Erreur serveur :', errorData);
-        alert('Deletion failed');
+        toast.error('Deletion failed'); 
+      
       }
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'agriculteur:', error);
-      alert('A network error occurred.');
+      toast.error('A network error occurred.'); 
     }
   };
 
@@ -62,6 +66,7 @@ const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
         <div className="delete-alert-buttons">
           <button className="delete-alert-ok" onClick={handleConfirmDelete}>Yes</button>
           <button className="delete-alert-cancel" onClick={onCancel}>Cancle</button>
+          <ToastContainer />
         </div>
       </div>
     </div>

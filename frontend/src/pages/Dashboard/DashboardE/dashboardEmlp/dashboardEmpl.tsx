@@ -25,19 +25,30 @@ import UserProfile from "../profil/UserProfile"; // Importez le composant UserPr
 import './dashboardEmpl.css';
 
 // Type definitions
+// interface EmployeeData {
+//   id: string;
+//   name: string;
+//   position: string;
+//   email: string;
+//   phone: string;
+//   location: string;
+//   matriculate: string;
+//   company: string;
+//   status?: string;
+//   joinDate?: string;
+//   avatarUrl?: string; // Ajouté pour la synchronisation des avatars
+// }
+
+
 interface EmployeeData {
   id: string;
   name: string;
-  position: string;
   email: string;
   phone: string;
   location: string;
   matriculate: string;
-  company: string;
-  status?: string;
-  joinDate?: string;
-  avatarUrl?: string; // Ajouté pour la synchronisation des avatars
 }
+
 
 interface Note {
   id: string;
@@ -77,7 +88,7 @@ const defaultNotes: Note[] = [
   {
   id: '1',
   content: 'Meeting scheduled to discuss the new mockups for the client project.',
-  date: 'August 10, 2022',
+  date: 'August 10, 2022', 
   type: 'meeting'
 },
 {
