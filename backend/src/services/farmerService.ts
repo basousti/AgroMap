@@ -30,16 +30,16 @@ export const getAllFarmers = async (
       .skip(skip)
       .limit(limit)
       .populate({
-        path: '_id',
-        select: 'name prenom role',
-        match: { role: 'agriculteur' },
-      }),
+          path: '_id',
+          select: 'name prenom email role', // ✅ ajout de "email"
+          match: { role: 'agriculteur' },
+        }),
+
     Farmer.countDocuments(),
   ]);
 
   // Filter out farmers whose user was not matched (no role or missing)
   const filteredFarmers = farmers.filter((farmer: { _id: any }) => farmer._id !== null);
-
   return {
     farmers: filteredFarmers,
     pagination: {
@@ -91,7 +91,7 @@ export const createFarmer = async (data: FarmerInput) => {
       localite,
       telephone,
       adresse,
-      state: 'inactif',
+      state: 'actif',
     });
 
     const savedFarmer = await newFarmer.save();
@@ -106,25 +106,65 @@ export const createFarmer = async (data: FarmerInput) => {
 
 // ✏️ Update farmer
 export const updateFarmer = async (id: string, updateData: any) => {
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("ID d'agriculteur invalide for update");
+  // Convert string ID to ObjectId if needed
+  const objectId = new mongoose.Types.ObjectId(id);
+  
+  const updated = await Farmer.findOneAndUpdate(
+    { _id: objectId },
+    updateData,
+    { new: true, runValidators: true }
+  );
+
+  if (!updated) {
+    throw new Error("Agriculteur non trouvé");
   }
 
-  return await Farmer.findByIdAndUpdate(id, updateData, {
-    new: true,
-    runValidators: true,
-  });
+  // Optionally update the linked user document
+  if (updated._id) { // Reference to user document
+    await User.findByIdAndUpdate(
+      updated._id,
+      {
+        name: updateData.name,
+        prenom: updateData.prenom,
+        email: updateData.email
+      }
+    );
+  }
+
+  return updated;
 };
 
 // ❌ Delete farmer
 export const deleteFarmer = async (id: string) => {
-  if (!User.Types.ObjectId.isValid(id)) {
-    throw new Error("ID d'agriculteur invalide for delete");
+  console.log("Deleting farmer with ID:", id); // Debug log
+  
+  // Convert to string if it's an ObjectId
+  const idString = String(id);
+  
+  if (!mongoose.Types.ObjectId.isValid(idString)) {
+    console.error("Invalid ID format received:", idString);
+    throw new Error(`Invalid ID format: ${idString}`);
   }
 
-  const farmer = await Farmer.findByIdAndDelete(id);
-  return !!farmer;
+  const objectId = new mongoose.Types.ObjectId(idString);
+  const farmer = await Farmer.findByIdAndDelete(objectId);
+
+  if (!farmer) {
+    throw new Error("Farmer not found");
+  }
+
+  return true;
 };
+
+// 
+// export const deleteFarmer = async (id: string) => {
+//   if (!User.Types.ObjectId.isValid(id)) {
+//     throw new Error("ID d'agriculteur invalide for delete");
+//   }
+
+//   const farmer = await Farmer.findByIdAndDelete(id);
+//   return !!farmer;
+// };
 
 
 
@@ -141,88 +181,3 @@ export const searchFarmers = async (searchTerm: string, userId: string) => {
     ],
   }).populate('_id', 'name prenom email');
 };
-
-
-
-// import Farmer from '../models/farmer'; 
-// import mongoose from 'mongoose';
- 
-// // Récupérer tous les agriculteurs avec pagination
-// export const getAllFarmers = async (userId: string, page = 1, limit = 10, sortField = 'nom', sortOrder = 1) => {
-//   const skip = (page - 1) * limit;
-//   const sort: any = {};
-//   sort[sortField] = sortOrder;
-
-//   const farmers = await Farmer.find({ createdBy: userId })
-//     .sort(sort)
-//     .skip(skip)
-//     .limit(limit);
-
-//   const total = await Farmer.countDocuments({ createdBy: userId });
-
-//   return {
-//     farmers,
-//     pagination: {
-//       total,
-//       page,
-//       limit,
-//       pages: Math.ceil(total / limit),
-//     },
-//   };
-// };
-
-// // Récupérer un agriculteur par son ID
-// export const getFarmerById = async (id: string) => {
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     throw new Error('ID d\'agriculteur invalide');
-//   }
-
-//   return await Farmer.findById(id);
-// };
-
-// // Créer un nouvel agriculteur
-// export const createFarmer = async (farmerData: any) => {
-//   const newFarmer = new Farmer(farmerData);
-//   return await newFarmer.save();
-// };
-
-// // Mettre à jour un agriculteur existant
-// export const updateFarmer = async (id: string, updateData: any) => {
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     throw new Error('ID d\'agriculteur invalide');
-//   }
-
-//   return await Farmer.findByIdAndUpdate(id, updateData, {
-//     new: true,
-//     runValidators: true,
-//   });
-// };
-
-// // Supprimer un agriculteur
-// export const deleteFarmer = async (id: string) => {
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     throw new Error('ID d\'agriculteur invalide');
-//   }
-
-//   const farmer = await Farmer.findByIdAndDelete(id);
-//   return !!farmer;
-// };
-
-// // Rechercher des agriculteurs par terme de recherche
-// export const searchFarmers = async (searchTerm: string, userId: string) => {
-//   const searchRegex = new RegExp(searchTerm, 'i');
-
-//   return await Farmer.find({
-//     createdBy: userId,
-//     $or: [
-//       { nom: searchRegex },
-//       { prenom: searchRegex },
-//       { localite: searchRegex },
-//       { telephone: searchRegex },
-//       { adresse: searchRegex },
-//     ],
-//   });
-// };
-
- 
-

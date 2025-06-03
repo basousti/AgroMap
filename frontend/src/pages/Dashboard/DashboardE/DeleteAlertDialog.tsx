@@ -8,7 +8,7 @@ interface Farmer {
  _id: {
     _id: string;
     name: string;
-    prenom: string;
+    prenom: string; 
   };
 }
 
@@ -16,41 +16,42 @@ interface DeleteAlertDialogProps {
   isOpen: boolean;
   onCancel: () => void;
   onConfirm: (deletedId: string) => void;
-  farmer?: Farmer;
+  farmerId?: string;
+  farmerName?: string;
 }
 
 const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
   isOpen,
   onCancel,
   onConfirm,
-  farmer,
+  farmerId,
+  farmerName
 }) => {
-  if (!isOpen || !farmer) return null;
+  if (!isOpen || !farmerId) return null;
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/farmers/${farmer._id}`, {
+      const response = await fetch(`http://localhost:5000/api/farmers/${farmerId}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json', // 🔥 Correction importante pour CORS
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
       });
 
-      if (response.ok) {
-        onConfirm(farmer._id._id);
-        toast.success('Farmer deleted successfully!')
-      } else {
-        const errorData = await response.text();
-        console.error('Erreur serveur :', errorData);
-        toast.error('Deletion failed'); 
+      const data = await response.json();
       
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to delete farmer");
       }
-    } catch (error) {
-      console.error('Erreur lors de la suppression de l\'agriculteur:', error);
-      toast.error('A network error occurred.'); 
+
+      onConfirm(farmerId);
+      toast.success('Farmer deleted successfully!');
+    } catch (error:any) {
+      console.error('Deletion error:', error);
+      toast.error(error.message || 'Deletion failed');
     }
   };
-
   return (
     <div className="delete-alert-overlay">
       <div className="delet-dialog">
@@ -60,13 +61,13 @@ const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
         <div className="delete-alert-content">
           <p>
             Are you sure you want to delete this farmer:
-            <strong> {farmer._id.name} {farmer._id.prenom} ?</strong>
+            <strong> {farmerName} ?</strong>
           </p>
         </div>
         <div className="delete-alert-buttons">
           <button className="delete-alert-ok" onClick={handleConfirmDelete}>Yes</button>
           <button className="delete-alert-cancel" onClick={onCancel}>Cancle</button>
-          <ToastContainer />
+          <ToastContainer/>
         </div>
       </div>
     </div>

@@ -4,6 +4,8 @@ import UserProfile from './profil/UserProfile';
 import { useNavigate } from 'react-router-dom';
 import DeleteAlertDialog from './DeleteAlertDialog';
 import { ChevronLeft, ChevronRight} from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Farmer {
   _id: {
@@ -100,22 +102,57 @@ function listAgriculteur() {
   const handleEditClick = (farmer: Farmer) => navigate('/EditAgriculteur', { state: { farmer } });
 
   const handleDeleteClick = (farmer: Farmer) => {
-    setFarmerToDelete(farmer);
-    setShowDeleteAlert(true);
-  };
+  setFarmerToDelete(farmer);
+  setShowDeleteAlert(true);
+};
 
-  const handleConfirmDelete = async (deletedId: string) => {
-    try {
-      const updated = farmers.filter(f => f._id._id !== deletedId);
-      setFarmers(updated);
-      setFilteredFarmers(updated);
-      setFarmerToDelete(null);
-      setShowDeleteAlert(false);
-    } catch (error) {
-      console.error("Erreur lors de la suppression :", error);
+const handleConfirmDelete = async () => {
+  try {
+    // Debugging - remove after confirmation
+    console.log("Deleting farmer with:", farmerToDelete);
+
+    if (!farmerToDelete?._id?._id) {
+      throw new Error("Farmer ID structure is invalid");
     }
-  };
 
+    // Ensure we have a string ID
+    const farmerId = String(farmerToDelete._id._id);
+
+    // Verify ID format (24-character hex string)
+    if (!/^[0-9a-fA-F]{24}$/.test(farmerId)) {
+      throw new Error(`Invalid ID format: ${farmerId}`);
+    }
+
+    const response = await fetch(`http://localhost:5000/api/farmers/${farmerId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+    console.log("Server response:", data);
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete farmer");
+    }
+
+    // Update local state
+    const updatedFarmers = farmers.filter(f => String(f._id._id) !== farmerId);
+    setFarmers(updatedFarmers);
+    setFilteredFarmers(updatedFarmers);
+    
+    toast.success("Farmer deleted successfully!");
+    
+  } catch (error:any) {
+    console.error("Delete error:", error);
+    toast.error(error.message || "Delete failed");
+  } finally {
+    setFarmerToDelete(null);
+    setShowDeleteAlert(false);
+  }
+};
   const handleCancelDelete = () => {
     setShowDeleteAlert(false);
     setFarmerToDelete(null);
@@ -220,6 +257,7 @@ function listAgriculteur() {
                         <td className="actions">
                         <button className="action-btn edit" onClick={() => handleEditClick(farmer)}>✏️</button>
                         <button className="action-btn delete" onClick={() => handleDeleteClick(farmer)}>🗑️</button>
+                        <ToastContainer/>
                       </td>
                     </tr>
                   ))
@@ -231,13 +269,17 @@ function listAgriculteur() {
       </div>
 
       {showProfile && <UserProfile onClose={() => setShowProfile(false)} />}
-
-      <DeleteAlertDialog
-        isOpen={showDeleteAlert}
-        onCancel={handleCancelDelete}
-        onConfirm={handleConfirmDelete}
-        farmer={farmerToDelete || undefined}
-      />
+    <DeleteAlertDialog
+      isOpen={showDeleteAlert}
+      onCancel={handleCancelDelete}
+      onConfirm={(deletedId) => {
+        const updatedFarmers = farmers.filter(f => f._id._id !== deletedId);
+        setFarmers(updatedFarmers);
+        setFilteredFarmers(updatedFarmers);
+      }}
+      farmerId={farmerToDelete?._id._id}
+      farmerName={`${farmerToDelete?._id.name} ${farmerToDelete?._id.prenom}`}
+    />
     </div>
   );
 }

@@ -29,7 +29,7 @@ const EditAgriculteur: React.FC = () => {
             _id: '',    // The MongoDB ID
             name: '',   // First name
             prenom: '',  // Last name
-            email: '',
+            email: ''
         },
         localite: '',
         telephone: '',
@@ -37,10 +37,11 @@ const EditAgriculteur: React.FC = () => {
     });
     // Récuperer les données de l'agriculteur depuis l'etat de navigation
 
-    useEffect(() => {
+    useEffect(() => { 
 
         if (location.state && "farmer" in location.state) {
             const state = location.state as LocationState;
+            console.log("farmer data \n",state.farmer)
             setFarmer(state.farmer);
         } else {
             //Rediriger vers le dashboard si aucune donnée n'est fournie
@@ -51,15 +52,43 @@ const EditAgriculteur: React.FC = () => {
     //Fonction pour gérer les changement dans le formulaire
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        const { name, value } = e.target;
+    const { name, value } = e.target;
+
+    if (['name', 'prenom', 'email'].includes(name)) {
+        setFarmer((prevFarmer) => ({
+            ...prevFarmer,
+            _id: {
+                ...prevFarmer._id,
+                [name]: value
+            }
+        }));
+    } else {
         setFarmer((prevFarmer) => ({
             ...prevFarmer,
             [name]: value
         }));
-    };
+    }
+};
+
 
     //Fonction pour enregistrer les données de l'agriculteur
     const handleSave = async () => {
+    try {
+        // Debugging: Remove after confirmation
+        console.log("Original farmer._id:", farmer._id);
+        
+        // Ensure we have the nested ID structure
+        if (!farmer?._id?._id) {
+            throw new Error("Farmer ID structure is invalid");
+        }
+
+        const farmerId = farmer._id._id; // The actual MongoDB ID
+
+        // Verify ID format (optional but helpful)
+        if (!/^[0-9a-fA-F]{24}$/.test(farmerId)) {
+            throw new Error("Invalid ID format");
+        }
+
         const updatedFarmer = {
             name: farmer._id.name,
             prenom: farmer._id.prenom,
@@ -69,42 +98,39 @@ const EditAgriculteur: React.FC = () => {
             adresse: farmer.adresse
         };
 
-        try {
+        const response = await fetch(`http://localhost:5000/api/farmers/${farmerId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedFarmer),
+        });
 
-            //Logique pour envoyer les données modifiées à  l'API
-            const response = await fetch(`http://localhost:5000/api/farmers/${farmer._id}`, {
-                method: 'PUT', // Méthode PUT pour mettre à jour 
-                headers: {
-                    'content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedFarmer),
-            });
-            const data = await response.json();
-            console.log("Résponse serveur :", data);
+        const data = await response.json();
+        console.log("Réponse serveur :", data);
 
-            if (!response.ok) {
-                //si la mis a jour réussie, rediriger ver le dashboard
-                throw new Error(data.message || "Erreur vvlorsv de la mise à jour.")
-            }
-            toast.success("Successfully updated !");
-            setTimeout(() => {
-                navigate("/listAgriculteur", {
-                    state: { successMessage: "Farmer added successfully" },
-                });
-            }, 1500); // Delay of 1.5 seconds
-
-        } catch (error) {
-            console.error("Erreur lors de la mise à jour des données de l'agriculteur:", error);
-            toast.error("Update failed. Please try again.");
+        if (!response.ok) {
+            throw new Error(data.message || "Erreur lors de la mise à jour.");
         }
-    };
 
-    //Fonction pour soumettre le formulaire et mettre à jour l'agriculteur 
+        toast.success("Successfully updated!");
+        setTimeout(() => {
+            navigate("/listAgriculteur", {
+                state: { successMessage: "Farmer updated successfully" }, // Changed from "added" to "updated"
+            });
+        }, 1500);
 
-    const handleSubmit = async (event: FormEvent) => {
-        event.preventDefault();
-        handleSave();
-    };
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour des données de l'agriculteur:", error);
+        toast.error("Update failed. Please try again.");
+    }
+};
+
+// Fonction pour soumettre le formulaire
+const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    await handleSave(); // Added await to properly handle async operation
+};
 
 
     //Function pour annuler et revinir au dashboard
@@ -149,14 +175,16 @@ const EditAgriculteur: React.FC = () => {
 
                     <div className='form-group'>
                         <label htmlFor='email'>Eamil adress:</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={farmer._id.email}
-                            onChange={handleInputChange}
-                            required
-                        />
+                        <input 
+                        id="email" 
+                        type="email" 
+                        name="email" 
+                        autoComplete="email" 
+                        value={farmer._id.email} 
+                        required 
+                        onChange={handleInputChange}/>
+
+                        
                     </div>
 
                     <div className="form-group">
