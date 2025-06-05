@@ -23,30 +23,21 @@ import {
 } from 'lucide-react';
 import UserProfile from "../profil/UserProfile"; // Importez le composant UserProfile
 import './dashboardEmpl.css';
+import axios from 'axios';
 
 // Type definitions
-// interface EmployeeData {
-//   id: string;
-//   name: string;
-//   position: string;
-//   email: string;
-//   phone: string;
-//   location: string;
-//   matriculate: string;
-//   company: string;
-//   status?: string;
-//   joinDate?: string;
-//   avatarUrl?: string; // Ajouté pour la synchronisation des avatars
-// }
-
-
 interface EmployeeData {
   id: string;
   name: string;
+  position: string;
   email: string;
   phone: string;
   location: string;
   matriculate: string;
+  company: string;
+  status?: string;
+  joinDate?: string;
+  avatarUrl?: string;
 }
 
 
@@ -63,26 +54,6 @@ interface Task {
   due: string;
   status: 'pending' | 'completed';
 }
-
-// Clés pour la synchronisation
-const DASHBOARD_EMPLOYEE_KEY = 'dashboard_employee_data';
-const USER_INFO_STORAGE_KEY = 'user_profile_info';
-const AVATAR_STORAGE_KEY = 'user_avatar';
-
-// Demo data - Sera remplacé par les données synchronisées
-const getDefaultEmployee = (): EmployeeData => ({
-  id: 'emp001',
-  name: 'Maouia Nouha',
-  position: 'Chef département',
-  email: 'moauianouha2@gmail.com',
-  phone: '+216 29 220 752',
-  location: 'Tunis Menzeh 8',
-  matriculate: '14411916',
-  company: 'SICAM',
-  status: 'Actif',
-  joinDate: '15 Mars 2022',
-  avatarUrl: ''
-});
 
 const defaultNotes: Note[] = [
   {
@@ -133,121 +104,85 @@ const EmployeeDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('notes');
   const [unreadMessageCount, setUnreadMessageCount] = useState(3);
   const [newTaskTitle, setNewTaskTitle] = useState('');
-
-  // État pour les données employé - initialisé avec synchronisation
-  const [employee, setEmployee] = useState<EmployeeData>(() => {
-    const savedEmployeeData = localStorage.getItem(DASHBOARD_EMPLOYEE_KEY);
-    const savedUserInfo = localStorage.getItem(USER_INFO_STORAGE_KEY);
-    const savedAvatar = localStorage.getItem(AVATAR_STORAGE_KEY);
-
-    if (savedEmployeeData) {
-      const employeeData = JSON.parse(savedEmployeeData);
-      // Ajouter l'avatar s'il existe
-      if (savedAvatar) {
-        employeeData.avatarUrl = savedAvatar;
-      }
-      return employeeData;
-    } else if (savedUserInfo) {
-      // Créer les données employé à partir des informations utilisateur
-      const userInfo = JSON.parse(savedUserInfo);
-      return {
-        id: 'emp001',
-        name: `${userInfo.firstName} ${userInfo.lastName}`,
-        position: userInfo.position || userInfo.role,
-        email: userInfo.email,
-        phone: userInfo.phone,
-        location: userInfo.address,
-        matriculate: userInfo.matriculate ,
-        company: userInfo.company || "SICAM",
-        status: userInfo.status || "Actif",
-        joinDate: userInfo.joinDate || userInfo.dateCreation,
-        avatarUrl: savedAvatar || userInfo.avatarUrl || ''
-      };
-    }
-
-    return getDefaultEmployee();
-  });
-
-  // État pour contrôler l'affichage du composant UserProfile
+  const [employee, setEmployee] = useState<EmployeeData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showUserProfile, setShowUserProfile] = useState(false);
-
   const navigate = useNavigate();
+  const [activeItem, setActiveItem] = useState('');
 
-  // Track active item:::::::::::::::::::::::::::::::::
-  const [activeItem, setActiveItem] = useState(''); 
-  const handleMenuItemClick = (item:any) => {
-    setActiveItem(item); // Update active item
+// Default frontend data
+  const defaultFrontendData = {
+    position: 'Chef département',
+    company: 'SICAM',
+    status: 'Actif',
+    joinDate: '15 Mars 2022',
+    avatarUrl: '/images/employe.jpg'
   };
-  // Fonction pour synchroniser les données depuis InformationsUtilisateur
-  const syncFromUserInfo = () => {
-    const savedUserInfo = localStorage.getItem(USER_INFO_STORAGE_KEY);
-    const savedAvatar = localStorage.getItem(AVATAR_STORAGE_KEY);
 
-    if (savedUserInfo) {
-      const userInfo = JSON.parse(savedUserInfo);
-      const updatedEmployee: EmployeeData = {
-        id: employee.id,
-        name: `${userInfo.firstName} ${userInfo.lastName}`,
-        position: userInfo.position || userInfo.role,
-        email: userInfo.email,
-        phone: userInfo.phone,
-        location: userInfo.address,
-        matriculate: userInfo.matriculate ,
-        company: userInfo.company || employee.company,
-        status: userInfo.status || employee.status,
-        joinDate: userInfo.joinDate || userInfo.dateCreation,
-        avatarUrl: savedAvatar || userInfo.avatarUrl || ''
+  const fetchEmployeeData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await axios.get('http://localhost:5000/api/user/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const apiData = response.data;
+      
+      // Combine backend data with frontend defaults
+      const employeeData: EmployeeData = {
+        id: apiData._id || 'emp001', // Use backend _id or fallback
+        name: `${apiData.name} ${apiData.prenom}`,
+        email: apiData.email,
+        phone: apiData.telephone || '',
+        location: apiData.adresse || '',
+        matriculate: apiData.matriculate || '',
+        ...defaultFrontendData // Spread the frontend defaults
       };
 
-      setEmployee(updatedEmployee);
-      localStorage.setItem(DASHBOARD_EMPLOYEE_KEY, JSON.stringify(updatedEmployee));
+      setEmployee(employeeData);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch employee data');
+      setLoading(false);
+      console.error('Error fetching employee data:', err);
+      
+      // If API fails, use frontend defaults only
+      setEmployee({
+        id: 'emp001',
+        name: 'Maouia Nouha',
+        email: '',
+        phone: '',
+        location: '',
+        matriculate: '',
+        ...defaultFrontendData
+      });
     }
   };
 
-  // Effect pour écouter les changements d'informations utilisateur
-  useEffect(() => {
-    const handleUserInfoChange = (event: CustomEvent) => {
-      const { employeeData } = event.detail;
-      setEmployee(employeeData);
-    };
-
-    const handleAvatarChange = (event: CustomEvent) => {
-      const { avatarUrl } = event.detail;
-      setEmployee(prev => ({
-        ...prev,
-        avatarUrl: avatarUrl
-      }));
-    };
-
-    // Écouter les événements personnalisés
-    window.addEventListener('userInfoChanged', handleUserInfoChange as EventListener);
-    window.addEventListener('avatarChanged', handleAvatarChange as EventListener);
-
-    // Synchronisation périodique pour s'assurer de la cohérence
-    const syncInterval = setInterval(() => {
-      syncFromUserInfo();
-    }, 2000);
-
-    // Synchronisation initiale
-    syncFromUserInfo();
-
-    // Nettoyage
-    return () => {
-      window.removeEventListener('userInfoChanged', handleUserInfoChange as EventListener);
-      window.removeEventListener('avatarChanged', handleAvatarChange as EventListener);
-      clearInterval(syncInterval);
-    };
+useEffect(() => {
+    fetchEmployeeData();
   }, []);
 
-  // Sauvegarder les données employé quand elles changent
-  useEffect(() => {
-    localStorage.setItem(DASHBOARD_EMPLOYEE_KEY, JSON.stringify(employee));
-  }, [employee]);
+  const handleMenuItemClick = (item: string) => {
+    setActiveItem(item);
+    if (item === 'DashboardE') {
+      navigate('/dashboard-employee');
+    }
+  };
 
   const handleAddFarmerClick = () => {
     navigate('/listAgriculteur');
   };
-
+// ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -364,7 +299,7 @@ const EmployeeDashboard: React.FC = () => {
   };
 
   return (
-    <div className="dashboard-container">
+     <div className="dashboard-container">
       {/* UserProfile Modal */}
       {showUserProfile && (
         <UserProfile

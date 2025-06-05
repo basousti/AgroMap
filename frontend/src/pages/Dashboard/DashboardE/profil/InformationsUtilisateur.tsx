@@ -127,7 +127,7 @@ const InformationsUtilisateur: React.FC = () => {
     // Synchroniser avec le dashboard
     syncWithDashboard(userInfo);
   }, [userInfo]);
-
+ 
   // Écouter les changements d'avatar depuis d'autres composants
   useEffect(() => {
     const handleAvatarChange = (event: CustomEvent) => {
