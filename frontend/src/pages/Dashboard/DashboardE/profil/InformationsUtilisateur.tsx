@@ -3,29 +3,24 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import './InformationsUtilisateur.css';
+import axios from 'axios';
 
 // Définition d'un type pour les informations utilisateur
 interface UserInfo {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
+  password:string;
   phone: string;
   address: string;
-  avatarUrl: string;
-  username: string;
-  role: string;
-  dateCreation: string;
-  position?: string; // Ajouté pour la synchronisation avec le dashboard
-  matriculate?: string; // Ajouté pour la synchronisation avec le dashboard
-  company?: string; // Ajouté pour la synchronisation avec le dashboard
-  companyDescription?: string; // Ajouté pour la synchronisation avec le dashboard
-  status?: string; // Ajouté pour la synchronisation avec le dashboard
-  joinDate?: string; // Ajouté pour la synchronisation avec le dashboard
+  matriculate: string;
+  avatarUrl?: string;
 }
 
-// Clés utilisées pour le stockage local
-const USER_INFO_STORAGE_KEY = 'user_profile_info';
-const PASSWORD_STORAGE_KEY = 'user_password';
+// // Clés utilisées pour le stockage local
+// const USER_INFO_STORAGE_KEY = 'user_profile_info';
+// const PASSWORD_STORAGE_KEY = 'user_password';
 const AVATAR_STORAGE_KEY = 'user_avatar';
 const DASHBOARD_EMPLOYEE_KEY = 'dashboard_employee_data'; // Nouvelle clé pour la synchronisation
 
@@ -42,39 +37,19 @@ const InformationsUtilisateur: React.FC = () => {
   // État pour indiquer que l'upload d'avatar est en cours
   const [isUploadingAvatar, setIsUploadingAvatar] = useState<boolean>(false);
   
-  // État pour afficher/masquer le mot de passe
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  
-  // Mot de passe récupéré du localStorage avec valeur par défaut
-  const [password, setPassword] = useState<string>(() => {
-    return localStorage.getItem(PASSWORD_STORAGE_KEY) || "MonMotDePasse123";
-  });
-  
-  // Données utilisateur initiales avec informations étendues
-  const defaultUserInfo: UserInfo = {
-    firstName: "nouha",
-    lastName: "maouia",
-    email: "maouianouha2@gmail.com",
-    phone: "29220752",
-    address: "Menzel Horr",
-    avatarUrl: "",
-    username: "nouha",
-    role: "Employé",
-    dateCreation: "15/03/2023",
-    position: "Chef département",
-    matriculate: "Agriculteur",
-    company: "SICAM",
-    companyDescription: "SICAM Société Industrielle des Conserves Alimentaires de Medjez El Beb, fleuron de l'Industrie tunisienne depuis 1969 célèbre cette année ses 50 ans",
-    status: "Actif",
-    joinDate: "15 Mars 2022"
+
+  // Default frontend data
+  const defaultFrontendData = {
+    joinDate: '15 Mars 2024',
+    avatarUrl: '/images/employe.jpg'
   };
+
   
   // Charger les données depuis le localStorage ou utiliser les valeurs par défaut
   const [userInfo, setUserInfo] = useState<UserInfo>(() => {
-    const savedUserInfo = localStorage.getItem(USER_INFO_STORAGE_KEY);
     const savedAvatar = localStorage.getItem(AVATAR_STORAGE_KEY);
 
-    let userData = savedUserInfo ? JSON.parse(savedUserInfo) : defaultUserInfo;
+    let userData = savedUserInfo ? JSON.parse(savedUserInfo) : defaultFrontendData;
     // Si on a un avatar sauvegardé séparément, l'utiliser
     if(savedAvatar){
       userData.avatarUrl = savedAvatar;
@@ -85,24 +60,35 @@ const InformationsUtilisateur: React.FC = () => {
   // État temporaire pour les modifications en cours
   const [editedInfo, setEditedInfo] = useState<UserInfo>({...userInfo});
 
+
+  const fetchEmployeeData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await axios.get('http://localhost:5000/api/user/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const apiData = response.data;
   // Fonction pour synchroniser avec le dashboard
   const syncWithDashboard = (userData: UserInfo) => {
-    // Créer l'objet employee pour le dashboard
-    const employeeData = {
-      id: 'emp001',
-      name: `${userData.firstName} ${userData.lastName}`,
-      position: userData.position || userData.role,
-      email: userData.email,
-      phone: userData.phone,
-      location: userData.address,
-      matriculate: userData.matriculate ,
-      company: userData.company || "SICAM",
-      companyDescription: userData.companyDescription || "SICAM Société Industrielle des Conserves Alimentaires de Medjez El Beb, fleuron de l'Industrie tunisienne depuis 1969 célèbre cette année ses 50 ans",
-      status: userData.status || "Actif",
-      joinDate: userData.joinDate || userData.dateCreation,
-      avatarUrl: userData.avatarUrl
-    };
-
+    // Combine backend data with frontend defaults
+      const employeeData: UserInfo = {
+        id: apiData._id , 
+        name: `${apiData.name} ${apiData.prenom}`,
+        email: apiData.email,
+        phone: apiData.telephone ,
+        location: apiData.adresse ,
+        matriculate: apiData.matriculate ,
+        ...defaultFrontendData // Spread the frontend defaults
+      };}
     // Sauvegarder pour le dashboard
     localStorage.setItem(DASHBOARD_EMPLOYEE_KEY, JSON.stringify(employeeData));
 
@@ -420,7 +406,7 @@ const InformationsUtilisateur: React.FC = () => {
     }
   };
 
-  // Fonction pour supprimer l'avatar////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Fonction pour supprimer l'avatar
   const handleRemoveAvatar = (): void => {
     if (window.confirm("Are you sure you want to delete your profile picture?")) {
       const emptyAvatarUrl = "";
