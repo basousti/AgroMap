@@ -122,7 +122,7 @@ const InformationsUtilisateur: React.FC = () => {
       localStorage.setItem(AVATAR_STORAGE_KEY, userInfo.avatarUrl);
     } else {
        localStorage.removeItem(AVATAR_STORAGE_KEY);
-    }
+    } 
 
     // Synchroniser avec le dashboard
     syncWithDashboard(userInfo);
@@ -420,7 +420,7 @@ const InformationsUtilisateur: React.FC = () => {
     }
   };
 
-  // Fonction pour supprimer l'avatar
+  // Fonction pour supprimer l'avatar////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   const handleRemoveAvatar = (): void => {
     if (window.confirm("Are you sure you want to delete your profile picture?")) {
       const emptyAvatarUrl = "";
