@@ -366,6 +366,11 @@
     box-shadow: 0 0 0 3px rgba(76,175,80,0.2);
 }
 
+.header-buttons{
+  position: absolute;
+  right: 40px;
+}
+
 .save-profile-btn{
     background-color: #4CAF50;
     color: white;

@@ -47,7 +47,7 @@ const Login1: React.FC = () => {
       const result = await response.json();
       console.log("login response token ", result);
 
-      if (!response.ok) { 
+      if (!response.ok) {  
         setError(result.message); // e.g., "Wrong password" or "User not found"
         toast.error("Verify your Email or your password");
         return;

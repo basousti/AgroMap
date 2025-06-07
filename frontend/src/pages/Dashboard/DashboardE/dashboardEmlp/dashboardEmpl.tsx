@@ -58,7 +58,7 @@ const defaultNotes: Note[] = [
   date: 'August 10, 2022', 
   type: 'meeting'
 },
-{
+{ 
   id: '2',
   content: 'Completed training on new UX design techniques. Excellent participation and results.',
   date: 'August 5, 2022',
@@ -116,10 +116,20 @@ const EmployeeDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState('');
 
+//   const [avatar, setAvatar] = useState<string>(avatarUrl);
+
+//    useEffect(() => {
+//     const storedAvatar = localStorage.getItem('user_avatar');
+//     if (storedAvatar) {
+//       setAvatar(storedAvatar);
+//     }
+//   }, []);
+//  localStorage.setItem('avatar', 'https://example.com/avatar.jpg');
+
 // Default frontend data
   const defaultFrontendData = {
     joinDate: '15 Mars 2024',
-    avatarUrl: '/images/employe.jpg'
+    avatarUrl: ''
   };
 
   const fetchEmployeeData = async () => {
@@ -184,9 +194,7 @@ useEffect(() => {
   const handleAddFarmerClick = () => {
     navigate('/listAgriculteur');
   };
-// ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   // Fonction modifiée pour afficher correctement les notifications
   const toggleNotifications = () => {
@@ -205,10 +213,6 @@ useEffect(() => {
     setShowUserProfile(false);
   };
 
-  const handleMessagesClick = () => {
-    console.log('Messages clicked');
-    setUnreadMessageCount(0);
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -308,7 +312,7 @@ useEffect(() => {
           onClose={closeUserProfile}
           userName={employee.name}
           userEmail={employee.email}
-          avatarUrl={employee.avatarUrl || "/images/employe.jpg"}
+          avatarUrl={employee.avatarUrl}
         />
       )}
 

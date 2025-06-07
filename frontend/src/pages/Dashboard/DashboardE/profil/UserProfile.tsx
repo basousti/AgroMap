@@ -1,6 +1,6 @@
-import { FC, useState, useCallback } from 'react';
+import { FC, useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaCog, FaUserEdit, FaMoon, FaSignOutAlt } from 'react-icons/fa';
+import { FaArrowLeft, FaCog, FaUserEdit, FaMoon, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
 import './UserProfile.css';
 
 interface UserProfileProps {
@@ -14,11 +14,19 @@ const UserProfile: FC<UserProfileProps> = ({
   onClose,
   userName = 'Nom Utilisateur',
   userEmail = 'user@example.com',
-  avatarUrl = "/images/employe.jpg"
+  avatarUrl = ''
 }) => {
   const navigate = useNavigate();
   const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
+  const [avatar, setAvatar] = useState<string>(avatarUrl);
 
+   useEffect(() => {
+    const storedAvatar = localStorage.getItem('user_avatar');
+    if (storedAvatar) {
+      setAvatar(storedAvatar);
+    }
+  }, []);
+ localStorage.setItem('avatar', 'https://example.com/avatar.jpg');
   const handleBack = useCallback((): void => {
     if (onClose) {
       onClose();
@@ -70,7 +78,13 @@ const UserProfile: FC<UserProfileProps> = ({
         <section className="profile-info">
           
           <div className="profile-avatar">
-            <img src={avatarUrl} alt={`Avatar de ${userName}`} />
+            {avatar ? (
+              <img src={avatar} alt={`Avatar de ${userName}`} />
+            ) : (
+              <div className="default-avatar">
+                <FaUserCircle size={80} /> {/* Fallback icon */}
+              </div>
+            )}
           </div>
 
           <div className="profile-details">

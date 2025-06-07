@@ -34,7 +34,7 @@ const InformationsUtilisateur: React.FC = () => {
   // Default frontend data
   const defaultFrontendData = {
     joinDate: '15 Mars 2024',
-    avatarUrl: '/images/employe.jpg'
+    avatarUrl: ''
   };
 
   // Validation functions
@@ -300,7 +300,7 @@ const InformationsUtilisateur: React.FC = () => {
           <FaPencilAlt /> Edit profile
         </button>
       )}
-    </div>
+    </div> 
     
     <div className="info-container">
       <div className="info-sidebar">

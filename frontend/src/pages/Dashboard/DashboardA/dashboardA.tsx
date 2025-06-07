@@ -7,7 +7,7 @@ interface Employer {
   _id: string;
   matriculate:String;
   name: string;
-  prenom: string;
+  prenom: string; 
   
 }
 
@@ -17,6 +17,8 @@ const DashboardA:React.FC = () =>{
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredEmplyees, setFilteredEmplyees] = useState<Employer[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [activeItem, setActiveItem] = useState('');
+  const [unreadMessageCount, setUnreadMessageCount] = useState(3);
 
   const navigate = useNavigate();
 
@@ -34,6 +36,13 @@ const DashboardA:React.FC = () =>{
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
   const handleLogout = () => {
     window.location.href = '/login1';
+  };
+
+    const handleMenuItemClick = (item: string) => {
+    setActiveItem(item);
+    if (item === 'DashboardE') {
+      navigate('/dashboard-employee');
+    }
   };
 
   const fetchEmployee = async () => {
@@ -145,6 +154,20 @@ const DashboardA:React.FC = () =>{
               <span className="nav-icon">📊</span>
               <span className="nav-text">Dashboard</span>
             </li>
+
+            <li 
+          className={`menu-item ajouter-agriculteur ${activeItem === 'messages' ? 'active' : ''}`}
+          onClick={() => {
+            handleMenuItemClick('messages');
+            navigate('/messages');
+          }}
+        >
+          <span className="menu-icon">✉️</span>
+          <span className="menu-text">Messages</span>
+          {unreadMessageCount > 0 && (
+                <span className="badge">{unreadMessageCount}</span>
+              )}
+        </li>
 
             <li className="nav-item" onClick={EmplyeeList}>
               <span className="nav-icon">👤</span>

@@ -3,13 +3,19 @@ import React ,{ useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight} from 'lucide-react';
 import { PowerBIEmbed } from 'powerbi-client-react';
-import { models } from 'powerbi-client';
+import { models, Report } from 'powerbi-client';
 
-
+declare global {
+  interface Window {
+    report: Report;
+  }
+}
+ 
 const Statistics:React.FC = () =>{
 
-  const [searchTerm, setSearchTerm] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [activeItem, setActiveItem] = useState('');
+   const [unreadMessageCount, setUnreadMessageCount] = useState(1);
 
   const navigate = useNavigate();
   const Dashboard = () => {
@@ -22,11 +28,16 @@ const Statistics:React.FC = () =>{
   //the role of token discribed in the end of the code 
   const token = localStorage.getItem("token");
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
   const handleLogout = () => {
     window.location.href = '/login1';
   };
 
+  const handleMenuItemClick = (item: string) => {
+    setActiveItem(item);
+    if (item === 'DashboardE') {
+      navigate('/dashboard-employee');
+    }
+  };
   
 
   return (
@@ -53,6 +64,19 @@ const Statistics:React.FC = () =>{
               <span className="nav-icon">📊</span>
               <span className="nav-text">Dashboard</span>
             </li>
+            <li 
+          className={`menu-item ajouter-agriculteur ${activeItem === 'messages' ? 'active' : ''}`}
+          onClick={() => {
+            handleMenuItemClick('messages');
+            navigate('/messages');
+          }}
+        >
+          <span className="menu-icon">✉️</span>
+          <span className="menu-text">Messages</span>
+          {unreadMessageCount > 0 && (
+                <span className="badge">{unreadMessageCount}</span>
+              )}
+        </li>
 
             <li className="nav-item" onClick={EmplyeeList}>
               <span className="nav-icon">👤</span>
@@ -64,18 +88,8 @@ const Statistics:React.FC = () =>{
         )}
       </div>
 
-      <div className="main-content">
+      <div className="main-contentA">
         <header className="header-bar">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Recherche d'un employer..."
-              className="search-bar"
-              value={searchTerm}
-              onChange={handleSearch}
-            />
-            <button className="search-icon"><span>🔍</span></button>
-          </div>
           <div className="header-buttons">
           
           <button className='button-notif'><span style={{cursor: 'pointer', margin: '8px' }}>🔔</span></button>
@@ -88,8 +102,8 @@ const Statistics:React.FC = () =>{
           <PowerBIEmbed
             embedConfig = {{
               type: 'report',   // Supported types: report, dashboard, tile, visual, qna, paginated report and create
-              id: '<Report Id>',
-              embedUrl: '<Embed Url>',
+              id: '01b9599f-06b9-43f6-9f82-853f8a5db488',
+              embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=01b9599f-06b9-43f6-9f82-853f8a5db488&groupId=8f03a492-5977-474b-8f07-7d27ba41665f&w=2&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVNPVVRILUFGUklDQS1OT1JUSC1BLVBSSU1BUlktcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQiLCJlbWJlZEZlYXR1cmVzIjp7InVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlfX0%3d',
               accessToken: '<Access Token>',
               tokenType: models.TokenType.Embed, // Use models.TokenType.Aad for SaaS embed
               settings: {
@@ -116,7 +130,7 @@ const Statistics:React.FC = () =>{
             cssClassName = { "reportClass" }
 
             getEmbeddedComponent = { (embeddedReport) => {
-              window.report = embeddedReport;
+              window.report = embeddedReport as Report;
             }}
           />
         </section>

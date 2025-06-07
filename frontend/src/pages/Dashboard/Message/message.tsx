@@ -134,9 +134,33 @@ const MessageComponent: React.FC = () => {
     }
   }, [group.messages]);
 
+  // const handleBack = () => {
+  //   navigate('/dashboardE'); 
+  // };
+
   const handleBack = () => {
-    navigate('/dashboardE');
-  };
+  // Get the token from local storage
+  const token = localStorage.getItem('token');
+  
+  if (token) {
+    try {
+      // Decode the token (assuming it's a JWT)
+      // Note: You might need to use jwt-decode library if your token is a JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Check the user's role
+      if (payload.role === 'employer') {
+        navigate('/dashboardE');
+      } else if (payload.role === 'admin') {
+        navigate('/dashboardA');
+      } else {
+        console.warn("Unknown role:", payload.role);
+      }
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  } 
+};
 
   return (
     <div className="message-container">

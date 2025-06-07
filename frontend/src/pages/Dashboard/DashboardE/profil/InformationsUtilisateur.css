@@ -7,7 +7,7 @@
     --danger-color: #ef4444;
     --warning-color: #f59e0b;
     --dark-bg: #1e293b;
-    --light-bg: #f1f5f9;
+    --light-bg: #f1f5f9; 
     --border-color: #e2e8f0;
     --text-primary: #334155;
     --text-secondary: #64748b;
@@ -231,7 +231,7 @@
     box-shadow: var(--shadow-md);
     margin-bottom: 15px;
   }
-  
+
   .default-avatar {
     width: 160px;
     height: 160px;
@@ -411,10 +411,6 @@
       padding: 20px;
     }
     
-    .user-avatar {
-      width: 120px;
-      height: 120px;
-    }
     
     .default-avatar {
       width: 120px;
