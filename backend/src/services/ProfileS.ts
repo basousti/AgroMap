@@ -5,6 +5,7 @@ const Puser = require("../models/users");
 async function ProfileS(GeneratedToken: string) {
   try {
     const decodedToken = verifyToken(GeneratedToken);
+    console.log("the decoded token is", decodedToken);
 
     const existingUser = await Puser.findOne({ email: decodedToken.email }).select("name prenom email role");
     if (!existingUser) {
@@ -28,7 +29,7 @@ async function ProfileS(GeneratedToken: string) {
         };
       }
     } 
-
+ 
     return profileData;
 
   } catch (error: any) {

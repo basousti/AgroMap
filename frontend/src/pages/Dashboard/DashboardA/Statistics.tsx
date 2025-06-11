@@ -34,9 +34,6 @@ const Statistics:React.FC = () =>{
 
   const handleMenuItemClick = (item: string) => {
     setActiveItem(item);
-    if (item === 'DashboardE') {
-      navigate('/dashboard-employee');
-    }
   };
   
 

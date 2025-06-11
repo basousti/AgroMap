@@ -6,7 +6,7 @@ interface UserData {
     name: string;
     prenom: string;
     email: string;
-
+ 
     telephone: string;
     adresse: string;
     matriculate: string;
@@ -18,29 +18,43 @@ async function UpdateProfile(generatedToken: string, userData: UserData) {
 
         const decoded = TokenVerify.verifyToken(generatedToken);
         console.log("verifyToken:", decoded);
-        const userId = decoded.id 
+        const userId = decoded.id;
         console.log("userId:", userId);
 
-        const existingUser = await UserModel.findById(userId); 
+        const existingUser = await UserModel.findById(userId);
 
         if (!existingUser) {
             throw new Error("User not found");
         }
 
-        existingUser.name = name;
-        existingUser.prenom = prenom;
-        existingUser.telephone = telephone;
-        existingUser.email = email;
-        existingUser.adresse = adresse;
-        existingUser.matriculate = matriculate;
+        // Update basic user fields
+        existingUser.name = name ;
+        existingUser.prenom = prenom ;
+        existingUser.email = email ;
 
-        await existingUser.save();
+        await existingUser.save(); 
+
+        
+        if (existingUser.role === "employer") {
+            let employerData = await EmployeProfile.findOne({ _id: existingUser._id });
+            
+            if (!employerData) {
+                console.log("User not found in emloyee collection");
+            } else {
+                employerData.telephone = telephone ;
+                employerData.adresse = adresse ;
+                employerData.matriculate = matriculate ;
+            }
+            
+            await employerData.save(); 
+        }
 
         return { message: "Profile data updated successfully" };
     } catch (error: any) {
         throw new Error(`Problem in updating profile: ${error.message}`);
     }
 }
+
 
 module.exports = { UpdateProfile };
 

@@ -129,7 +129,7 @@ const FormulaireAgriculteur: React.FC = () => {
       // Bloc de gestion des erreurs de réponse serveur 
       if (!response.ok) {
         const errorText = await response.text();
-        toast.error(`Erreur serveur: ${errorText}`)
+        console.log("Server error"+errorText)
       }
 
       const data = await response.json();
@@ -142,7 +142,7 @@ const FormulaireAgriculteur: React.FC = () => {
       }, 1500); // Delay of 1.5 seconds
     } catch (err: any) {
       console.error("Erreur:", err);
-      toast.error("Erreur serveur:"+ err.message);
+      toast.error("Farmer already exists");
     } finally {
       setIsSubmitting(false);
     }

@@ -40,9 +40,6 @@ const DashboardA:React.FC = () =>{
 
     const handleMenuItemClick = (item: string) => {
     setActiveItem(item);
-    if (item === 'DashboardE') {
-      navigate('/dashboard-employee');
-    }
   };
 
   const fetchEmployee = async () => {

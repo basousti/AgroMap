@@ -36,7 +36,7 @@ function authenticationToken(req: Request,res:Response,next:NextFunction){
             console.log('\nuser data:', user);
             return res.status(403).json({message :'Token verification failed:', err});
         }
-        
+         
         req.user = user
         next();//it means If the token is valid, calling next() allows the request to move on to the next function
       })

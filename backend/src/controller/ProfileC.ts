@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 const { ProfileS } = require("../services/ProfileS") 
-
+ 
 
 async function ProfileC(req: Request, res: Response) {
     try {
