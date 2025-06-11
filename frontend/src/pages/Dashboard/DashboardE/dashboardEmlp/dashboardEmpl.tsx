@@ -349,8 +349,8 @@ useEffect(() => {
           className={`menu-item ajouter-agriculteur ${activeItem === 'dashboard' ? 'active' : ''}`}
           onClick={() => handleMenuItemClick('DashboardE')}
         >
-          <span className="menu-icon">📊</span>
-          <span className="menu-text">Dashboard</span>
+          <span className="menu-icon">👤</span>
+          <span className="menu-text">Profile</span>
         </li>
         <li 
           className={`menu-item ajouter-agriculteur ${activeItem === 'messages' ? 'active' : ''}`}
@@ -376,7 +376,7 @@ useEffect(() => {
           className={`menu-item ajouter-agriculteur ${activeItem === 'addFarmer' ? 'active' : ''}`}
           onClick={handleAddFarmerClick}
         >
-          <span className="menu-icon">👤</span>
+          <span className="menu-icon">🧑‍🌾</span>
           <span className="menu-text">Add Farmer</span>
         </li>
         <li 

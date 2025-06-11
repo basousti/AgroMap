@@ -184,8 +184,8 @@ const handleConfirmDelete = async () => {
         <nav className="sidebar-menu">
           <ul>
             <li className="menu-item"  onClick={Dashboard}>
-              <span className="menu-icon">📊</span>
-              <span className="menu-text">Dashboard</span>
+              <span className="menu-icon">👤</span>
+              <span className="menu-text">Profile</span>
             </li>
             <li className="menu-item" onClick={() => { handleMessagesClick(); navigate('/messages'); }}>
               {/*this item has no visible text in collapsed moder, only badge */}
@@ -202,7 +202,7 @@ const handleConfirmDelete = async () => {
             </li>
 
             <li className="menu-item ajouter-agriculteur active" onClick={handleAddFarmerClick}>
-              <span className="menu-icon">👤</span>
+              <span className="menu-icon">🧑‍🌾</span>
               <span className="menu-text">Add Farmer</span>
             </li>
 

@@ -99,40 +99,12 @@ const Statistics:React.FC = () =>{
 
         <section className="employee-list">
           <h2>Dashboard Power BI</h2>
-          <PowerBIEmbed
-            embedConfig = {{
-              type: 'PowerBIReport',   // Supported types: report, dashboard, tile, visual, qna, paginated report and create
-              id: '01b9599f-06b9-43f6-9f82-853f8a5db488',
-              embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=01b9599f-06b9-43f6-9f82-853f8a5db488&groupId=8f03a492-5977-474b-8f07-7d27ba41665f&w=2&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVNPVVRILUFGUklDQS1OT1JUSC1BLVBSSU1BUlktcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQiLCJlbWJlZEZlYXR1cmVzIjp7InVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlfX0%3d',
-              accessToken: '<Access Token>',
-              tokenType: models.TokenType.Embed, // Use models.TokenType.Aad for SaaS embed
-              settings: {
-                panes: {
-                  filters: {
-                    expanded: false,
-                    visible: false
-                  }
-                },
-                background: models.BackgroundType.Transparent,
-              }
-            }}
-
-            eventHandlers = {
-              new Map([
-                ['loaded', function () {console.log('Report loaded');}],
-                ['rendered', function () {console.log('Report rendered');}],
-                ['error', function (event:any) {console.log(event.detail);}],
-                ['visualClicked', () => console.log('visual clicked')],
-                ['pageChanged', (event) => console.log(event)],
-              ])
-            }
-
-            cssClassName = { "reportClass" }
-
-            getEmbeddedComponent = { (embeddedReport) => {
-              window.report = embeddedReport as Report;
-            }}
-          />
+          <iframe title="AgroMap" 
+          width="1200" 
+          height="600" 
+          src="https://app.powerbi.com/view?r=eyJrIjoiODViYTBjZmItMmE2Ny00Mzg4LWI1NmEtODI4MWJkNmYxYmE4IiwidCI6ImE2MmVlN2M0LWVkMmQtNDk5MS1iNGI4LTMxMjBlODMzM2UxMSJ9" 
+           style={{ border: 'none' }} 
+          allowFullScreen={true}></iframe>
         </section>
       </div>
     </div>
