@@ -134,39 +134,28 @@ export const updateFarmer = async (id: string, updateData: any) => {
   return updated;
 };
 
-// ❌ Delete farmer
-export const deleteFarmer = async (id: string) => {
-  console.log("Deleting farmer with ID:", id); // Debug log
-  
-  // Convert to string if it's an ObjectId
-  const idString = String(id);
-  
-  if (!mongoose.Types.ObjectId.isValid(idString)) {
-    console.error("Invalid ID format received:", idString);
-    throw new Error(`Invalid ID format: ${idString}`);
+// ✏️ Delete Farmer
+export const deleteFarmer = async (id: string): Promise<boolean> => {
+  try {
+    // 1. First delete the user (name, email, password etc.)
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
+      throw new Error("User not found");
+    }
+
+    // 2. Then delete the farmer data (localite, telephone, adresse)
+    const deletedFarmer = await Farmer.findByIdAndDelete(id);
+    if (!deletedFarmer) {
+      console.warn("User deleted but farmer data not found");
+    }
+
+    return true;
+
+  } catch (error) {
+    console.error("Error deleting farmer:", error);
+    throw error; // Re-throw for the frontend to handle
   }
-
-  const objectId = new mongoose.Types.ObjectId(idString);
-  const farmer = await Farmer.findByIdAndDelete(objectId);
-
-  if (!farmer) {
-    throw new Error("Farmer not found");
-  }
-
-  return true;
 };
-
-// 
-// export const deleteFarmer = async (id: string) => {
-//   if (!User.Types.ObjectId.isValid(id)) {
-//     throw new Error("ID d'agriculteur invalide for delete");
-//   }
-
-//   const farmer = await Farmer.findByIdAndDelete(id);
-//   return !!farmer;
-// };
-
-
 
 // 🔍 Search farmers
 export const searchFarmers = async (searchTerm: string, userId: string) => {

@@ -270,18 +270,19 @@ const handleConfirmDelete = async () => {
 
       {showProfile && <UserProfile onClose={() => setShowProfile(false)} />}
     <DeleteAlertDialog
-      isOpen={showDeleteAlert}
-      onCancel={handleCancelDelete}
-      onConfirm={(deletedId) => {
-        const updatedFarmers = farmers.filter(f => f._id._id !== deletedId);
-        setFarmers(updatedFarmers);
-        setFilteredFarmers(updatedFarmers);
-      }}
-      farmerId={farmerToDelete?._id._id}
-      farmerName={`${farmerToDelete?._id.name} ${farmerToDelete?._id.prenom}`}
-    />
+        isOpen={showDeleteAlert}
+        onCancel={() => setShowDeleteAlert(false)}
+        onConfirm={(deletedId) => {
+          const updatedFarmers = farmers.filter(f => f._id._id !== deletedId);
+          setFarmers(updatedFarmers);
+          setFilteredFarmers(updatedFarmers);
+          setShowDeleteAlert(false); // ADD THIS LINE
+        }}
+        farmerId={farmerToDelete?._id._id}
+        farmerName={`${farmerToDelete?._id.name} ${farmerToDelete?._id.prenom}`}
+      />
     </div>
   );
-}
+} 
 
 export default listAgriculteur;

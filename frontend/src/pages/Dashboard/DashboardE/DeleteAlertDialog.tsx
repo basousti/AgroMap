@@ -4,14 +4,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-interface Farmer {
- _id: {
-    _id: string;
-    name: string;
-    prenom: string; 
-  };
-}
-
 interface DeleteAlertDialogProps {
   isOpen: boolean;
   onCancel: () => void;
@@ -34,24 +26,26 @@ const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
       const response = await fetch(`http://localhost:5000/api/farmers/${farmerId}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
       });
 
-      const data = await response.json();
+      if (!response.ok) throw new Error('Deletion failed');
       
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to delete farmer");
-      }
-
+      // Update parent state and close dialog
       onConfirm(farmerId);
-      toast.success('Farmer deleted successfully!');
-    } catch (error:any) {
+      
+      // Show success message
+      console.log('About to show toast'); // Add this
+      toast.success(`${farmerName} deleted successfully!`);
+      
+    } catch (error) {
+      toast.error(`Failed to delete ${farmerName}`);
       console.error('Deletion error:', error);
-      toast.error(error.message || 'Deletion failed');
     }
   };
+
+
   return (
     <div className="delete-alert-overlay">
       <div className="delet-dialog">
@@ -66,7 +60,7 @@ const DeleteAlertDialog: React.FC<DeleteAlertDialogProps> = ({
         </div>
         <div className="delete-alert-buttons">
           <button className="delete-alert-ok" onClick={handleConfirmDelete}>Yes</button>
-          <button className="delete-alert-cancel" onClick={onCancel}>Cancle</button>
+          <button className="delete-alert-cancel" onClick={onCancel}>Cancel</button>
           <ToastContainer/>
         </div>
       </div>
