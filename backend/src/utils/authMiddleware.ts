@@ -38,7 +38,7 @@ function authenticationToken(req: Request,res:Response,next:NextFunction){
         }
         
         req.user = user
-        next();
+        next();//it means If the token is valid, calling next() allows the request to move on to the next function
       })
 }
 
