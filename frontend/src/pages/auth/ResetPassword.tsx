@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 const ResetPassword: React.FC = () => {
-
+ 
     const [newPassword, setNewPassword] = useState("");
     const [ConfirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);

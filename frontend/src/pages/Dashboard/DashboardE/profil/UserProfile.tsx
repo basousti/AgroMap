@@ -27,6 +27,8 @@ const UserProfile: FC<UserProfileProps> = ({
     }
   }, []);
  localStorage.setItem('avatar', 'https://example.com/avatar.jpg');
+
+ 
   const handleBack = useCallback((): void => {
     if (onClose) {
       onClose();

@@ -247,15 +247,7 @@ const InformationsUtilisateur: React.FC = () => {
     navigate('/change-password');
   };
 
-  const togglePasswordVisibility = (): void => {
-    setShowPassword(!showPassword);
-    
-    if (!showPassword) {
-      setTimeout(() => {
-        setShowPassword(false);
-      }, 5000);
-    }
-  };
+  
 
   if (loading) {
     return <div className="loading-spinner">Loading...</div>;
@@ -585,14 +577,6 @@ const InformationsUtilisateur: React.FC = () => {
               <div className="info-value password-value">
                 <div className="password-display-container">
                   <span>{showPassword ? password : "••••••••••••"}</span>
-                  <button 
-                    className="toggle-password-btn" 
-                    onClick={togglePasswordVisibility}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                    title={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
                 </div>
                 <button className="change-password-btn" onClick={handleChangePassword}>
                   Change password

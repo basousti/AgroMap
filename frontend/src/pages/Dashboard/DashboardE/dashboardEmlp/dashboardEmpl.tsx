@@ -25,7 +25,7 @@ import UserProfile from "../profil/UserProfile"; // Importez le composant UserPr
 import './dashboardEmpl.css';
 import axios from 'axios';
 
-// Type definitions
+// Type definitions   profile-button
 interface EmployeeData {
   id: string;
   name: string;
@@ -115,16 +115,23 @@ const EmployeeDashboard: React.FC = () => {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState('');
+   const [avatar, setAvatar] = useState<string>('');
 
-//   const [avatar, setAvatar] = useState<string>(avatarUrl);
-
-//    useEffect(() => {
-//     const storedAvatar = localStorage.getItem('user_avatar');
-//     if (storedAvatar) {
-//       setAvatar(storedAvatar);
-//     }
-//   }, []);
-//  localStorage.setItem('avatar', 'https://example.com/avatar.jpg');
+  useEffect(() => {
+    // First try to get from localStorage
+    const storedAvatar = localStorage.getItem('user_avatar');
+    
+    // If found in localStorage, use it
+    if (storedAvatar) {
+      setAvatar(storedAvatar);
+      // Also update the employee data if needed
+      setEmployee(prev => ({...prev, avatarUrl: storedAvatar}));
+    }
+    // If not in localStorage but exists in employee data, use that
+    else if (employee.avatarUrl) {
+      setAvatar(employee.avatarUrl);
+    }
+  }, [employee.avatarUrl]); // Add dependency to update if avatarUrl changes
 
 // Default frontend data
   const defaultFrontendData = {

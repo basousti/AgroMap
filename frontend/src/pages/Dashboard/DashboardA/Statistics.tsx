@@ -101,7 +101,7 @@ const Statistics:React.FC = () =>{
           <h2>Dashboard Power BI</h2>
           <PowerBIEmbed
             embedConfig = {{
-              type: 'report',   // Supported types: report, dashboard, tile, visual, qna, paginated report and create
+              type: 'PowerBIReport',   // Supported types: report, dashboard, tile, visual, qna, paginated report and create
               id: '01b9599f-06b9-43f6-9f82-853f8a5db488',
               embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=01b9599f-06b9-43f6-9f82-853f8a5db488&groupId=8f03a492-5977-474b-8f07-7d27ba41665f&w=2&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVNPVVRILUFGUklDQS1OT1JUSC1BLVBSSU1BUlktcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQiLCJlbWJlZEZlYXR1cmVzIjp7InVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlfX0%3d',
               accessToken: '<Access Token>',

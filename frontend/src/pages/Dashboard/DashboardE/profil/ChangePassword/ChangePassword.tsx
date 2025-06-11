@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaLock, FaEye, FaEyeSlash} from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './ChangePassword.css';
+import './ChangePassword.css'; 
 
-// Clé pour le stockage du mot de passe dans localStorage
-const PASSWORD_STORAGE_KEY = 'user_password';
 
 const ChangePassword: React.FC = () => {
   const navigate = useNavigate();
@@ -76,12 +74,7 @@ const ChangePassword: React.FC = () => {
       return false;
     }
 
-    // Vérifier si le mot de passe actuel correspond à celui stocké
-    const storedPassword = localStorage.getItem(PASSWORD_STORAGE_KEY);
-    if (formData.currentPassword !== storedPassword) {
-      toast.error('The current password is incorrect.');
-      return false;
-    }
+    
 
     // Validation avancée du nouveau mot de passe
     const passwordValidation = validatePassword(formData.newPassword);
@@ -103,55 +96,50 @@ const ChangePassword: React.FC = () => {
     return true;
   };
 
+  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    if (!validateForm()) {
-      return;
+  setIsLoading(true);
+
+  try {
+    const response = await fetch('http://localhost:5000/Verif/ChangePw', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword
+      })
+    });
+
+    const data = await response.json();
+
+    // Check for explicit success flag or 200 status
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to change password');
     }
 
-    setIsLoading(true);
+    toast.success(data.message || 'Password changed successfully');
+    
+    setFormData({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+    
+    setTimeout(() => navigate('/InformationsUtilisateur'), 2000);
 
-    try {
-      // Simuler un appel API avec délai
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Simuler une réponse d'API réussie
-      const success = Math.random() > 0.1; // 90% de chance de succès pour la démonstration
-      
-      if (!success) {
-        throw new Error('Server error occurred during the password change.');
-      }
-
-      // Sauvegarder le nouveau mot de passe dans localStorage
-      localStorage.setItem(PASSWORD_STORAGE_KEY, formData.newPassword);
-
-      // Déclencher un événement personnalisé pour notifier les autres composants
-      window.dispatchEvent(new CustomEvent('passwordChanged', {
-        detail: { newPassword: formData.newPassword }
-      }));
-
-      toast.success('Password changed successfully.');
-      
-      // Réinitialiser le formulaire
-      setFormData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      });
-      
-      // Rediriger vers la page de profil après quelques secondes
-      setTimeout(() => {
-        navigate('/InformationsUtilisateur');
-      }, 2000);
-    } catch (error: any) {
-      console.error('Erreur:', error);
-      toast.error(error.message || 'Une erreur est survenue');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  } catch (error: any) {
+    toast.error("the error is here : "+ error.message );
+  } finally {
+    setIsLoading(false);
+  }
+};
   return (
     <div className="change-password-page">
       <ToastContainer position="top-right" autoClose={5000} />
