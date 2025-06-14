@@ -6,7 +6,7 @@ const farmerSchema = new mongose.Schema(
     localite: { type: String, required: true },
     telephone: { type: String, required: true },
     adresse: {type: String, required: true},
-    state:{ type: String, enum:["actif","inactif"]},
+    IsActive:{ type: Boolean},
   },
   {
     timestamps: true,

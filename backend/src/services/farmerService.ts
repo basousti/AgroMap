@@ -91,7 +91,7 @@ export const createFarmer = async (data: FarmerInput) => {
       localite,
       telephone,
       adresse,
-      state: 'actif',
+      IsActive : true,
     });
 
     const savedFarmer = await newFarmer.save();
