@@ -41,6 +41,11 @@ const Signup1: React.FC = () => {
     return strongPasswordRegex.test(password);
   };
 
+  const isNumbers = (telephone: string) => {
+    const OnlyNumber = /^[5249][0-9]{7}$/;
+    return OnlyNumber.test(telephone);
+  };
+
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -57,6 +62,14 @@ const Signup1: React.FC = () => {
       toast.error("Weak password: Please use a stronger one.");
       return;
     }
+
+    if (!isNumbers(formatData.telephone)) {
+      setError("error in your phone number");
+      toast.error("Phone number must be exactly 8 digits and start with 5, 2, 4, or 9.");
+      return;
+    }
+
+
     try {
       const response = await fetch("http://localhost:5000/user/register", {
         method: 'POST',
@@ -141,7 +154,7 @@ const Signup1: React.FC = () => {
                   <input className='auth-input' type="text" name="adresse" placeholder="Enter your home adress" value={formatData.adresse} onChange={handleInputChange} required />
 
                 </div>
-              </div>
+              </div> 
 
               <label>Phone Number</label>
               <input className='auth-input' type="text" name="telephone" placeholder="Enter your phone number" value={formatData.telephone} onChange={handleInputChange} required />

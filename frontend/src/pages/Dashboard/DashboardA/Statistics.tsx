@@ -2,14 +2,7 @@ import './styleAdmin.css';
 import React ,{ useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight} from 'lucide-react';
-import { PowerBIEmbed } from 'powerbi-client-react';
-import { models, Report } from 'powerbi-client';
 
-declare global {
-  interface Window {
-    report: Report;
-  }
-}
  
 const Statistics:React.FC = () =>{
 

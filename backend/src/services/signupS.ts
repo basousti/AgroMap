@@ -6,7 +6,7 @@ interface UserData {
     name: string; 
     prenom: string;
     email: string;
-    password: string;
+    password: string; 
     telephone: string;
     adresse: string;
     matriculate: string;

@@ -8,6 +8,7 @@ interface FarmerInput {
   name: string;
   prenom: string;
   email: string;
+  password:string;
   localite: string;
   telephone: string;
   adresse: string;
@@ -65,21 +66,21 @@ export const getFarmerById = async (id: string) => {
 // Create a user + farmer
 export const createFarmer = async (data: FarmerInput) => {
   try {
-    const { name, prenom, email, localite, telephone, adresse } = data;
+    const { name, prenom, email,password, localite, telephone, adresse } = data;
 
     // Check if email already used
     const existingUser = await User.findOne({ email });
     if (existingUser) throw new Error('Email déjà utilisé.');
 
     // Encrypt the password
-    // const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the user
     const newUser = new User({
       name,
       prenom,
       email,
-      // password: hashedPassword,
+      password: hashedPassword,
       role: 'agriculteur',
     });
 

@@ -10,6 +10,7 @@ interface FarmerData {
   name: string;
   prenom: string;
   email:string;
+  password:string;
   localite: string;
   telephone: string;
   adresse: string;
@@ -17,10 +18,12 @@ interface FarmerData {
 
 const FormulaireAgriculteur: React.FC = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const [farmerData, setFarmerData] = useState<FarmerData>({
     name: "",
     prenom: "",
     email:"",
+    password:"",
     localite: "",
     telephone: "",
     adresse: "",
@@ -42,7 +45,7 @@ const FormulaireAgriculteur: React.FC = () => {
         return /^[a-zA-ZÀ-ÿ\s-]$/.test(char);
       case "telephone":
         // Validation pour téléphone: seulement des chiffres, +, espaces et tirets
-        return /^[0-9+\s-]$/.test(char);
+        return /^[5249][0-9]{7}$/.test(char);
       case "adresse":
         // Adresse plus permissive mais pas de caractères spéciaux dangereux
         return !/^[*#$%^&()_={}[\]|\\;:"<>?]$/.test(char);
@@ -84,7 +87,7 @@ const FormulaireAgriculteur: React.FC = () => {
           break;
         case "telephone":
           fieldLabel = "Phone number";
-          invalidCharMessage = "Must be only numbers";
+          invalidCharMessage = "Must be exactly 8 digits and start with 5, 2, 4, or 9.";
           break;
         case "adresse":
           fieldLabel = "Adress";
@@ -203,6 +206,7 @@ const FormulaireAgriculteur: React.FC = () => {
                   required
                 />
               </div>
+              <div className="form-row">
             <div className="form-group">
               <label htmlFor="localite">Locality</label>
               <input
@@ -216,19 +220,6 @@ const FormulaireAgriculteur: React.FC = () => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="telephone">Phone number</label>
-              <input
-                type="tel"
-                id="telephone"
-                name="telephone"
-                value={farmerData.telephone}
-                onChange={handleInputChange}
-                className={`input-label ${getInputClassName("telephone")}`}
-                required
-              />
-            </div>
-
-            <div className="form-group">
               <label htmlFor="adresse">Adress</label>
               <input
                 type="text"
@@ -240,6 +231,37 @@ const FormulaireAgriculteur: React.FC = () => {
                 required
               />
             </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="telephone">Phone number</label>
+              <input
+                type="tel"
+                id="telephone"
+                name="telephone"
+                value={farmerData.telephone}
+                onChange={handleInputChange}
+                className={`input-label ${getInputClassName("telephone")}`}
+                required
+              />
+            </div>
+             <div className="form-group">
+              <label htmlFor="telephone">Password</label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                value={farmerData.password}
+                onChange={handleInputChange}
+                className={`input-label ${getInputClassName("password")}`}
+                required
+              />
+            </div>
+            <label className="d-flex align-items-center gap-2 ">
+              <input className="custom-checkbox" type="checkbox" id="showPassword"
+                    checked={showPassword} 
+                    onChange={() => setShowPassword(!showPassword)} />
+              <span>Show Password</span>
+            </label>
           </div>
           <div className="form-actions">
             <button type="button" onClick={handleBack} className="cancel-btn">

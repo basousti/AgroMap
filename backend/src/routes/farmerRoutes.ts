@@ -10,7 +10,7 @@ import {
 
 const router = express.Router();
 
-//recupérer les agriculteurs
+//recupérer les agriculteurs 
 // Route pour proxy externe (si nécessaire)
 router.get('/proxy', async (req: Request ,res: Response) => {
   try {
