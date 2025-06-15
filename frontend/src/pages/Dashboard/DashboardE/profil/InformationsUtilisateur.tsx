@@ -108,6 +108,7 @@ const InformationsUtilisateur: React.FC = () => {
 
   const updateUserData = async (updatedData: UserInfo) => {
     try {
+      
       setIsSaving(true);
       const token = localStorage.getItem('token');
       
@@ -129,13 +130,13 @@ const InformationsUtilisateur: React.FC = () => {
       );
 
       if (response.data.success) {
-      // Update both states to ensure consistency
-      setUserInfo(prev => ({ ...prev, ...updatedData }));
-      setEditedInfo(prev => ({ ...prev, ...updatedData }));
-      
-      // Update localStorage
-      localStorage.setItem(AVATAR_STORAGE_KEY, updatedData.avatarUrl || '');
-      localStorage.setItem(DASHBOARD_EMPLOYEE_KEY, JSON.stringify({
+        // First update all data states
+        setUserInfo(prev => ({ ...prev, ...updatedData }));
+        setEditedInfo(prev => ({ ...prev, ...updatedData }));
+        
+        // Then update localStorage
+        localStorage.setItem(AVATAR_STORAGE_KEY, updatedData.avatarUrl || '');
+        localStorage.setItem(DASHBOARD_EMPLOYEE_KEY, JSON.stringify({
         id: updatedData.id,
         name: `${updatedData.firstName} ${updatedData.lastName}`,
         email: updatedData.email,
@@ -152,29 +153,77 @@ const InformationsUtilisateur: React.FC = () => {
     toast.error("Error updating profile");
     console.error("Update error:", error);
   } finally {
-    setIsSaving(false);
+    setIsEditing(false);  // <-- This should happen after everything else
+  toast.success("Profile updated successfully!");
   }
 };
-  const handleEditProfile = async (): Promise<void> => {
+
+const handleEditProfile = async () => {
   if (isEditing) {
-    // Validation
-    if (!editedInfo.firstName.trim() || !editedInfo.lastName.trim()) {
-      toast.error("First and last names are required");
+    // Validate before saving
+    if (!validateName(editedInfo.firstName)) {
+      toast.error("Invalid first name");
       return;
     }
     
-    if (!editedInfo.email.trim()) {
-      toast.error("Email is required");
-      return;
-    }
+    // Create a DEEP COPY of the updated data
+    const updatedUser = { 
+      ...userInfo,
+      ...editedInfo 
+    };
 
-    await updateUserData(editedInfo); // This calls the update function
+    // Update state FIRST
+    setUserInfo(updatedUser);
+    
+    // Then call API
+    await updateUserData(updatedUser); // Pass the complete updated object
+    
+    // Exit edit mode AFTER successful update
+    setIsEditing(false);
   } else {
     // Enter edit mode
     setEditedInfo({...userInfo});
     setIsEditing(true);
   }
 };
+
+//   // const handleEditProfile = async (): Promise<void> => {
+//   // if (isEditing) {
+//   //   // Validation
+//   //   if (!editedInfo.firstName.trim() || !editedInfo.lastName.trim()) {
+//   //     toast.error("First and last names are required");
+//   //     return;
+//   //   }
+    
+//   //   if (!editedInfo.email.trim()) {
+//   //     toast.error("Email is required");
+//   //     return;
+//   //   }
+
+//   //   // Add these to check the flow
+//   //     console.log('Before update:', { isEditing, isSaving, userInfo, editedInfo });
+//   //     try {
+//   //     await updateUserData(editedInfo);
+//   //     // Force a state refresh if needed
+//   //     setUserInfo(prev => ({ ...prev })); // This creates a new reference
+//   //   } catch (error) {
+//   //     console.error("Update failed:", error);
+//   //   }
+//   //     console.log('After update:', { isEditing, isSaving, userInfo, editedInfo });
+
+
+//   // } else {
+//   //   // Enter edit mode
+//   //   setEditedInfo({...userInfo});
+//   //   setIsEditing(true);
+//   // }
+// };
+
+useEffect(() => {
+  console.log('Current editing state:', isEditing);
+  console.log('Current user info:', userInfo);
+}, [isEditing, userInfo]);
+// hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
 
 const handleCancelEdit = (): void => {
   // Reset to original userInfo
@@ -399,20 +448,22 @@ const handleCancelEdit = (): void => {
             <div className="info-item">
               <div className="info-label">
                 <FaIdCard className="info-icon" />
-                <span>Family name</span>
+                <span>Name</span>
               </div>
               <div className="info-value">
                 {isEditing ? (
                   <div className="input-wrapper">
                     <input 
                       type="text" 
-                      value={editedInfo.firstName} 
+                      value={editedInfo.firstName || ''} 
                       onChange={(e) => handleInputChange('firstName', e.target.value)} 
-                      className="editable-input"
+                      className={`editable-input ${
+                        editedInfo.firstName && !validateName(editedInfo.firstName) ? 'invalid' : ''
+                      }`}
                       required
-                      placeholder="Family name (letters only)"
+                      placeholder="Name (letters only)"
                       pattern="[a-zA-ZÀ-ÿ\s]+"
-                      title="The family name must contain letters only."
+                      title="The Name must contain letters only."
                     />
                     {editedInfo.firstName !== userInfo.firstName && (
                       <span className="field-changed-indicator"><FaCheck /></span>
@@ -422,7 +473,9 @@ const handleCancelEdit = (): void => {
                     )}
                   </div>
                 ) : (
-                  userInfo.firstName || "Not specified"
+                  <span className={`display-value ${!userInfo.firstName ? 'empty' : ''}`}>
+                    {userInfo.firstName || "Not specified"}
+                  </span>
                 )}
               </div>
             </div>
@@ -430,7 +483,7 @@ const handleCancelEdit = (): void => {
             <div className="info-item">
               <div className="info-label">
                 <FaIdCard className="info-icon" />
-                <span>Name</span>
+                <span>Family Name</span>
               </div>
               <div className="info-value">
                 {isEditing ? (
@@ -441,9 +494,9 @@ const handleCancelEdit = (): void => {
                       onChange={(e) => handleInputChange('lastName', e.target.value)} 
                       className="editable-input"
                       required
-                      placeholder="Name"
+                      placeholder="Family Name"
                       pattern="[a-zA-ZÀ-ÿ\s]+"
-                      title="The name must contain letters only."
+                      title="The Family name must contain letters only."
                     />
                     {editedInfo.lastName !== userInfo.lastName && (
                       <span className="field-changed-indicator"><FaCheck /></span>

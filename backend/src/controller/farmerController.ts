@@ -135,28 +135,6 @@ export const deleteFarmerController = async (req: Request, res: Response) => {
   }
 };
 
-// // ❌ Delete farmer
-// export const deleteFarmerController = async (req: Request, res: Response) => {
-//   const { id } = req.params;
-
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     return res.status(400).json({ success: false, message: 'ID invalide' });
-//   }
-
-//   try {
-//     const deleted = await farmerService.deleteFarmer(id);
-
-//     if (!deleted) {
-//       return res.status(404).json({ success: false, message: 'Agriculteur non trouvé' });
-//     }
-
-//     res.status(200).json({ success: true, message: 'Agriculteur supprimé avec succès' });
-
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: (error as Error).message });
-//   }
-// };
-
 // 🔎 Search farmers
 export const searchFarmersController = async (req: Request, res: Response) => {
   try {
