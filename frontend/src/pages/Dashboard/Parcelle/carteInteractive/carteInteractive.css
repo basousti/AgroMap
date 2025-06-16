@@ -1,0 +1,446 @@
+/* Styles pour CarteInteractive.tsx */
+
+/* Styles pour les popups Leaflet personnalisés */
+.custom-popup-parcelle .leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.custom-popup-parcelle .leaflet-popup-tip {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+}
+
+.custom-popup-parcelle .leaflet-popup-content {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.custom-popup-parcelle .leaflet-popup-close-button {
+  top: 8px !important;
+  right: 8px !important;
+  font-size: 18px !important;
+  color: #6b7280 !important;
+  font-weight: bold !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 50% !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  transition: all 0.3s ease !important;
+}
+
+.custom-popup-parcelle .leaflet-popup-close-button:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  transform: scale(1.1) !important;
+}
+
+/* Styles pour les marqueurs personnalisés */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Styles pour les marqueurs de statut */
+.status-marker-active {
+  animation: pulse-green 2s infinite;
+}
+
+.status-marker-repos {
+  animation: pulse-yellow 2s infinite;
+}
+
+.status-marker-preparation {
+  animation: pulse-blue 2s infinite;
+}
+
+.status-marker-default {
+  animation: pulse-gray 2s infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes pulse-yellow {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes pulse-blue {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes pulse-gray {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+}
+
+/* Styles pour les contrôles Leaflet améliorés */
+.leaflet-control-layers {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 12px 16px !important;
+}
+
+.leaflet-control-layers-base label,
+.leaflet-control-layers-overlays label {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+  margin-bottom: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 4px 0 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.leaflet-control-layers-base label:hover,
+.leaflet-control-layers-overlays label:hover {
+  color: #667eea !important;
+  transform: translateX(2px) !important;
+}
+
+.leaflet-control-layers-separator {
+  margin: 12px 0 !important;
+  border-top: 1px solid #e5e7eb !important;
+}
+
+/* Styles pour l'échelle */
+.leaflet-control-scale {
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.leaflet-control-scale-line {
+  border: 2px solid #374151 !important;
+  border-top: none !important;
+  color: #374151 !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+}
+
+/* Styles pour les boutons de zoom */
+.leaflet-control-zoom {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.leaflet-control-zoom a {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  color: #374151 !important;
+  font-weight: bold !important;
+  font-size: 18px !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #667eea !important;
+  color: white !important;
+  transform: scale(1.05) !important;
+}
+
+.leaflet-control-zoom-in {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Styles pour les tooltips */
+.custom-tooltip {
+  background: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.custom-tooltip::before {
+  border-top-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Styles pour les overlays informatifs */
+.info-overlay {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-family: 'Inter', sans-serif;
+  z-index: 1000;
+}
+
+.info-overlay h4 {
+  margin: 0 0 8px 0;
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.info-overlay p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Styles pour les statistiques */
+.stats-overlay {
+  top: 10px;
+  left: 10px;
+}
+
+.stats-overlay .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.stats-overlay .stat-number {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Styles pour les notifications */
+.notification-overlay {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  z-index: 10000;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slideInDown 0.5s ease-out;
+}
+
+.notification-overlay.error {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.notification-overlay.warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Styles pour les loading states */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.loading-text {
+  margin-top: 16px;
+  color: #374151;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Styles pour les boutons flottants */
+.floating-button {
+  position: absolute;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.floating-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.floating-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .custom-popup-parcelle .leaflet-popup-content-wrapper {
+    max-width: 280px !important;
+  }
+  
+  .info-overlay {
+    font-size: 11px;
+    padding: 10px 12px;
+  }
+  
+  .stats-overlay .stat-item {
+    font-size: 11px;
+  }
+  
+  .floating-button {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  
+  .notification-overlay {
+    right: 10px;
+    left: 10px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-popup-parcelle .leaflet-popup-content-wrapper {
+    max-width: 250px !important;
+  }
+  
+  .leaflet-control-layers {
+    max-width: 200px !important;
+  }
+  
+  .leaflet-control-zoom a {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 16px !important;
+  }
+  
+  .info-overlay {
+    padding: 8px 12px;
+    font-size: 10px;
+  }
+  
+  .floating-button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+/* Styles pour l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .status-marker-active,
+  .status-marker-repos,
+  .status-marker-preparation,
+  .status-marker-default {
+    animation: none !important;
+  }
+  
+  .floating-button,
+  .leaflet-control-zoom a {
+    transition: none !important;
+  }
+  
+  .notification-overlay {
+    animation: none !important;
+  }
+}
+
+/* Focus states pour l'accessibilité */
+.floating-button:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}

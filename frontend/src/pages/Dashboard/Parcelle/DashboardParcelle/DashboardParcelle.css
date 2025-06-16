@@ -1,0 +1,829 @@
+/* ===== SUPPRESSION DES ÉLÉMENTS NON DÉSIRÉS ===== */
+
+/* Headers des panneaux - SUPPRIMÉS */
+.panel-header {
+  display: none;
+}
+
+/* Statut du dashboard - SUPPRIMÉ */
+.dashboard-status {
+  display: none;
+}
+
+/* Séparateur - SUPPRIMÉ */
+.dashboard-separator {
+  display: none;
+}
+
+/* Boutons flottants - SUPPRIMÉS */
+.dashboard-floating-actions {
+  display: none;
+}
+
+/* Overlay - SUPPRIMÉ */
+.dashboard-overlay {
+  display: none;
+}/* ===== DASHBOARD PARCELLE - STYLES PRINCIPAUX ===== */
+
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  position: relative;
+  padding: 0.5rem;
+  gap: 1rem;
+}
+
+/* ===== CORPS PRINCIPAL DU DASHBOARD ===== */
+
+.dashboard-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  height: calc(100vh - 1rem);
+  gap: 1rem;
+}
+
+/* ===== PANNEAUX LATÉRAUX ===== */
+
+.dashboard-left-panel {
+  width: 45%;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 50;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.dashboard-right-panel {
+  width: 55%;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 50;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+/* États expandés */
+.dashboard-left-panel.expanded {
+  width: 95%;
+  z-index: 200;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-right-panel.expanded {
+  width: 95%;
+  z-index: 200;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+}
+
+/* États collapsés */
+.dashboard-left-panel.collapsed {
+  width: 5%;
+}
+
+.dashboard-right-panel.collapsed {
+  width: 5%;
+}
+
+/* ===== CORRECTION COMPLÈTE DE L'ALIGNEMENT DES LIGNES ===== */
+
+/* FORCER L'ALIGNEMENT PARFAIT DE TOUS LES ÉLÉMENTS SUR LA MÊME LIGNE */
+.dashboard-left-panel .table-row {
+  display: grid !important;
+  grid-template-columns: 2fr 1fr 1fr 1.3fr 140px !important;
+  gap: 0.8rem !important;
+  align-items: center !important;
+  min-height: 70px !important;
+  padding: 0.75rem 1rem !important;
+}
+
+/* FORCER TOUS LES BADGES À ÊTRE CENTRÉS ET ALIGNÉS */
+.dashboard-left-panel .table-cell {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+  min-height: 50px !important;
+}
+
+/* CELLULE NOM - Alignée à gauche */
+.dashboard-left-panel .cell-name {
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+/* BADGES SURFACE, CULTURE, STATUT - Parfaitement centrés */
+.dashboard-left-panel .cell-surface,
+.dashboard-left-panel .cell-culture,
+.dashboard-left-panel .cell-status {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  height: 100% !important;
+}
+
+/* BADGES - Dimensions et alignement uniformes */
+.dashboard-left-panel .surface-badge,
+.dashboard-left-panel .culture-badge,
+.dashboard-left-panel .status-badge {
+  padding: 0.35rem 0.75rem !important;
+  border-radius: 18px !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  white-space: nowrap !important;
+  border: 1px solid !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 70px !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+/* SPÉCIFIQUE AU BADGE DE STATUT */
+.dashboard-left-panel .status-badge {
+  position: relative !important;
+  z-index: 5 !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* CELLULE ACTIONS - Centrée */
+.dashboard-left-panel .cell-actions {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0.5rem !important;
+}
+
+/* HEADER DU TABLEAU - Même grille */
+.dashboard-left-panel .table-header-row {
+  display: grid !important;
+  grid-template-columns: 2fr 1fr 1fr 1.3fr 140px !important;
+  gap: 0.8rem !important;
+  align-items: center !important;
+  padding: 1rem !important;
+}
+
+/* HEADERS - Alignement */
+.dashboard-left-panel .header-surface,
+.dashboard-left-panel .header-culture,
+.dashboard-left-panel .header-status {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+/* CONTENU DU NOM */
+.dashboard-left-panel .name-content {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+}
+
+/* POINT DE STATUT */
+.dashboard-left-panel .status-dot {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
+
+/* ÉLIMINER TOUS LES MARGES ET PADDINGS PARASITES */
+.dashboard-left-panel .surface-badge *,
+.dashboard-left-panel .culture-badge *,
+.dashboard-left-panel .status-badge * {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: inherit !important;
+}
+
+/* FORCER LA HAUTEUR UNIFORME */
+.dashboard-left-panel .table-row > * {
+  min-height: 50px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Headers des panneaux - SUPPRIMÉS */
+.panel-header {
+  display: none;
+}
+
+/* Statut du dashboard - SUPPRIMÉ */
+.dashboard-status {
+  display: none;
+}
+
+/* Séparateur - SUPPRIMÉ */
+.dashboard-separator {
+  display: none;
+}
+
+/* Boutons flottants - SUPPRIMÉS */
+.dashboard-floating-actions {
+  display: none;
+}
+
+/* Overlay - SUPPRIMÉ */
+.dashboard-overlay {
+  display: none;
+}
+
+/* ===== CONTENU DES PANNEAUX ===== */
+
+.panel-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adapter les styles des composants enfants */
+.dashboard-left-panel .panel-content .parcelle-container {
+  background: transparent;
+  padding: 0.5rem;
+  min-height: auto;
+  height: 100%;
+}
+
+.dashboard-left-panel .panel-content .parcelle-wrapper {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* Réduction de l'espacement */
+}
+
+.dashboard-right-panel .panel-content > div {
+  height: 100%;
+  position: relative;
+}
+
+/* Réduction de l'espace entre contrôles et tableau */
+.dashboard-left-panel .panel-content .controls-section {
+  margin-bottom: 0.5rem !important; /* Réduction de l'espacement */
+}
+
+.dashboard-left-panel .panel-content .table-container {
+  margin-top: 0 !important;
+}
+
+/* ===== SÉPARATEUR REDIMENSIONNABLE ===== */
+
+.dashboard-separator {
+  display: none;
+}
+
+/* ===== STATUT DU DASHBOARD ===== */
+
+.dashboard-status {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: statusPulse 2s infinite;
+}
+
+.status-dot.active {
+  background: #10b981;
+}
+
+.status-text {
+  color: #374151;
+  font-weight: 500;
+}
+
+.last-update {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ===== BOUTONS FLOTTANTS ===== */
+
+.dashboard-floating-actions {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 300;
+}
+
+.floating-action-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.floating-action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.3s ease;
+}
+
+.floating-action-btn:hover::before {
+  transform: scale(1);
+}
+
+.floating-action-btn:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.floating-action-btn.primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.floating-action-btn.secondary {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+/* ===== OVERLAY POUR MODES EXPANDED ===== */
+
+.dashboard-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 150;
+  animation: overlayFadeIn 0.3s ease;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width: 1200px) {
+  .dashboard-floating-actions {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+}
+
+@media (max-width: 968px) {
+  .dashboard-container {
+    height: 100vh;
+    padding: 0.25rem;
+    gap: 0.5rem;
+  }
+  
+  .dashboard-body {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .dashboard-left-panel,
+  .dashboard-right-panel {
+    width: 100% !important;
+    height: 50%;
+    border-radius: 12px;
+  }
+  
+  .dashboard-left-panel .panel-content .parcelle-container {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 0.25rem;
+    gap: 0.5rem;
+  }
+  
+  .dashboard-body {
+    gap: 0.5rem;
+  }
+  
+  .dashboard-left-panel,
+  .dashboard-right-panel {
+    border-radius: 10px;
+  }
+  
+  .dashboard-left-panel .panel-content .parcelle-container {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 0.125rem;
+    gap: 0.25rem;
+  }
+  
+  .dashboard-left-panel .panel-content .parcelle-container {
+    padding: 0.25rem;
+  }
+  
+  .dashboard-left-panel,
+  .dashboard-right-panel {
+    border-radius: 8px;
+  }
+}
+
+/* ===== ANIMATIONS AVANCÉES ===== */
+
+@keyframes dashboardLoad {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+  }
+}
+
+/* Appliquer les animations au chargement */
+.dashboard-container {
+  animation: dashboardLoad 0.8s ease-out;
+}
+
+.dashboard-left-panel {
+  animation: slideInFromLeft 0.6s ease-out 0.2s both;
+}
+
+.dashboard-right-panel {
+  animation: slideInFromRight 0.6s ease-out 0.4s both;
+}
+
+.stat-card {
+  animation: dashboardLoad 0.6s ease-out calc(0.1s * var(--index, 0)) both;
+}
+
+/* ===== ÉTATS DE FOCUS POUR L'ACCESSIBILITÉ ===== */
+
+.panel-expand-btn:focus,
+.floating-action-btn:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.dashboard-separator:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* ===== EFFETS SPÉCIAUX ===== */
+
+/* Effet de brillance sur les cartes de stats */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.stat-card:hover::after {
+  opacity: 1;
+  animation: shimmer 1.5s ease-in-out;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Effet de lueur pour les panneaux actifs */
+.dashboard-left-panel.expanded,
+.dashboard-right-panel.expanded {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* ===== STYLES POUR LES TRANSITIONS FLUIDES ===== */
+
+* {
+  box-sizing: border-box;
+}
+
+.dashboard-container * {
+  transition-property: transform, opacity, background-color, border-color, box-shadow;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== AMÉLIORATION DES SCROLLBARS ===== */
+
+.panel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}
+
+/* ===== STYLES POUR DARK MODE (OPTIONNEL) ===== */
+
+@media (prefers-color-scheme: dark) {
+  .dashboard-container {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  }
+  
+  .dashboard-header,
+  .dashboard-left-panel,
+  .dashboard-right-panel,
+  .dashboard-status {
+    background: rgba(30, 30, 50, 0.95);
+    color: #e2e8f0;
+  }
+  
+  .panel-header {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .dashboard-title {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .dashboard-subtitle {
+    color: #a0aec0;
+  }
+  
+  .stat-card {
+    background: rgba(45, 55, 72, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .panel-expand-btn {
+    background: rgba(45, 55, 72, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #a0aec0;
+  }
+  
+  .panel-expand-btn:hover {
+    background: rgba(102, 126, 234, 0.2);
+    color: #667eea;
+  }
+  
+  .status-text,
+  .last-update {
+    color: #a0aec0;
+  }
+  
+  .dashboard-separator {
+    background: rgba(45, 55, 72, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .separator-dot {
+    background: rgba(102, 126, 234, 0.8);
+  }
+}
+
+/* ===== STYLES POUR IMPRESSION ===== */
+
+@media print {
+  .dashboard-container {
+    background: white !important;
+    height: auto !important;
+  }
+  
+  .dashboard-floating-actions,
+  .panel-expand-btn,
+  .dashboard-separator {
+    display: none !important;
+  }
+  
+  .dashboard-left-panel,
+  .dashboard-right-panel {
+    width: 50% !important;
+    break-inside: avoid;
+  }
+}
+
+/* ===== STYLES POUR RÉDUCTION DE MOUVEMENT ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-container,
+  .dashboard-left-panel,
+  .dashboard-right-panel,
+  .stat-card {
+    animation: none !important;
+  }
+  
+  .floating-action-btn:hover,
+  .panel-expand-btn:hover,
+  .stat-card:hover {
+    transform: none !important;
+  }
+  
+  .status-dot,
+  .selected-dot {
+    animation: none !important;
+  }
+  
+  * {
+    transition: none !important;
+  }
+}
+
+/* ===== AMÉLIORATIONS POUR LES ÉCRANS HAUTE RÉSOLUTION ===== */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .dashboard-title-icon,
+  .panel-title svg,
+  .floating-action-btn svg {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+}
+
+/* ===== STYLES POUR LES TRÈS GRANDS ÉCRANS ===== */
+
+@media (min-width: 1920px) {
+  .panel-header {
+    padding: 1.25rem 2rem;
+  }
+  
+  .dashboard-status {
+    padding: 1rem 3rem;
+  }
+}
+
+/* ===== DERNIÈRES TOUCHES ESTHÉTIQUES ===== */
+
+/* Effet de particules flottantes (optionnel) */
+.dashboard-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+  animation: particlesFloat 20s linear infinite;
+}
+
+@keyframes particlesFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+/* Curseur personnalisé pour le séparateur */
+.dashboard-separator {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23667eea' d='M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z'/%3E%3C/svg%3E") 12 12, col-resize;
+}
+
+@media (max-width: 968px) {
+  .dashboard-separator {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23667eea' d='M11 9V7h2v2h-2zm0 4v-2h2v2h-2zm0 4v-2h2v2h-2z'/%3E%3C/svg%3E") 12 12, row-resize;
+  }
+}

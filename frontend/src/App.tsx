@@ -17,6 +17,12 @@ import InformationsUtilisateur from './pages/Dashboard/DashboardE/profil/Informa
 import ChangePassword from './pages/Dashboard/DashboardE/profil/ChangePassword/ChangePassword';
 
 
+import ListeParcelle from './pages/Dashboard/Parcelle/listeParcelles/listeParcelle';
+import FormulaireParcelle from './pages/Dashboard/Parcelle/formulaireParcelle/formulaireParcelle';
+import CarteInteractive from './pages/Dashboard/Parcelle/carteInteractive/carteInteractive';
+import DashboardParcelles from './pages/Dashboard/Parcelle/DashboardParcelle/dashboardParcelle';
+
+
 function App() {
 
   return (
@@ -38,6 +44,14 @@ function App() {
         <Route path="/Change-Password" element={<ChangePassword/>}/>
         <Route path="/InformationsUtilisateur" element={<InformationsUtilisateur/>}/>
         <Route path="/messages" element={<Message/>}/>
+
+        <Route path="/listeParcelle" element={<ListeParcelle/>}/>
+        {/* The route for FormulaireParcelle is removed as it's meant to be rendered within ListeParcelle's modal */}
+        {/* <Route path="/formulaireParcelle" element={<FormulaireParcelle/>}/> */}
+        <Route path="/formulaireParcelle" element={<FormulaireParcelle onSubmit={(data) => console.log(data)} onClose={() => {}} farmerId="test"/>}/>
+        <Route path="/carte-interactive" element={<CarteInteractive />} />
+        <Route path="/dashboard-parcelles" element={<DashboardParcelles/>}/>
+      
 
       </Routes>
     </>
