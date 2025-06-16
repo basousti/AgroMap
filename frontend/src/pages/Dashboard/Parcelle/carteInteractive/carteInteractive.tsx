@@ -77,7 +77,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
     if (propOnReturnToForm) {
       propOnReturnToForm();
     } else {
-      navigate('/formulaireParcelle');
+      navigate('/DashboardE');
     }
   };
 
@@ -1249,7 +1249,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
           }}
         >
           <span style={{ fontSize: '16px' }}>←</span>
-          Retour au formulaire
+             Back to dashboard
         </button>
       </div>
       

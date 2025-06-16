@@ -3,6 +3,7 @@ import { MapPin, List, Maximize2, Minimize2, Filter, Users, BarChart3, TrendingU
 import ListeParcelle from '../listeParcelles/listeParcelle';
 import CarteInteractive from '../carteInteractive/carteInteractive';
 import './dashboardParcelle.css';
+import { useNavigate } from 'react-router-dom';
 
 interface Parcelle {
   id: number;
@@ -47,7 +48,7 @@ const DashboardParcelle: React.FC = () => {
     parcellesActives: 0,
     totalInvestissement: 0
   });
-
+const navigate = useNavigate();
   // ==================== FONCTIONS API ====================
   
   // Récupérer les parcelles depuis l'API
@@ -267,7 +268,7 @@ const DashboardParcelle: React.FC = () => {
 
   // Gérer le retour au formulaire
   const handleReturnToForm = () => {
-    // Navigation vers le formulaire (à implémenter selon votre router)
+    navigate('/DashboardE');
     console.log('🔄 Retour au formulaire demandé');
   };
 
@@ -316,7 +317,7 @@ const DashboardParcelle: React.FC = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container-parcel">
       {/* Corps principal du dashboard */}
       <div className="dashboard-body">
         {/* Panneau gauche - Liste des parcelles */}
@@ -336,7 +337,7 @@ const DashboardParcelle: React.FC = () => {
               onNouvelleParcelleTraitee={handleNouvelleParcelleTraitee}
               forceUpdate={forceUpdate}
               showWelcomeMessage={showWelcomeMessage}
-              onReturnToForm={handleReturnToForm}
+              onReturnToForm={(handleReturnToForm)}
             />
           </div>
         </div>

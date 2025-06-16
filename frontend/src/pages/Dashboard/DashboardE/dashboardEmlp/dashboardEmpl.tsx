@@ -203,6 +203,10 @@ useEffect(() => {
   };
 
 
+  const handleParcelClick = () => {
+    navigate('/dashboard-parcelles');
+  };
+
   // Fonction modifiée pour afficher correctement les notifications
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -381,7 +385,7 @@ useEffect(() => {
         </li>
         <li 
           className={`menu-item ajouter-agriculteur ${activeItem === 'addParcel' ? 'active' : ''}`}
-          onClick={() => handleMenuItemClick('addParcel')}
+          onClick={handleParcelClick}
         >
           <span className="menu-icon">🏞️</span>
           <span className="menu-text">Add Parcel</span>

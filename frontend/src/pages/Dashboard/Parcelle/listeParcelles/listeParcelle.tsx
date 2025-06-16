@@ -526,14 +526,14 @@ const ListeParcelle: React.FC = () => {
             {/* Boutons d'action */}
             <div className="actions-container">
               <button 
-                className="action-button action-button-filter"
+                className="action-button-parcel action-button-filter"
                 onClick={handleFiltrerClick}
               >
                 <Filter size={20} />
                 <span className="button-text">Filtrer</span>
               </button>
               <button 
-                className="action-button action-button-primary"
+                className="action-button-parcel action-button-primary"
                 onClick={handleAjouterClick}
               >
                 <Plus size={20} />
@@ -585,7 +585,7 @@ const ListeParcelle: React.FC = () => {
                       <span className="surface-value">
                         {parcelle.surface.toFixed(1)}
                       </span>
-                      <span className="surface-unit">ha</span>
+                      <span className="surface-unit">m²</span>
                     </div>
                   </div>
 

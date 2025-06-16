@@ -46,8 +46,6 @@ function App() {
         <Route path="/messages" element={<Message/>}/>
 
         <Route path="/listeParcelle" element={<ListeParcelle/>}/>
-        {/* The route for FormulaireParcelle is removed as it's meant to be rendered within ListeParcelle's modal */}
-        {/* <Route path="/formulaireParcelle" element={<FormulaireParcelle/>}/> */}
         <Route path="/formulaireParcelle" element={<FormulaireParcelle onSubmit={(data) => console.log(data)} onClose={() => {}} farmerId="test"/>}/>
         <Route path="/carte-interactive" element={<CarteInteractive />} />
         <Route path="/dashboard-parcelles" element={<DashboardParcelles/>}/>

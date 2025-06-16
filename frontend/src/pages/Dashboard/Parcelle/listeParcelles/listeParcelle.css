@@ -331,7 +331,7 @@
   align-items: center;
 }
 
-.action-button {
+.action-button-parcel {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -353,7 +353,7 @@
 }
 
 /* Effet de particules brillantes */
-.action-button::before {
+.action-button-parcel::before {
   content: '';
   position: absolute;
   top: 0;
@@ -369,12 +369,12 @@
   z-index: 1;
 }
 
-.action-button:hover::before {
+.action-button-parcel:hover::before {
   left: 100%;
 }
 
 /* Effet de halo lumineux */
-.action-button::after {
+.action-button-parcel::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -388,7 +388,7 @@
   z-index: 1;
 }
 
-.action-button:hover::after {
+.action-button-parcel:hover::after {
   width: 200%;
   height: 200%;
 }
@@ -546,14 +546,14 @@
 }
 
 /* Icône des boutons */
-.action-button svg {
+.action-button-parcel svg {
   position: relative;
   z-index: 2;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
-.action-button:hover svg {
+.action-button-parcel:hover svg {
   transform: scale(1.1) rotate(5deg);
 }
 

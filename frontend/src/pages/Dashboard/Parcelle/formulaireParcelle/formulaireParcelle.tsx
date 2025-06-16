@@ -1604,7 +1604,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 <div className='input-wrapper'>
                   <input 
                     type="text" 
-                    className="search-input" 
+                    className="search-input-parcel" 
                     placeholder="Tapez le nom d'une ville (ex: Nabeul, Kelibia, Sousse...)" 
                     value={searchQuery} 
                     onChange={(e) => handleSearch(e.target.value)} 
@@ -1614,7 +1614,6 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                       }
                     }}
                   />
-                  <div className="search-icon">🔍</div>
                 </div>
               </div>
               

@@ -28,11 +28,15 @@ function listAgriculteur() {
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [unreadMessageCount, setUnreadMessageCount] = useState<number>(0);
+  const [activeItem, setActiveItem] = useState('');
 
   const navigate = useNavigate();
 
    const Dashboard = () => {
     navigate('/DashboardE');
+  };
+  const handleParcelClick = () => {
+    navigate('/dashboard-parcelles');
   };
   const handleAddFarmerClick = () => {
     console.log("Bouton Ajouter Agriculteur cliqué, mais aucune action n'est exécutée");
@@ -206,10 +210,13 @@ const handleConfirmDelete = async () => {
               <span className="menu-text">Add Farmer</span>
             </li>
 
-            <li className="menu-item">
-              <span className="menu-icon">🏞️</span>
-              <span className="menu-text">Add Parcel</span>
-            </li>
+            <li 
+          className={`menu-item ajouter-agriculteur ${activeItem === 'addParcel' ? 'active' : ''}`}
+          onClick={handleParcelClick}
+        >
+          <span className="menu-icon">🏞️</span>
+          <span className="menu-text">Add Parcel</span>
+        </li>
           </ul>
         </nav>
 

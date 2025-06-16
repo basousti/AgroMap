@@ -25,7 +25,7 @@
   display: none;
 }/* ===== DASHBOARD PARCELLE - STYLES PRINCIPAUX ===== */
 
-.dashboard-container {
+.dashboard-container-parcel {
   display: flex;
   height: 100vh;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
@@ -448,7 +448,7 @@
 }
 
 @media (max-width: 968px) {
-  .dashboard-container {
+  .dashboard-container-parcel {
     height: 100vh;
     padding: 0.25rem;
     gap: 0.5rem;
@@ -472,7 +472,7 @@
 }
 
 @media (max-width: 768px) {
-  .dashboard-container {
+  .dashboard-container-parcel {
     padding: 0.25rem;
     gap: 0.5rem;
   }
@@ -492,7 +492,7 @@
 }
 
 @media (max-width: 480px) {
-  .dashboard-container {
+  .dashboard-container-parcel {
     padding: 0.125rem;
     gap: 0.25rem;
   }
@@ -552,7 +552,7 @@
 }
 
 /* Appliquer les animations au chargement */
-.dashboard-container {
+.dashboard-container-parcel {
   animation: dashboardLoad 0.8s ease-out;
 }
 
@@ -633,7 +633,7 @@
   box-sizing: border-box;
 }
 
-.dashboard-container * {
+.dashboard-container-parcel * {
   transition-property: transform, opacity, background-color, border-color, box-shadow;
   transition-duration: 0.3s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -663,7 +663,7 @@
 /* ===== STYLES POUR DARK MODE (OPTIONNEL) ===== */
 
 @media (prefers-color-scheme: dark) {
-  .dashboard-container {
+  .dashboard-container-parcel {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   }
   
@@ -724,7 +724,7 @@
 /* ===== STYLES POUR IMPRESSION ===== */
 
 @media print {
-  .dashboard-container {
+  .dashboard-container-parcel {
     background: white !important;
     height: auto !important;
   }
@@ -745,7 +745,7 @@
 /* ===== STYLES POUR RÉDUCTION DE MOUVEMENT ===== */
 
 @media (prefers-reduced-motion: reduce) {
-  .dashboard-container,
+  .dashboard-container-parcel,
   .dashboard-left-panel,
   .dashboard-right-panel,
   .stat-card {
@@ -793,7 +793,7 @@
 /* ===== DERNIÈRES TOUCHES ESTHÉTIQUES ===== */
 
 /* Effet de particules flottantes (optionnel) */
-.dashboard-container::before {
+.dashboard-container-parcel::before {
   content: '';
   position: fixed;
   top: 0;
