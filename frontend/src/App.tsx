@@ -16,6 +16,11 @@ import UserProfile from './pages/Dashboard/DashboardE/profil/UserProfile';
 import InformationsUtilisateur from './pages/Dashboard/DashboardE/profil/InformationsUtilisateur';
 import ChangePassword from './pages/Dashboard/DashboardE/profil/ChangePassword/ChangePassword';
 
+import ListeParcelle from './pages/Dashboard/Parcelle/listeParcelles/listeParcelle';
+import FormulaireParcelle from './pages/Dashboard/Parcelle/formulaireParcelle/formulaireParcelle';
+import CarteInteractive from './pages/Dashboard/Parcelle/carteInteractive/carteInteractive';
+
+
 
 function App() {
 
@@ -38,6 +43,10 @@ function App() {
         <Route path="/Change-Password" element={<ChangePassword/>}/>
         <Route path="/InformationsUtilisateur" element={<InformationsUtilisateur/>}/>
         <Route path="/messages" element={<Message/>}/>
+        <Route path="/listeParcelle" element={<ListeParcelle/>}/>
+        <Route path="/formulaireParcelle" element={<FormulaireParcelle/>}/> {/* Nouvelle route ajoutée */}
+        <Route path="/carte-interactive" element={<CarteInteractive />} />
+
       </Routes>
     </>
   )

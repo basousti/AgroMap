@@ -681,6 +681,7 @@ a {
 .profile-name-large {
   font-size: 1.5rem;
   font-weight: 600;
+  right:0;
   margin-bottom: 0.25rem;
 }
 
@@ -1563,6 +1564,25 @@ button.action-button svg{
 .footer-link:hover {
   color: var(--primary-color);
 }
+
+/* Avatar CSS */
+.profile-avatar-large {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.profile-avatar-large {
+    margin-bottom: 1rem;
+  }
+
 
 /* Media Queries */
 @media (max-width: 1200px) {

@@ -485,6 +485,23 @@ useEffect(() => {
           {/* Profile Header Card */}
           <div className="profile-card">
             <div className="profile-header">
+              <div className="profile-avatar-large">
+                {employee.avatarUrl ? (
+                  <img 
+                    src={employee.avatarUrl} 
+                    alt={employee.name}
+                    className="profile-avatar-image"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '50%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                ) : (
+                  getInitials(employee.name)
+                )}
+              </div>
               <h1 className="profile-name-large">Welcome {employee.name}</h1>
             </div>
           </div>
