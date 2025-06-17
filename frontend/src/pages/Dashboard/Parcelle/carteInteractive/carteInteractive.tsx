@@ -102,7 +102,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
   // ✨ NOUVEAU: Fonction pour supprimer une parcelle
   const handleDeleteParcelle = (parcelle: Parcelle) => {
     const confirmDelete = window.confirm(
-      `Êtes-vous sûr de vouloir supprimer la parcelle "${parcelle.nom}" ?\n\nCette action est irréversible.`
+      `Are you sure you want to delete the plot "${parcelle.nom}"?\n\nThis action is irreversible.`
     );
     
     if (confirmDelete) {
@@ -1073,7 +1073,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
 
   // Fonction pour effacer toutes les parcelles
   const effacerToutesLesParcelles = () => {
-    if (window.confirm('Êtes-vous sûr de vouloir effacer toutes les parcelles enregistrées ?')) {
+    if (window.confirm('Are you sure you want to delete all saved plots?')) {
       setParcellesEnregistrees([]);
       localStorage.removeItem('parcellesEnregistrees');
       nettoyerMarqueurs();
@@ -1109,10 +1109,10 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
             marginBottom: '20px'
           }}></div>
           <h2 style={{ margin: '0 0 10px 0', fontSize: '24px', fontWeight: '700' }}>
-            🗺️ Chargement de la carte
+            🗺️ Loading the map
           </h2>
           <p style={{ margin: 0, fontSize: '16px', opacity: 0.9 }}>
-            Initialisation de la vue satellite de la Tunisie...
+            Initializing the satellite view of Tunisia...
           </p>
         </div>
       )}
@@ -1162,10 +1162,10 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
           </div>
           <div>
             <div style={{ fontWeight: '700', marginBottom: '2px' }}>
-              Parcelle supprimée avec succès!
+              Plot deleted successfully!
             </div>
             <div style={{ fontSize: '12px', opacity: 0.9 }}>
-              "{deletedParcelleNom}" a été retirée de la carte
+              "{deletedParcelleNom}" has been removed from the map
             </div>
           </div>
         </div>
@@ -1205,10 +1205,10 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
           </div>
           <div>
             <div style={{ fontWeight: '700', marginBottom: '2px' }}>
-              Parcelle mise à jour avec succès!
+              Plot updated successfully!
             </div>
             <div style={{ fontSize: '12px', opacity: 0.9 }}>
-              Votre parcelle est maintenant visible sur la carte
+              Your plot is now visible on the map.
             </div>
           </div>
         </div>
@@ -1322,7 +1322,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
         textAlign: 'right',
         fontFamily: 'Arial, sans-serif'
       }}>
-        Raccourcis
+        Shortcuts
       </div>
 
       {/* Bouton de test pour les marqueurs */}
@@ -1360,7 +1360,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
             }}
             title="Tester les marqueurs de statut"
           >
-            🧪 Test Marqueurs
+            🧪 Marker Test
           </button>
         </div>
       )}
@@ -1391,7 +1391,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
             borderRadius: '50%',
             animation: 'pulse 2s infinite'
           }}></div>
-          Carte Connectée
+          Connected Map
         </div>
       )}
 
@@ -1430,7 +1430,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
             }}
             title={`Effacer toutes les parcelles (${parcellesEnregistrees.length})`}
           >
-            🗑️ Effacer ({parcellesEnregistrees.length})
+            🗑️ Delete ({parcellesEnregistrees.length})
           </button>
         </div>
       )}
@@ -1452,7 +1452,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
           backdropFilter: 'blur(10px)',
           boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)'
         }}>
-          💡 Cliquez sur une parcelle pour voir ses détails et actions
+          💡 Click on a plot to see its details and actions
         </div>
       )}
 
@@ -1474,7 +1474,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
           boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
           zIndex: 1000
         }}>
-          💾 {parcellesEnregistrees.length} sauvegardée{parcellesEnregistrees.length > 1 ? 's' : ''}
+          💾 {parcellesEnregistrees.length} saved{parcellesEnregistrees.length > 1 ? 's' : ''}
         </div>
       )}
 

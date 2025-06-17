@@ -79,7 +79,7 @@ const navigate = useNavigate();
       } else if (Array.isArray(data)) {
         parcellesData = data;
       } else {
-        console.warn('⚠️ Format de données API inattendu');
+        console.warn('⚠️ Unexpected API response format');
         return [];
       }
 
@@ -348,7 +348,7 @@ const navigate = useNavigate();
         <button 
           className="floating-action-btn primary"
           onClick={synchroniserDonnees}
-          title="Synchroniser les données avec l'API"
+          title="Synchronize data with the API"
         >
           <TrendingUp size={20} />
         </button>
@@ -356,7 +356,7 @@ const navigate = useNavigate();
         <button 
           className="floating-action-btn secondary"
           onClick={actualiserVue}
-          title="Actualiser la vue"
+          title="Reload view"
         >
           <BarChart3 size={20} />
         </button>

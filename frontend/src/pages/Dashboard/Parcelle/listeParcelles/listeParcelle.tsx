@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Filter, Search, X, ChevronDown, User, Edit, Trash2 } from 'lucide-react';
 import './listeParcelle.css';
 import FormulaireParcelle from '../formulaireParcelle/formulaireParcelle';
+import { ToastContainer,toast } from 'react-toastify';
 
 interface Parcelle {
   id: number;
@@ -262,7 +263,7 @@ const ListeParcelle: React.FC = () => {
       setParcelleCompleteToEdit(null);
       setShowModal(true);
     } else {
-      alert("Veuillez sélectionner un agriculteur d'abord pour attribuer la parcelle.");
+      toast.error("Please select a farmer first to assign the plot.");
     }
   };
 
@@ -270,7 +271,7 @@ const ListeParcelle: React.FC = () => {
     if (selectedFarmer) {
       console.log("Filtrer par agriculteur:", selectedFarmer._id.name, selectedFarmer._id.prenom);
     } else {
-      alert("Veuillez sélectionner un agriculteur d'abord pour filtrer.");
+      toast.error("Please select a farmer first to filter");
     }
   };
 
@@ -324,11 +325,11 @@ const ListeParcelle: React.FC = () => {
   // Fonction pour gérer la suppression d'une parcelle
   const handleDeleteParcelle = (parcelle: Parcelle) => {
     const confirmDelete = window.confirm(
-      `Êtes-vous sûr de vouloir supprimer la parcelle de ${parcelle.nom} ?\n\n` +
-      `Surface: ${parcelle.surface} ha\n` +
-      `Culture: ${parcelle.culture}\n` +
-      `Statut: ${getStatutConfig(parcelle.statut).text}\n\n` +
-      `Cette action est irréversible.`
+      `Are you sure you want to delete the plot ${parcelle.nom}?\n\n` +
+      `Area: ${parcelle.surface} ha\n` +
+      `Crop: ${parcelle.culture}\n` +
+      `Status: ${getStatutConfig(parcelle.statut).text}\n\n` +
+      `This action cannot be undone.`
     );
 
     if (confirmDelete) {
@@ -349,7 +350,7 @@ const ListeParcelle: React.FC = () => {
       }
 
       setTimeout(() => {
-        alert(`✅ Parcelle de "${parcelle.nom}" supprimée avec succès !`);
+        toast.success(`✅ "${parcelle.nom}" plot deleted successfully!`);
       }, 200);
     }
   };
@@ -360,7 +361,7 @@ const ListeParcelle: React.FC = () => {
 
     const nomAgriculteur = selectedFarmer 
       ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}` 
-      : 'Agriculteur non sélectionné';
+      : 'Farmer is not selected ';
 
     if (editingParcelle || parcelleCompleteToEdit) {
       // Mode modification
@@ -404,7 +405,7 @@ const ListeParcelle: React.FC = () => {
       setParcelleCompleteToEdit(null);
 
       setTimeout(() => {
-        alert(`✅ Parcelle de "${nomAgriculteur}" modifiée avec succès!\n📐 Surface: ${(parcelleData.surfaceTotale / 10000).toFixed(2)} ha\n🌾 Culture: ${parcelleData.culture}\n📊 Statut: ${parcelleData.statut}`);
+        toast.success(`✅ Plot for farmer "${nomAgriculteur}" was successfully modified!\n📐 Area: ${(parcelleData.surfaceTotale / 10000).toFixed(2)} hectares\n🌾 Crop type: ${parcelleData.culture}\n📊 Current status: ${parcelleData.statut}`);
       }, 300);
     } else {
       // Mode ajout
@@ -421,7 +422,7 @@ const ListeParcelle: React.FC = () => {
       setShowModal(false);
 
       setTimeout(() => {
-        alert(`✅ Parcelle de "${nomAgriculteur}" ajoutée avec succès!\n📐 Surface: ${(parcelleData.surfaceTotale / 10000).toFixed(2)} ha\n🌾 Culture: ${parcelleData.culture}\n📊 Statut: ${parcelleData.statut}`);
+        toast.success(`✅ Plot for "${nomAgriculteur}" successfully added!\n📐 Area: ${(parcelleData.surfaceTotale / 10000).toFixed(2)} ha\n🌾 Crop: ${parcelleData.culture}\n📊 Status: ${parcelleData.statut}`);
       }, 300);
     }
   };
@@ -498,7 +499,7 @@ const ListeParcelle: React.FC = () => {
                         }}
                         className="farmer-option farmer-option-all"
                       >
-                        Tous les agriculteurs
+                        All farmers
                       </div>
                       {farmers.map((farmer) => (
                         <div
@@ -530,15 +531,16 @@ const ListeParcelle: React.FC = () => {
                 onClick={handleFiltrerClick}
               >
                 <Filter size={20} />
-                <span className="button-text">Filtrer</span>
+                <span className="button-text">Filter</span>
               </button>
               <button 
                 className="action-button-parcel action-button-primary"
                 onClick={handleAjouterClick}
               >
                 <Plus size={20} />
-                <span className="button-text">Ajouter</span>
+                <span className="button-text">Add</span>
               </button>
+              <ToastContainer/>
             </div>
           </div>
         </div>
@@ -549,10 +551,10 @@ const ListeParcelle: React.FC = () => {
           {/* En-tête du tableau */}
           <div className="table-header">
             <div className="table-header-row">
-              <div className="header-cell header-name">Nom de l'agriculteur</div>
-              <div className="header-cell header-surface">Surface</div>
-              <div className="header-cell header-culture">Culture</div>
-              <div className="header-cell header-status">Statut</div>
+              <div className="header-cell header-name">Farmer Name</div>
+              <div className="header-cell header-surface">Area</div>
+              <div className="header-cell header-culture">Crop</div>
+              <div className="header-cell header-status">Status</div>
               <div className="header-cell header-actions">Actions</div>
             </div>
           </div>
@@ -626,10 +628,11 @@ const ListeParcelle: React.FC = () => {
                           console.log("🗑️ Clic sur supprimer pour parcelle:", parcelle.id);
                           handleDeleteParcelle(parcelle);
                         }}
-                        title="Supprimer la parcelle"
+                        title="Remove Parcel"
                       >
                         <Trash2 size={16} />
                       </button>
+                      <ToastContainer/>
                     </div>
                   </div>
                 </div>
@@ -643,11 +646,11 @@ const ListeParcelle: React.FC = () => {
               <div className="empty-icon">
                 <Search size={24} />
               </div>
-              <h3 className="empty-title">Aucune parcelle trouvée</h3>
+              <h3 className="empty-title">Remove Parcel</h3>
               <p className="empty-description">
-                {selectedFarmer 
-                  ? `Aucune parcelle trouvée pour ${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`
-                  : "Aucune parcelle disponible"
+                {selectedFarmer
+                  ? `No plots found for ${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`
+                  : "No plots available"
                 }
               </p>
             </div>
@@ -661,11 +664,11 @@ const ListeParcelle: React.FC = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h2>
-                {(editingParcelle || parcelleCompleteToEdit) ? 'Modifier la parcelle' : 'Ajouter une nouvelle parcelle'}
+                {(editingParcelle || parcelleCompleteToEdit) ? 'Edit Existing Plot' : 'Add New Plot Entry'}
               </h2>
               {selectedFarmer && (
                 <span className="modal-farmer-info">
-                  pour {selectedFarmer._id.name} {selectedFarmer._id.prenom}
+                  for {selectedFarmer._id.name} {selectedFarmer._id.prenom}
                 </span>
               )}
               {/* Indicateur de type de données en édition */}
@@ -680,10 +683,10 @@ const ListeParcelle: React.FC = () => {
                   gap: '4px'
                 }}>
                   {parcelleCompleteToEdit ? (
-                    <>✅ Données complètes disponibles</>
-                  ) : (
-                    <>⚠️ Données de base uniquement</>
-                  )}
+                      <>✅ Full dataset available for editing</>
+                    ) : (
+                      <>⚠️ Only core information available</>
+                    )}
                 </div>
               )}
               <button className="modal-close-btn" onClick={handleCloseModal}>
@@ -701,6 +704,7 @@ const ListeParcelle: React.FC = () => {
                 editingParcelle={prepareEditingData()}
                 isEditMode={!!(editingParcelle || parcelleCompleteToEdit)}
               />
+              <ToastContainer/>
             </div>
           </div>
         </div>

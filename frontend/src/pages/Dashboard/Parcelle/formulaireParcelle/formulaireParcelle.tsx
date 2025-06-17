@@ -100,7 +100,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
     setIsNavigating(true);
     console.log('📋 Navigation vers la liste des parcelles...');
     
-    showToast('📋 Retour à la liste des parcelles...', 2000);
+    showToast('📋 Returning to the list of plots...', 2000);
     
     setTimeout(() => {
       if (onNavigateToListe) {
@@ -458,13 +458,13 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
     }
     
     if (useInternalNavigation) {
-      showToast('🗺️ Ouverture de la carte interactive...', 2000);
+      showToast('🗺️ Opening the interactive map...', 2000);
       setTimeout(() => {
         setCurrentView('carte');
         setIsNavigating(false);
       }, 500);
     } else {
-      const message = modeEdition ? '🔧 Modification enregistrée! Redirection vers la carte...' : '🗺️ Redirection vers la carte interactive...';
+      const message = modeEdition ? '🔧 Changes saved! Redirecting to the map...' : '🗺️ Redirecting to the interactive map...';
       showToast(message, 2000);
       
       setTimeout(() => {
@@ -480,7 +480,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
 
   // RETOUR AU FORMULAIRE
   const retourAuFormulaire = () => {
-    showToast('📝 Retour au formulaire', 1500);
+    showToast('📝 Return to the main dashboard', 1500);
     setCurrentView('formulaire');
   };
 
@@ -512,7 +512,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
           allowIntersection: false,
           drawError: {
             color: '#ff0000',
-            message: '<strong>Erreur:</strong> Les lignes ne peuvent pas se croiser!'
+            message: '<strong>Error:</strong> Lines cannot cross each other!'
           },
           shapeOptions: {
             ...cultureColors,
@@ -562,7 +562,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
       mapInstanceRef.current.addControl(newDrawControl);
       setDrawControlRef(newDrawControl);
     } catch (error) {
-      console.error('Erreur lors de l\'ajout du nouveau contrôle:', error);
+      console.error('Error while adding the new control', error);
     }
   };
 
@@ -615,7 +615,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
       
       return marker;
     } catch (error) {
-      console.error('Erreur lors de la création du marqueur de statut:', error);
+      console.error('Error while creating the status marker:', error);
       return null;
     }
   };
@@ -696,7 +696,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
         await new Promise(resolve => setTimeout(resolve, 100));
         
         if (!(window as any).L) {
-          throw new Error('Leaflet non disponible après chargement');
+          throw new Error('Leaflet unavailable after loading');
         }
 
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js');
@@ -704,7 +704,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
         
         const L = (window as any).L;
         if (!L.Control.Draw) {
-          throw new Error('Leaflet Draw non disponible après chargement');
+          throw new Error('Leaflet Draw unavailable after loading');
         }
         
         if (!isMapInitialized) {
@@ -712,7 +712,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
         }
         
       } catch (error) {
-        console.error('Erreur lors du chargement de Leaflet:', error);
+        console.error('Error while loading Leaflet:', error);
       }
     };
 
@@ -913,7 +913,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
         
         console.log('✅ Carte initialisée avec succès');
       } catch (error) {
-        console.error('❌ Erreur lors de l\'initialisation de la carte:', error);
+        console.error('❌ Error during map initialization:', error);
         setIsMapInitialized(false);
       }
     };
@@ -995,7 +995,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
       
       drawnItems.clearLayers();
       setParcellesDessinees([]);
-      showToast('🗑️ Toutes les parcelles supprimées', 2000);
+      showToast('🗑️ All plots deleted', 2000);
     }
   };
 
@@ -1013,22 +1013,22 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
     
     // Validation des champs
     if (!titreParcelle.trim()) {
-      showToast('⚠️ Veuillez entrer un titre pour la parcelle', 3000);
+      showToast('⚠️ Please enter a title for the plot.', 3000);
       return;
     }
     if (!selectedCulture) {
-      showToast('⚠️ Veuillez sélectionner le type de culture', 3000);
+      showToast('⚠️ Please select the type of crop', 3000);
       return;
     }
     if (!statutParcelle) {
-      showToast('⚠️ Veuillez sélectionner le statut de la parcelle', 3000);
+      showToast('⚠️ Please select the status of the plot', 3000);
       return;
     }
 
     // En mode édition, permettre la soumission même sans parcelles dessinées
     const surfaceCalculee = calculateTotalArea();
     if (!modeEdition && parcellesDessinees.length === 0) {
-      showToast('⚠️ Veuillez dessiner au moins une parcelle sur la carte', 3000);
+      showToast('⚠️ Please draw at least one plot on the map', 3000);
       return;
     }
 
@@ -1036,7 +1036,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
     const coordonneesFinales = calculerCoordonneesCentrales();
     
     if (!coordonneesFinales) {
-      showToast('❌ Impossible de calculer les coordonnées centrales', 3000);
+      showToast('❌ Unable to calculate the central coordinates.', 3000);
       return;
     }
 
@@ -1088,8 +1088,8 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
     
     // Messages de succès selon le mode
     const messageSucces = modeEdition 
-      ? `✅ Parcelle "${titreParcelle}" modifiée avec succès!`
-      : `✅ Parcelle "${titreParcelle}" enregistrée avec succès!`;
+      ? `✅ Parcel "${titreParcelle}" modified successfully!`
+      : `✅ Parcel "${titreParcelle}" saved successfully!`;
     
     showToast(messageSucces, 2000);
     
@@ -1150,11 +1150,11 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 {parcelle.nom}
               </h4>
               <div style={{ fontSize: '14px', color: '#6c757d' }}>
-                <div><strong>Culture:</strong> {parcelle.culture}</div>
-                <div><strong>Statut:</strong> {parcelle.statut}</div>
-                <div><strong>Surface:</strong> {parcelle.surfaceTotale} m²</div>
-                <div><strong>Coordonnées:</strong> {parcelle.latitude.toFixed(4)}, {parcelle.longitude.toFixed(4)}</div>
-                <div><strong>Formes dessinées:</strong> {parcelle.drawnParcels.length}</div>
+                <div><strong>Crop:</strong> {parcelle.culture}</div>
+                <div><strong>Status:</strong> {parcelle.statut}</div>
+                <div><strong>Surface area:</strong> {parcelle.surfaceTotale} m²</div>
+                <div><strong>Coordinates:</strong> {parcelle.latitude.toFixed(4)}, {parcelle.longitude.toFixed(4)}</div>
+                <div><strong>Drawn shapes:</strong> {parcelle.drawnParcels.length}</div>
               </div>
             </div>
           ))}
@@ -1162,7 +1162,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
       )}
       
       <p style={{ marginTop: '20px', color: '#6c757d' }}>
-        💡 Ici vous pouvez intégrer votre composant CarteInteractive personnalisé
+        💡 Here you can embed your custom InteractiveMap component.
       </p>
     </div>
   );
@@ -1267,7 +1267,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             onMouseDown={handleRippleEffect}
           >
             <span style={{ fontSize: '16px' }}>📋</span>
-            <span>Retour à la Liste</span>
+            <span>Back to the List</span>
             {isNavigating && (
               <span style={{ 
                 width: '16px', 
@@ -1289,7 +1289,8 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             textAlign: 'center',
             flex: 1
           }}>
-            {modeEdition ? '✏️ Modifier Parcelle' : '➕ Nouvelle Parcelle'}
+            {modeEdition ? '✏️ Edit Plot' : '➕ New Plot'}
+
           </h1>
 
           {/* Espace pour équilibrer */}
@@ -1324,10 +1325,10 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             </div>
             <div>
               <div style={{ fontSize: '16px', marginBottom: '2px' }}>
-                Mode Édition Activé
+                Edit Mode Enabled
               </div>
               <div style={{ fontSize: '12px', opacity: 0.9 }}>
-                Modification de la parcelle : {parcelleAEditer?.nom || 'Parcelle sélectionnée'}
+                Plot modification : {parcelleAEditer?.nom || 'Selected plot'}
               </div>
             </div>
           </div>
@@ -1335,11 +1336,11 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
 
         <div className="form-section-parcel" ref={addToRefs}>
           <h2 className="section-title">
-            🇹🇳 {modeEdition ? 'Modifier' : 'Créer'} Parcelle Agricole - Tunisie
+            🇹🇳 {modeEdition ? 'Modifier' : 'Créer'} Agricultural Plot - Tunisia
           </h2>
 
           <div className="form-group">
-            <label className="form-label">📝 Titre de la Parcelle</label>
+            <label className="form-label">📝 Plot Title</label>
             <input
               type="text"
               className="form-input"
@@ -1350,7 +1351,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
           </div>
 
           <div className="form-group">
-            <label className="form-label">🌾 Culture</label>
+            <label className="form-label">🌾 Crop</label>
             <select 
               id="culture-select"
               className={`culture-select ${selectedCulture ? 'with-icon' : ''}`}
@@ -1360,7 +1361,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 console.log('🌾 Culture sélectionnée:', e.target.value);
               }}
             >
-              <option value="">🌱 Sélectionner le type de culture</option>
+              <option value="">🌱 Select the type of crop</option>
               {cultures.map((culture) => (
                 <option key={culture.value} value={culture.value}>
                   {culture.label}
@@ -1383,13 +1384,13 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 fontWeight: '600',
                 color: getCultureColor(selectedCulture).color
               }}>
-                ✨ Les parcelles seront colorées en {selectedCulture === 'Tomate' || selectedCulture === 'Piment' ? 'rouge' : 'vert'}
+                ✨ The plots will be colored in {selectedCulture === 'Tomate' || selectedCulture === 'Piment' ? 'rouge' : 'vert'}
               </div>
             )}
           </div>
 
           <div className="form-group">
-            <label className="form-label">📊 Statut</label>
+            <label className="form-label">📊 Status</label>
             <select 
               id="statut-select"
               className="form-input"
@@ -1399,10 +1400,10 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 console.log('📊 Statut sélectionné:', e.target.value);
               }}
             >
-              <option value="">📈 Sélectionner le statut</option>
+              <option value="">📈 Select the status</option>
               <option value="active">✅ Active</option>
-              <option value="preparation">🚧 En préparation</option>
-              <option value="repos">😴 Au repos</option>
+              <option value="preparation">🚧 In preparation</option>
+              <option value="repos">😴 At rest</option>
             </select>
             {statutParcelle && (
               <div style={{ 
@@ -1418,13 +1419,13 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                {getStatusMarker(statutParcelle).icon} Un marqueur "{getStatusMarker(statutParcelle).label}" sera ajouté au centre des parcelles
+                {getStatusMarker(statutParcelle).icon} A marker "{getStatusMarker(statutParcelle).label}" will be added to the center of the plots
               </div>
             )}
           </div>
 
           <div className="form-group">
-            <label className="form-label">📐 Surface (m²)</label>
+            <label className="form-label">📐 Area (m²)</label>
             <input 
               type="number" 
               className="form-input" 
@@ -1446,14 +1447,14 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 color: '#f59e0b',
                 fontWeight: '600'
               }}>
-                📏 Surface actuelle: {parcelleAEditer.surface} ha ({(parcelleAEditer.surface * 10000).toFixed(0)} m²)
+                📏 Current area: {parcelleAEditer.surface} ha ({(parcelleAEditer.surface * 10000).toFixed(0)} m²)
               </div>
             )}
           </div>
 
           {coordonneesCentrales && (
             <div className="form-group">
-              <label className="form-label">🎯 Coordonnées Centrales</label>
+              <label className="form-label">🎯 Central Coordinates</label>
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
@@ -1492,13 +1493,13 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 color: '#6b7280',
                 textAlign: 'center'
               }}>
-                📍 Position calculée automatiquement à partir des parcelles dessinées
+                📍 Position automatically calculated from the drawn plots
               </div>
             </div>
           )}
 
           <div className="form-group">
-            <label className="form-label">💰 Montant d'Investissement (TND)</label>
+            <label className="form-label">💰 Investment Amount (TND)</label>
             <input 
               type="number" 
               className="form-input" 
@@ -1536,12 +1537,12 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
 
           {(parcellesDessinees.length > 0 || (modeEdition && parcelleAEditer)) && (
             <div className="stats-card">
-              <h4 className="stats-title">📊 Statistiques</h4>
+              <h4 className="stats-title">📊 Statistics</h4>
               <p className="stats-item">
-                <strong>Parcelles créées:</strong> {parcellesDessinees.length || 'Données existantes'}
+                <strong>Plot created</strong> {parcellesDessinees.length || 'Données existantes'}
               </p>
               <p className="stats-item">
-                <strong>Surface totale:</strong> {
+                <strong>Total area</strong> {
                   calculateTotalArea() > 0 
                     ? `${calculateTotalArea()} m² (${(calculateTotalArea()/10000).toFixed(3)} ha)`
                     : modeEdition && parcelleAEditer?.surface 
@@ -1551,7 +1552,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
               </p>
               {coordonneesCentrales && (
                 <p className="stats-item">
-                  <strong>Coordonnées centrales:</strong> {coordonneesCentrales.lat.toFixed(4)}, {coordonneesCentrales.lng.toFixed(4)}
+                  <strong>Central coordinates:</strong> {coordonneesCentrales.lat.toFixed(4)}, {coordonneesCentrales.lng.toFixed(4)}
                 </p>
               )}
               <div style={{ marginTop: '12px' }}>
@@ -1586,7 +1587,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 onClick={clearAllParcelles}
                 onMouseDown={handleRippleEffect}
               >
-                🗑️ Effacer toutes les parcelles
+                🗑️ Delete all plots
               </button>
             </div>
           )}
@@ -1594,11 +1595,11 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
 
         <div className="form-section-parcel" ref={addToRefs}>
           <h2 className="section-title">
-            🗺️ Carte Interactive de la Tunisie
+            🗺️ Interactive Map of Tunisia
           </h2>
           
           <div className="form-group">
-            <label className="form-label">🔍 Rechercher un lieu en Tunisie</label>
+            <label className="form-label">🔍 Search for a place in Tunisia</label>
             <div className="search-container">
               <div className='search-line'>
                 <div className='input-wrapper'>
@@ -1626,7 +1627,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                       onClick={() => goToPlace(place)}
                     >
                       <div className="search-result-name">{place.name}</div>
-                      <div className="search-result-region">Gouvernorat de {place.region}</div>
+                      <div className="search-result-region">Governorate of {place.region}</div>
                     </div>
                   ))}
                 </div>
@@ -1635,8 +1636,8 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
               {showResults && searchResults.length === 0 && searchQuery.length >= 2 && (
                 <div className="search-results">
                   <div className="search-result-item" style={{ cursor: 'default', opacity: 0.7 }}>
-                    <div className="search-result-name">Aucun résultat trouvé</div>
-                    <div className="search-result-region">pour "{searchQuery}"</div>
+                    <div className="search-result-name">No results found</div>
+                    <div className="search-result-region">For "{searchQuery}"</div>
                   </div>
                 </div>
               )}
@@ -1652,16 +1653,16 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             border: '1px solid #dee2e6'
           }}>
             <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', fontWeight: '600', color: '#495057' }}>
-              🎨 Légende des couleurs et statuts
+              🎨 Legend of colors and statuses
             </h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
                 <div style={{ width: '20px', height: '20px', background: '#ef4444', borderRadius: '4px', border: '2px solid #dc2626' }}></div>
-                🍅🌶️ Tomate / Piment
+                🍅🌶️ Tomato / Chili Pepper
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
                 <div style={{ width: '20px', height: '20px', background: '#10b981', borderRadius: '4px', border: '2px solid #059669' }}></div>
-                🫑 Poivron
+                🫑 Paprika
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
                 <div style={{ width: '20px', height: '20px', background: '#10b981', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✅</div>
@@ -1669,21 +1670,21 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
                 <div style={{ width: '20px', height: '20px', background: '#f59e0b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>😴</div>
-                Au repos
+                Resting
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
                 <div style={{ width: '20px', height: '20px', background: '#3b82f6', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🚧</div>
-                En préparation
+                In preparation
               </div>
             </div>
           </div>
           
           <div className="map-controls">
             <button className="clear-btn" onClick={clearAllParcelles}>
-              🗑️ Effacer parcelles
+              🗑️ Delete plot
             </button>
             <button className="refresh-btn" onClick={() => window.location.reload()}>
-              🔄 Actualiser
+              🔄 Refresh
             </button>
           </div>
           
@@ -1691,10 +1692,10 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             <div ref={mapRef} className="map-element">
               {!mapLoaded && (
                 <div className="map-placeholder">
-                  🗺️ Chargement de la carte satellite de la Tunisie...
+                  🗺️ Loading the satellite map of Tunisia...
                   <br />
                   <small className="map-placeholder-text">
-                    Carte interactive avec images satellite et couleurs par culture
+                    Interactive map with satellite imagery and crop-specific color coding.
                   </small>
                 </div>
               )}
