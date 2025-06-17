@@ -19,6 +19,7 @@ interface FarmerData {
 const FormulaireAgriculteur: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const [farmerData, setFarmerData] = useState<FarmerData>({
     name: "",
     prenom: "",
@@ -33,6 +34,11 @@ const FormulaireAgriculteur: React.FC = () => {
   const [errorFields, setErrorFields] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false); // Pour gérer l'état de soumission
 
+  const isNumbers = (telephone: string) => {
+    const OnlyNumber = /^[5249][0-9]{7}$/;
+    return OnlyNumber.test(telephone);
+  };
+
   // Fonction pour valider un caractère en fonction du champ
   const validateCharacter = (name: string, char: string): boolean => {
     switch (name) {
@@ -43,9 +49,6 @@ const FormulaireAgriculteur: React.FC = () => {
       case "localite":
         // Validation pour localité: lettres, espaces, tirets
         return /^[a-zA-ZÀ-ÿ\s-]$/.test(char);
-      case "telephone":
-        // Validation pour téléphone: seulement des chiffres, +, espaces et tirets
-        return /^[5249][0-9]{7}$/.test(char);
       case "adresse":
         // Adresse plus permissive mais pas de caractères spéciaux dangereux
         return !/^[*#$%^&()_={}[\]|\\;:"<>?]$/.test(char);
@@ -58,13 +61,14 @@ const FormulaireAgriculteur: React.FC = () => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
+    
     // Si le champ est vide ou a été modifié par suppression, accepter le changement
     if (value.length === 0 || value.length < farmerData[name as keyof FarmerData].length) {
       setFarmerData(prev => ({ ...prev, [name]: value }));
       setErrorFields(prev => ({ ...prev, [name]: false }));
       return;
     }
-    
+
     // Valider uniquement le dernier caractère entré
     const lastChar = value.charAt(value.length - 1);
     if (!validateCharacter(name, lastChar)) {
@@ -84,10 +88,6 @@ const FormulaireAgriculteur: React.FC = () => {
         case "localite":
           fieldLabel = "Locality";
           invalidCharMessage = "Must be only lettres";
-          break;
-        case "telephone":
-          fieldLabel = "Phone number";
-          invalidCharMessage = "Must be exactly 8 digits and start with 5, 2, 4, or 9.";
           break;
         case "adresse":
           fieldLabel = "Adress";
@@ -118,6 +118,11 @@ const FormulaireAgriculteur: React.FC = () => {
   const handleSave = async (event: FormEvent) => {
     event.preventDefault();
     
+    if (!isNumbers(farmerData.telephone)) {
+          setError("error in your phone number");
+          toast.error("Phone number must be exactly 8 digits and start with 5, 2, 4, or 9.");
+          return;
+        }
     // Désactivation du bouton pendant la soumission 
     setIsSubmitting(true);
     try {
