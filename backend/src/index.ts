@@ -17,7 +17,7 @@ const Profile =require("./routes/ProfileR");
 const UpdatProfile = require("./routes/updateProfile");
 
 import farmerRoutes from './routes/farmerRoutes';
-
+import parcelRoutes from './routes/parcelleRoutes';
 // Middleware "use" permet de traiter le requeste it's like "Every time someone visits, do this first!"
 app.use(cors());
 app.use(express.json());
@@ -34,6 +34,7 @@ app.use("/api/user",Profile);
 app.use("/api/user",UpdatProfile)
 
 app.use('/api/farmers', farmerRoutes);
+app.use('/api', parcelRoutes);
 
 // Routes
 app.get("/", (req: Request, res: Response) => {

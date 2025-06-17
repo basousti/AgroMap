@@ -1,4 +1,9 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+const mongoParcel = require('../configuration/dbconfig') as typeof import('mongoose');
+
+import type mongoose from 'mongoose';
+
+import { Schema, Document, Model } from 'mongoose';
+
 
 // Interface pour les coordonnées
 export interface ICoordonnees {
@@ -410,6 +415,6 @@ ParcelleSchema.statics.obtenirStatistiques = function(this: IParcelleModel) {
   ]);
 };
 
-const Parcelle = mongoose.model<IParcelleDocument, IParcelleModel>('Parcelle', ParcelleSchema);
+const Parcelle = mongoParcel.model<IParcelleDocument, IParcelleModel>('Parcelle', ParcelleSchema);
 
 export default Parcelle;

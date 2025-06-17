@@ -130,7 +130,7 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-.message-header {
+.message-header { 
   position: fixed;
   top: 0;
   left: 0;

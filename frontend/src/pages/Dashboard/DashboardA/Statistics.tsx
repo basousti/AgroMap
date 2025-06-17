@@ -44,8 +44,8 @@ const Statistics:React.FC = () =>{
           <img
           alt=""
           src="/AgroMap.png"
-          width="190"
-          height="150"
+          width="180"
+          height="140"
           className="d-inline-block align-top mb-5"
         />
         <nav className="sidebar-nav">
@@ -89,12 +89,12 @@ const Statistics:React.FC = () =>{
 
         <section className="employee-list">
           <h2>Dashboard Power BI</h2>
-          <iframe title="AgroMap" 
-          width="1200" 
-          height="600" 
+          <div className='PowerBI'>
+          <iframe title="AgroMap"  
           src="https://app.powerbi.com/view?r=eyJrIjoiODViYTBjZmItMmE2Ny00Mzg4LWI1NmEtODI4MWJkNmYxYmE4IiwidCI6ImE2MmVlN2M0LWVkMmQtNDk5MS1iNGI4LTMxMjBlODMzM2UxMSJ9" 
            style={{ border: 'none' }} 
           allowFullScreen={true}></iframe>
+          </div>
         </section>
       </div>
     </div>

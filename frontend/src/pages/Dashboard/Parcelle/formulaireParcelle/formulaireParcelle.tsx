@@ -1333,7 +1333,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
           </div>
         )}
 
-        <div className="form-section" ref={addToRefs}>
+        <div className="form-section-parcel" ref={addToRefs}>
           <h2 className="section-title">
             🇹🇳 {modeEdition ? 'Modifier' : 'Créer'} Parcelle Agricole - Tunisie
           </h2>
@@ -1511,7 +1511,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
           </div>
 
           <button 
-            className="submit-btn" 
+            className="submit-btn-parcel" 
             onClick={(e) => { 
               handleRippleEffect(e); 
               handleFormSubmit(e); 
@@ -1592,7 +1592,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
           )}
         </div>
 
-        <div className="form-section" ref={addToRefs}>
+        <div className="form-section-parcel" ref={addToRefs}>
           <h2 className="section-title">
             🗺️ Carte Interactive de la Tunisie
           </h2>
@@ -1731,7 +1731,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
           }
         }
         
-        .submit-btn:hover {
+        .submit-btn-parcel:hover {
           transform: translateY(-2px);
           box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
         }

@@ -39,7 +39,7 @@
 }
 
 /* Section de formulaire */
-.form-section {
+.form-section-parcel {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
@@ -372,7 +372,7 @@
 }
 
 /* Bouton de soumission */
-.submit-btn {
+.submit-btn-parcel{
   width: 100%;
   padding: 1rem 2rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -388,7 +388,7 @@
   margin-top: 1rem;
 }
 
-.submit-btn:hover {
+.submit-btn-parcel:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
@@ -688,7 +688,7 @@
     width: 95%;
   }
   
-  .form-section {
+  .form-section-parcel {
     padding: 1.5rem;
   }
   
@@ -742,7 +742,7 @@
     width: 98%;
   }
   
-  .form-section {
+  .form-section-parcel {
     padding: 1rem;
     border-radius: 15px;
   }
@@ -785,7 +785,7 @@
     animation: none !important;
   }
   
-  .submit-btn,
+  .submit-btn-parcel,
   .clear-btn,
   .refresh-btn,
   .search-btn-parcelle {

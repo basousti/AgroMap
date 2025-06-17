@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import Parcelle, { IParcelleDocument } from '../models/Parcelle';
+import Parcelle from '../models/Parcelle';
 import mongoose from 'mongoose';
 
 export class ParcelleController {
