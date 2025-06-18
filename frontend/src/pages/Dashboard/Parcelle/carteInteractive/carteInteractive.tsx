@@ -73,12 +73,16 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
   const [deletedParcelleNom, setDeletedParcelleNom] = useState('');
 
   // Fonction pour retourner au formulaire
-  const handleReturnToForm = () => {
+  const handleReturnProfile = () => {
     if (propOnReturnToForm) {
       propOnReturnToForm();
     } else {
       navigate('/DashboardE');
     }
+  };
+
+  const handleReturnToForm = () => {
+      navigate('/dashboard-parcelles');
   };
 
   // ✨ NOUVEAU: Fonction pour éditer une parcelle
@@ -1222,7 +1226,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
         zIndex: 2000
       }}>
         <button
-          onClick={handleReturnToForm}
+          onClick={handleReturnProfile}
           style={{
             background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
             color: 'white',
@@ -1250,6 +1254,38 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
         >
           <span style={{ fontSize: '16px' }}>←</span>
              Back to dashboard
+        </button>
+
+        <button
+          onClick={handleReturnToForm}
+          style={{
+            background: 'linear-gradient(135deg,rgb(246, 87, 59),rgb(216, 98, 29))',
+            margin:'10px',
+            color: 'white',
+            border: 'none',
+            padding: '12px 20px',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '600',
+            boxShadow: '0 4px 15px rgba(246, 181, 59, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            transition: 'all 0.3s ease',
+            textTransform: 'uppercase'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(59, 130, 246, 0.3)';
+          }}
+        >
+          <span style={{ fontSize: '16px' }}>←</span>
+             Back to Form 
         </button>
       </div>
       
@@ -1540,7 +1576,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
           border-radius: 8px !important;
           font-weight: bold !important;
         }
-        
+         
         .custom-popup-compact .leaflet-popup-content-wrapper {
           border-radius: 12px;
           box-shadow: 0 4px 15px rgba(0,0,0,0.1);

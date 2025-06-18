@@ -1749,6 +1749,6 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
       `}</style>
     </>
   );
-};
+}; 
 
 export default FormulaireParcelle;
