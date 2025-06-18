@@ -9,7 +9,7 @@ import { Schema, Document, Model } from 'mongoose';
 export interface ICoordonnees {
   lat: number;
   lng: number;
-}
+} 
 
 // Interface pour les parcelles dessinées
 export interface IDrawnParcel {

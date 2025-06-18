@@ -1,18 +1,18 @@
-Créer une nouvelle parcelle :POST  : http://localhost:5000//api/parcelles/
-*Obtenir toutes les parcelles :GET : http://localhost:5000//api/parcelles/
+Créer une nouvelle parcelle :POST  : http://localhost:5000/api/parcelles/          (tested : success )
+Obtenir toutes les parcelles :GET : http://localhost:5000/api/parcelles/          (tested : success )
 
-Obtenir les parcelles d'un agriculteur spécifique :GET : http://localhost:5000//api/parcelles/farmer/:farmerId
+Obtenir les parcelles d'un agriculteur spécifique :GET : http://localhost:5000/api/parcelles/farmer/:farmerId      (tested : success )
 
-Mettre à jour une parcelle :PUT : http://localhost:5000//api/parcelles/farmer/:id
-Supprimer une parcelle : DELETE :http://localhost:5000//api/parcelles/farmer/:id
-Obtenir une parcelle par ID: GET :http://localhost:5000//api/parcelles/farmer/:id
+Mettre à jour une parcelle :PUT : http://localhost:5000/api/parcelles/:id          (tested : success )
+Supprimer une parcelle : DELETE :http://localhost:5000/api/parcelles/:id           (tested : success )
+Obtenir une parcelle par ID: GET :http://localhost:5000/api/parcelles/:id          (tested : success )
 
-Obtenir les statistiques des parcelles : GET :http://localhost:5000//api/parcelles/stats
-Obtenir la liste des cultures disponibles: GET :http://localhost:5000//api/parcelles/cultures
-Obtenir la liste des agriculteurs disponibles: GET :http://localhost:5000//api/parcelles/agriculteurs
-Rechercher des parcelles par texte : GET /http://localhost:5000//api/parcelles/search
-Rechercher des parcelles par proximité géographique : GET :http://localhost:5000//api/parcelles/proximite
-Valider des coordonnées pour la Tunisie:POST : http://localhost:5000//api/parcelles/valider-coordonnees
-Calculer la distance entre deux points :POST :http://localhost:5000//api/parcelles/calculer-distance
-Supprimer plusieurs parcelles :DELETE :http://localhost:5000//api/parcelles/bulk
-Mettre à jour le statut de plusieurs parcelles : PATCH : http://localhost:5000//api/parcelles/bulk/statut
+Obtenir les statistiques des parcelles : GET :http://localhost:5000/api/parcelles/stats
+Obtenir la liste des cultures disponibles: GET :http://localhost:5000/api/parcelles/cultures
+Obtenir la liste des agriculteurs disponibles: GET :http://localhost:5000/api/parcelles/agriculteurs
+Rechercher des parcelles par texte : GET /http://localhost:5000/api/parcelles/search
+Rechercher des parcelles par proximité géographique : GET :http://localhost:5000/api/parcelles/proximite
+Valider des coordonnées pour la Tunisie:POST : http://localhost:5000/api/parcelles/valider-coordonnees
+Calculer la distance entre deux points :POST :http://localhost:5000/api/parcelles/calculer-distance
+Supprimer plusieurs parcelles :DELETE :http://localhost:5000/api/parcelles/bulk
+Mettre à jour le statut de plusieurs parcelles : PATCH : http://localhost:5000/api/parcelles/bulk/statut

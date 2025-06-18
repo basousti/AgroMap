@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import Parcelle from '../models/Parcelle';
 import mongoose from 'mongoose';
-
+ 
 export class ParcelleController {
 
   // ✅ CRÉER UNE NOUVELLE PARCELLE
@@ -248,7 +248,7 @@ export class ParcelleController {
         displayId: parcelle._id.toString().slice(-6)
       }));
 
-      res.status(200).json({
+       res.status(200).json({
         success: true,
         message: 'Parcelles récupérées avec succès',
         data: parcellesFormatees,
@@ -259,6 +259,7 @@ export class ParcelleController {
           pages: Math.ceil(total / limitNum)
         }
       });
+
 
     } catch (error: any) {
       console.error('❌ Erreur lors de la récupération des parcelles:', error);
@@ -771,6 +772,7 @@ export class ParcelleController {
         success: true,
         data: parcellesFormatees
       });
+      
 
     } catch (error: any) {
       console.error('❌ Erreur lors de la récupération des parcelles de l\'agriculteur:', error);

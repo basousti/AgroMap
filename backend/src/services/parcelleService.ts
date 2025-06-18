@@ -22,7 +22,7 @@ export interface IParcelleQuery {
   latitude?: number;
   longitude?: number;
   rayon?: number;
-}
+} 
 
 export interface IPagination {
   currentPage: number;
