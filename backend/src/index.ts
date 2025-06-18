@@ -34,7 +34,7 @@ app.use("/api/user",Profile);
 app.use("/api/user",UpdatProfile)
 
 app.use('/api/farmers', farmerRoutes);
-app.use('/api', parcelRoutes);
+app.use('/api/parcelles', parcelRoutes);
 
 // Routes
 app.get("/", (req: Request, res: Response) => {

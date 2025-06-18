@@ -190,6 +190,6 @@ router.delete(
   '/:id',
   parcelleIdValidation,
   parcelleController.supprimerParcelle.bind(parcelleController)
-);
+); 
 
 export default router;

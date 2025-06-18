@@ -1011,7 +1011,7 @@ a {
   background-color: rgba(58, 134, 255, 0.08);
 }
 
-.status-badge {
+/* .status-badge {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -1021,12 +1021,12 @@ a {
   border-radius: 16px;
   font-size: 0.875rem;
   font-weight: 500;
-}
+} 
 
 .status-badge.active {
   background-color: #e8f5e9;
   color: var(--success-color);
-}
+}*/
 
 
 .profile-actions {

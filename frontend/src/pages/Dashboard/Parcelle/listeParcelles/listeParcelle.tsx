@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Filter, Search, X, ChevronDown, User, Edit, Trash2 } from 'lucide-react';
 import './listeParcelle.css';
 import FormulaireParcelle from '../formulaireParcelle/formulaireParcelle';
-import { ToastContainer,toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Parcelle {
   id: number;
   nom: string;
   surface: number;
   culture: string;
-  statut: 'active' | 'repos' | 'preparation';
+  statut: 'active' | 'repos' | 'preparation'; 
 }
 
 // ✨ INTERFACE CORRIGÉE pour les données complètes d'édition - Compatible avec ParcelleEditData
@@ -129,13 +130,6 @@ const ListeParcelle: React.FC = () => {
       { id: 1, nom: "maouia noamen", surface: 8.2, culture: "Tomate", statut: "active" },
       { id: 2, nom: "ben slimen chikh", surface: 12.5, culture: "Tomate", statut: "active" },
       { id: 3, nom: "maouia mouhamed", surface: 15.8, culture: "Piment", statut: "repos" },
-      { id: 4, nom: "ben salah ali", surface: 6.3, culture: "Tomate", statut: "preparation" },
-      { id: 5, nom: "mouldi faouzi", surface: 20.1, culture: "Piment", statut: "active" },
-      { id: 6, nom: "ben alaya hedi", surface: 9.7, culture: "Poivron", statut: "active" },
-      { id: 7, nom: "ben slimen hassine", surface: 11.4, culture: "Poivron", statut: "repos" },
-      { id: 8, nom: "mouldi bachir", surface: 7.9, culture: "Tomate", statut: "active" },
-      { id: 9, nom: "ben alaya mahmoud", surface: 14.2, culture: "Tomate", statut: "preparation" },
-      { id: 10, nom: "bel hadj habib", surface: 4.6, culture: "Tomate", statut: "active" }
     ];
 
     setTimeout(() => {
@@ -228,7 +222,7 @@ const ListeParcelle: React.FC = () => {
       case 'preparation': 
         return { 
           color: 'status-preparation', 
-          text: 'Préparation',
+          text: 'Preparation',
           dot: 'dot-preparation'
         };
       default: 
@@ -540,7 +534,6 @@ const ListeParcelle: React.FC = () => {
                 <Plus size={20} />
                 <span className="button-text">Add</span>
               </button>
-              <ToastContainer/>
             </div>
           </div>
         </div>
@@ -631,8 +624,7 @@ const ListeParcelle: React.FC = () => {
                         title="Remove Parcel"
                       >
                         <Trash2 size={16} />
-                      </button>
-                      <ToastContainer/>
+                      </button> 
                     </div>
                   </div>
                 </div>
@@ -704,11 +696,11 @@ const ListeParcelle: React.FC = () => {
                 editingParcelle={prepareEditingData()}
                 isEditMode={!!(editingParcelle || parcelleCompleteToEdit)}
               />
-              <ToastContainer/>
             </div>
           </div>
         </div>
       )}
+      <ToastContainer/>
     </div>
   );
 };

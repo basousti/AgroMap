@@ -11,7 +11,7 @@ interface Parcelle {
   nom: string;
   latitude: number;
   longitude: number;
-  superficie: string;
+  superficie: string; 
   type: string;
   statut?: 'active' | 'repos' | 'preparation';
   montantInvestissement?: number;
@@ -56,7 +56,7 @@ const navigate = useNavigate();
     try {
       console.log('🔄 Chargement des parcelles depuis l\'API...');
       
-      const response = await fetch(`${API_BASE_URL}/api/parcelles`, {
+      const response = await fetch(`${API_BASE_URL}/api/parcelles/`, {
         method: 'GET',
         mode: 'cors', // Ajouté
         headers: {

@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 interface Parcelle {
   id: number;
   nom: string;
-  latitude: number;
+  latitude: number; 
   longitude: number;
   superficie: string;
   type: string;
