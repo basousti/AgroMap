@@ -7,12 +7,14 @@ Mettre à jour une parcelle :PUT : http://localhost:5000/api/parcelles/:id      
 Supprimer une parcelle : DELETE :http://localhost:5000/api/parcelles/:id           (tested : success )
 Obtenir une parcelle par ID: GET :http://localhost:5000/api/parcelles/:id          (tested : success )
 
-Obtenir les statistiques des parcelles : GET :http://localhost:5000/api/parcelles/stats
-Obtenir la liste des cultures disponibles: GET :http://localhost:5000/api/parcelles/cultures
-Obtenir la liste des agriculteurs disponibles: GET :http://localhost:5000/api/parcelles/agriculteurs
-Rechercher des parcelles par texte : GET /http://localhost:5000/api/parcelles/search
-Rechercher des parcelles par proximité géographique : GET :http://localhost:5000/api/parcelles/proximite
-Valider des coordonnées pour la Tunisie:POST : http://localhost:5000/api/parcelles/valider-coordonnees
-Calculer la distance entre deux points :POST :http://localhost:5000/api/parcelles/calculer-distance
-Supprimer plusieurs parcelles :DELETE :http://localhost:5000/api/parcelles/bulk
-Mettre à jour le statut de plusieurs parcelles : PATCH : http://localhost:5000/api/parcelles/bulk/statut
+Obtenir les statistiques des parcelles : GET :http://localhost:5000/api/parcelles/stats    (tested : success )
+Obtenir la liste des cultures disponibles: GET :http://localhost:5000/api/parcelles/cultures        (tested : success )
+Obtenir la liste des agriculteurs disponibles: GET :http://localhost:5000/api/parcelles/agriculteurs    (tested : success )
+Rechercher des parcelles par texte : GET : http://localhost:5000/api/parcelles/search?q="someSearchTerm"    (tested : success ) but need to be tested with a real search term like"block"
+Rechercher des parcelles par proximité géographique : GET :http://localhost:5000/api/parcelles/proximite?latitude=34.759&longitude=9.295   (tested : success ) but need put attitude and langitude
+Valider des coordonnées pour la Tunisie :POST : http://localhost:5000/api/parcelles/valider-coordonnees    (tested : success ) 
+Calculer la distance entre deux points :POST :http://localhost:5000/api/parcelles/calculer-distance      (tested : success )
+Supprimer plusieurs parcelles :DELETE :http://localhost:5000/api/parcelles/bulk                (tested : success )
+Mettre à jour le statut de plusieurs parcelles : PATCH : http://localhost:5000/api/parcelles/bulk/statut   (tested : success ) 
+
+
