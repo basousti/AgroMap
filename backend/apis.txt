@@ -1,8 +1,4 @@
 
-
-
-
-
 *Créer une nouvelle parcelle :POST  : http://localhost:5000/api/parcelles/          (tested : success )
 Obtenir toutes les parcelles :GET : http://localhost:5000/api/parcelles/          (tested : success )
 

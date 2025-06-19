@@ -445,7 +445,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
     try {
       // Si la parcelle vient du formulaire avec drawnParcels
       if (parcelle.drawnParcels && parcelle.drawnParcels.length > 0) {
-        console.log('🎨 Dessin de parcelle du formulaire:', parcelle.nom, 'avec', parcelle.drawnParcels.length, 'formes');
+        // console.log('🎨 Dessin de parcelle du formulaire:', parcelle.nom, 'avec', parcelle.drawnParcels.length, 'formes');
         
         parcelle.drawnParcels.forEach((drawnParcel: any, index: number) => {
           let layer: any = null;
@@ -595,7 +595,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
           }
         });
 
-        console.log('✅ Parcelle du formulaire dessinée:', parcelle.nom);
+        // console.log('✅ Parcelle du formulaire dessinée:', parcelle.nom);
         return;
       }
 

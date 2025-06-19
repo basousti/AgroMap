@@ -168,8 +168,7 @@ export class ParcelleController {
   // ✅ OBTENIR TOUTES LES PARCELLES
   async obtenirParcelles(req: Request, res: Response): Promise<void> {
     try {
-      console.log('📊 Récupération de toutes les parcelles...');
-
+    
       const {
         page = 1,
         limit = 100,
@@ -220,8 +219,6 @@ export class ParcelleController {
           .lean(),
         Parcelle.countDocuments(filtre)
       ]);
-
-      console.log(`✅ ${parcelles.length} parcelles trouvées sur ${total} total`);
 
       // Formatage pour le frontend
       const parcellesFormatees = parcelles.map(parcelle => ({
@@ -497,20 +494,20 @@ export class ParcelleController {
       // Vérifications métier
       const { force } = req.query;
       
-      if (!force && parcelleExistante.statut === 'active') {
-        res.status(409).json({
-          success: false,
-          error: 'Parcelle active - Suppression non autorisée',
-          message: 'Ajoutez ?force=true pour forcer la suppression',
-          data: {
-            id: parcelleExistante._id,
-            nom: parcelleExistante.nom,
-            statut: parcelleExistante.statut,
-            farmerName: parcelleExistante.farmerName
-          }
-        });
-        return;
-      }
+      // if (!force && parcelleExistante.statut === 'active') {
+      //   res.status(409).json({
+      //     success: false,
+      //     error: 'Parcelle active - Suppression non autorisée',
+      //     message: 'Ajoutez ?force=true pour forcer la suppression',
+      //     data: {
+      //       id: parcelleExistante._id,
+      //       nom: parcelleExistante.nom,
+      //       statut: parcelleExistante.statut,
+      //       farmerName: parcelleExistante.farmerName
+      //     }
+      //   });
+      //   return;
+      // }
 
       const parcelleSupprimee = await Parcelle.findByIdAndDelete(id);
 

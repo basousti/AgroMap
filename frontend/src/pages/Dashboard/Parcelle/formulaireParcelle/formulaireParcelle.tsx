@@ -30,7 +30,7 @@ interface ParcelleData {
 interface ParcelleEditData {
   id: number;
   nom: string;
-  surface: number;
+  superficie: number;
   culture: string;
   statut: 'active' | 'repos' | 'preparation';
 }
@@ -189,13 +189,13 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
       }
 
       // Si c'est des données simples de la liste
-      if (parcelleAEditer.surface) {
+      if (parcelleAEditer.superficie) {
         // Créer une parcelle dessinée simple pour représenter la surface
         const parcelleSimple = {
           id: parcelleAEditer.id,
           type: 'rectangle',
-          area: parcelleAEditer.surface * 10000, // Convertir ha en m²
-          perimeter: Math.sqrt(parcelleAEditer.surface * 10000) * 4, // Approximation rectangle
+          area: parcelleAEditer.superficie * 10000, // Convertir ha en m²
+          perimeter: Math.sqrt(parcelleAEditer.superficie * 10000) * 4, // Approximation rectangle
           culture: parcelleAEditer.culture,
           statut: parcelleAEditer.statut,
           colors: getCultureColor(parcelleAEditer.culture)
@@ -1047,12 +1047,12 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
       culture: selectedCulture,
       statut: statutParcelle,
       montantInvestissement: parseFloat(montantInvestissement as string) || 0,
-      surfaceTotale: surfaceCalculee || (modeEdition && parcelleAEditer?.surface ? parcelleAEditer.surface * 10000 : 0),
+      surfaceTotale: surfaceCalculee || (modeEdition && parcelleAEditer?.superficie ? parcelleAEditer.superficie * 10000 : 0),
       farmerId: farmerId,
       dateCreation: modeEdition && parcelleAEditer?.dateCreation ? parcelleAEditer.dateCreation : new Date().toISOString(),
       latitude: coordonneesFinales.lat,
       longitude: coordonneesFinales.lng,
-      superficie: `${surfaceCalculee || (modeEdition && parcelleAEditer?.surface ? parcelleAEditer.surface * 10000 : 0)} m²`,
+      superficie: `${surfaceCalculee || (modeEdition && parcelleAEditer?.superficie ? parcelleAEditer.superficie * 10000 : 0)} m²`,
       type: 'Agricole',
       formeType: 'polygon',
       drawnParcels: parcellesDessinees.map(p => ({
@@ -1432,7 +1432,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
               placeholder="Superficie en mètres carrés" 
               min="0" 
               step="0.01"
-              value={calculateTotalArea() || (modeEdition && parcelleAEditer?.surface ? parcelleAEditer.surface * 10000 : '')}
+              value={calculateTotalArea() || (modeEdition && parcelleAEditer?.superficie ? parcelleAEditer.superficie * 10000 : '')}
               readOnly
               style={{
                 background: '#f8f9fa',
@@ -1440,14 +1440,14 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 fontWeight: '600'
               }}
             />
-            {modeEdition && parcelleAEditer?.surface && calculateTotalArea() === 0 && (
+            {modeEdition && parcelleAEditer?.superficie && calculateTotalArea() === 0 && (
               <div style={{
                 marginTop: '6px',
                 fontSize: '11px',
                 color: '#f59e0b',
                 fontWeight: '600'
               }}>
-                📏 Current area: {parcelleAEditer.surface} ha ({(parcelleAEditer.surface * 10000).toFixed(0)} m²)
+                📏 Current area: {parcelleAEditer.superficie} ha ({(parcelleAEditer.superficie * 10000).toFixed(0)} m²)
               </div>
             )}
           </div>
@@ -1545,8 +1545,8 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 <strong>Total area</strong> {
                   calculateTotalArea() > 0 
                     ? `${calculateTotalArea()} m² (${(calculateTotalArea()/10000).toFixed(3)} ha)`
-                    : modeEdition && parcelleAEditer?.surface 
-                      ? `${(parcelleAEditer.surface * 10000).toFixed(0)} m² (${parcelleAEditer.surface} ha)`
+                    : modeEdition && parcelleAEditer?.superficie 
+                      ? `${(parcelleAEditer.superficie * 10000).toFixed(0)} m² (${parcelleAEditer.superficie} ha)`
                       : 'Non calculée'
                 }
               </p>

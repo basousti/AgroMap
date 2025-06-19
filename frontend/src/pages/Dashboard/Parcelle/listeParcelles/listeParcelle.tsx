@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 interface Parcelle {
   id: number;
   nom: string;
-  surface: number;
+  superficie: number;
   culture: string;
   statut: 'active' | 'repos' | 'preparation';
 }
@@ -17,10 +17,10 @@ interface ParcelleComplete extends Parcelle {
   montantInvestissement?: number;
   surfaceTotale?: number;
   farmerId?: string;
+  farmerName?: string;
   dateCreation?: string;
   latitude?: number;
   longitude?: number;
-  superficie?: string;
   type?: string;
   drawnParcels?: any[];
   coordonnees?: any;
@@ -39,7 +39,7 @@ interface Farmer {
 }
 
 const ListeParcelle: React.FC = () => {
-  const [parcelles, setParcelles] = useState<Parcelle[]>([]);
+  const [parcelles, setParcelles] = useState<ParcelleComplete[]>([]);
   const [farmers, setFarmers] = useState<Farmer[]>([]);
   const [selectedFarmer, setSelectedFarmer] = useState<Farmer | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -53,28 +53,49 @@ const ListeParcelle: React.FC = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        
-        // Chargement des agriculteurs
-        const farmersResponse = await fetch(`http://localhost:5000/api/parcelles/farmers`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        if (farmersResponse.ok) {
-          const farmersData = await farmersResponse.json();
-          setFarmers(farmersData.farmers || farmersData.data || []);
-        }
-
-        // Chargement des parcelles
-        const parcellesResponse = await fetch(' http://localhost:5000/api/parcelles/', {
+        const response = await fetch('http://localhost:5000/api/parcelles/', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        if (parcellesResponse.ok) {
-          const parcellesData = await parcellesResponse.json();
-          setParcelles(parcellesData);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const result = await response.json();
+        
+        // Handle both array and object responses
+        const parcellesData = Array.isArray(result) ? result : result.data || result.parcelles || [];
+
+        console.log("nnnnnnnnnnnn",parcellesData)
+        
+        if (!Array.isArray(parcellesData)) {
+          throw new Error("API response is not an array");
+        }
+
+        setParcelles(parcellesData);
+
+        // Extract unique farmers safely
+        const uniqueFarmers: Record<string, Farmer> = {};
+        
+        parcellesData.forEach((parcelle: ParcelleComplete) => {
+          if (parcelle.farmerId) {
+            uniqueFarmers[parcelle.farmerId] = {
+              _id: {
+                _id: parcelle.farmerId,
+                name: parcelle.farmerName || 'Unknown',
+                prenom: ''
+              },
+              localite: '',
+              telephone: '',
+              adresse: ''
+            };
+          }
+        });
+
+        setFarmers(Object.values(uniqueFarmers));
       } catch (error) {
         console.error("Erreur lors du chargement des données:", error);
+        toast.error("Erreur de chargement des données");
       } finally {
         setIsLoading(false);
       }
@@ -82,6 +103,8 @@ const ListeParcelle: React.FC = () => {
 
     fetchData();
   }, []);
+
+
 
   const fetchParcelleComplete = async (id: number): Promise<ParcelleComplete | null> => {
     try {
@@ -109,16 +132,18 @@ const ListeParcelle: React.FC = () => {
     }
   };
 
-  const filteredParcelles = parcelles.filter(parcelle => {
-    if (!selectedFarmer) {
-      return true;
-    }
-    
+  // Correction de la surface avec valeur par défaut
+  const filteredParcelles = parcelles.map(parcelle => ({
+    ...parcelle,
+    surface: parcelle.superficie || 0 // Valeur par défaut si undefined
+  })).filter(parcelle => {
+    if (!selectedFarmer) return true;
     const farmerFullName = `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`.toLowerCase();
     const parcelleName = parcelle.nom.toLowerCase();
-    
     return parcelleName.includes(farmerFullName);
   });
+
+
 
   const handleFarmerSelect = (farmer: Farmer) => {
     setSelectedFarmer(farmer);
@@ -185,7 +210,7 @@ const ListeParcelle: React.FC = () => {
   };
 
   const handleDeleteParcelle = async (parcelle: Parcelle) => {
-    const confirmDelete = window.confirm(`Êtes-vous sûr de vouloir supprimer la parcelle ${parcelle.nom}?`);
+    const confirmDelete = window.confirm(`Are you sure you want to delete parcel ${parcelle.nom}?`);
 
     if (confirmDelete) {
       try {
@@ -198,11 +223,11 @@ const ListeParcelle: React.FC = () => {
 
         if (response.ok) {
           setParcelles(prev => prev.filter(p => p.id !== parcelle.id));
-          toast.success(`Parcelle "${parcelle.nom}" supprimée avec succès!`);
+          toast.success(`Parcel"${parcelle.nom}" deleyed successfully!`);
         }
       } catch (error) {
         console.error("Erreur lors de la suppression:", error);
-        toast.error("Une erreur est survenue lors de la suppression");
+        toast.error("error deleting parcel");
       } finally {
         setIsLoading(false);
       }
@@ -417,7 +442,7 @@ const ListeParcelle: React.FC = () => {
                   <div className="table-cell cell-surface">
                     <div className="surface-badge">
                       <span className="surface-value">
-                        {parcelle.surface.toFixed(1)}
+                        {(parcelle.superficie || 0)} 
                       </span>
                       <span className="surface-unit">m²</span>
                     </div>
