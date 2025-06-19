@@ -1238,7 +1238,7 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
             fontWeight: '600',
             boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'center', 
             gap: '8px',
             transition: 'all 0.3s ease',
             textTransform: 'uppercase'

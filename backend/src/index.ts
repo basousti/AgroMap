@@ -41,6 +41,19 @@ app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Hello, TypeScript with Express!" });
 });
 
+// ✅ Vérification de la santé de l'API
+app.get("/api/health", (req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message: "AgroMap API est en fonctionnement",
+    timestamp: new Date(),
+    version: "1.0.0",
+    environment: process.env.NODE_ENV || "development",
+    uptime: process.uptime()
+  });
+});
+
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

@@ -1,4 +1,9 @@
-Créer une nouvelle parcelle :POST  : http://localhost:5000/api/parcelles/          (tested : success )
+
+
+
+
+
+*Créer une nouvelle parcelle :POST  : http://localhost:5000/api/parcelles/          (tested : success )
 Obtenir toutes les parcelles :GET : http://localhost:5000/api/parcelles/          (tested : success )
 
 Obtenir les parcelles d'un agriculteur spécifique :GET : http://localhost:5000/api/parcelles/farmer/:farmerId      (tested : success )

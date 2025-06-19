@@ -26,7 +26,7 @@ export interface IParcelleQuery {
 
 export interface IPagination {
   currentPage: number;
-  totalPages: number;
+  totalPages: number; 
   totalItems: number;
   itemsPerPage: number;
   hasNextPage: boolean;
@@ -496,6 +496,12 @@ export class ParcelleService {
       throw new Error(`Erreur de recherche: ${error.message}`);
     }
   }
+
+  /**
+   * Obtenir les agriculteur avec ses parcelle kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+   */
+ 
+
 
   /**
    * Rechercher des parcelles par proximité géographique

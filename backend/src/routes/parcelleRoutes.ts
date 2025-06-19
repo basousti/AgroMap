@@ -130,6 +130,17 @@ router.get(
   parcelleController.obtenirParcellesParFarmerId.bind(parcelleController)
 );
 
+// /**
+//  * @route   GET /api/parcelles/farmer
+//  * @desc    Obtenir les agriculteurs qui ont des parcelle 
+//  * @access  Public
+//  */
+// router.get(
+//   '/farmer',
+//   farmerIdValidation,
+//   parcelleController.obtenirParcellesParFarmer.bind(parcelleController)
+// );
+
 // ==================== ROUTES GÉNÉRIQUES ====================
 
 /**

@@ -10,16 +10,10 @@ interface Parcelle {
   nom: string;
   surface: number;
   culture: string;
-  statut: 'active' | 'repos' | 'preparation'; 
+  statut: 'active' | 'repos' | 'preparation';
 }
 
-// ✨ INTERFACE CORRIGÉE pour les données complètes d'édition - Compatible avec ParcelleEditData
-interface ParcelleComplete {
-  id: number;
-  nom: string;
-  culture: string;
-  statut: 'active' | 'repos' | 'preparation';
-  surface?: number; // Optionnel pour compatibilité
+interface ParcelleComplete extends Parcelle {
   montantInvestissement?: number;
   surfaceTotale?: number;
   farmerId?: string;
@@ -52,185 +46,66 @@ const ListeParcelle: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingParcelle, setEditingParcelle] = useState<Parcelle | null>(null);
-
-  // ✨ État pour les données complètes d'édition - Type corrigé
   const [parcelleCompleteToEdit, setParcelleCompleteToEdit] = useState<ParcelleComplete | null>(null);
 
-  // ✨ Fonction pour charger les parcelles depuis localStorage
-  const chargerParcellesLocalStorage = () => {
-    try {
-      const savedParcelles = localStorage.getItem('parcellesEnregistrees');
-      if (savedParcelles) {
-        const parcellesData = JSON.parse(savedParcelles);
-        console.log('📋 Parcelles chargées depuis localStorage:', parcellesData.length);
-        
-        const parcellesFormatees = parcellesData.map((p: any) => {
-          const farmer = farmers.find(f => f._id._id === p.farmerId);
-          const nomAgriculteur = farmer 
-            ? `${farmer._id.name} ${farmer._id.prenom}`
-            : p.nom || 'Agriculteur inconnu';
-
-          return {
-            id: p.id,
-            nom: nomAgriculteur,
-            surface: p.surfaceTotale ? (p.surfaceTotale / 10000) : 0,
-            culture: p.culture,
-            statut: p.statut
-          };
-        });
-        
-        return parcellesFormatees;
-      }
-    } catch (error) {
-      console.error('❌ Erreur lors du chargement des parcelles:', error);
-    }
-    return [];
-  };
-
-  // ✨ Fonction CORRIGÉE pour récupérer les données complètes d'une parcelle
-  const getParcelleCompleteData = (parcelleId: number): ParcelleComplete | null => {
-    try {
-      const savedParcelles = localStorage.getItem('parcellesEnregistrees');
-      if (savedParcelles) {
-        const parcellesData = JSON.parse(savedParcelles);
-        const parcelleComplete = parcellesData.find((p: any) => p.id === parcelleId);
-        
-        if (parcelleComplete) {
-          console.log('📋 Données complètes trouvées pour parcelle:', parcelleId, parcelleComplete);
-          // ✅ S'assurer que l'objet retourné est compatible avec ParcelleEditData
-          return {
-            id: parcelleComplete.id,
-            nom: parcelleComplete.nom,
-            culture: parcelleComplete.culture,
-            statut: parcelleComplete.statut,
-            surface: parcelleComplete.surfaceTotale ? (parcelleComplete.surfaceTotale / 10000) : undefined,
-            montantInvestissement: parcelleComplete.montantInvestissement,
-            surfaceTotale: parcelleComplete.surfaceTotale,
-            farmerId: parcelleComplete.farmerId,
-            dateCreation: parcelleComplete.dateCreation,
-            latitude: parcelleComplete.latitude,
-            longitude: parcelleComplete.longitude,
-            superficie: parcelleComplete.superficie,
-            type: parcelleComplete.type,
-            drawnParcels: parcelleComplete.drawnParcels,
-            coordonnees: parcelleComplete.coordonnees,
-            formeType: parcelleComplete.formeType
-          };
-        }
-      }
-    } catch (error) {
-      console.error('❌ Erreur lors de la récupération des données complètes:', error);
-    }
-    return null;
-  };
-
-  // Données d'exemple pour les parcelles + parcelles du localStorage
+  // Chargement initial des parcelles
   useEffect(() => {
-    const donneesExemple: Parcelle[] = [
-      { id: 1, nom: "maouia noamen", surface: 8.2, culture: "Tomate", statut: "active" },
-      { id: 2, nom: "ben slimen chikh", surface: 12.5, culture: "Tomate", statut: "active" },
-      { id: 3, nom: "maouia mouhamed", surface: 15.8, culture: "Piment", statut: "repos" },
-    ];
-
-    setTimeout(() => {
-      const parcellesLS = chargerParcellesLocalStorage();
-      console.log('📊 Parcelles localStorage:', parcellesLS.length);
-      console.log('📊 Parcelles exemple:', donneesExemple.length);
-      
-      const toutesLesParcelles = [...donneesExemple, ...parcellesLS];
-      setParcelles(toutesLesParcelles);
-      setIsLoading(false);
-    }, 800);
-  }, [farmers]);
-
-  // Écouter les changements dans localStorage
-  useEffect(() => {
-    const handleStorageChange = () => {
-      console.log('🔄 Changement détecté dans localStorage, rechargement...');
-      const nouvelleParcelles = chargerParcellesLocalStorage();
-      setParcelles(prev => {
-        const donneesExemple = prev.slice(0, 10);
-        return [...donneesExemple, ...nouvelleParcelles];
-      });
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    
-    const interval = setInterval(() => {
-      const currentParcelles = chargerParcellesLocalStorage();
-      setParcelles(prev => {
-        const donneesExemple = prev.slice(0, 10);
-        if (currentParcelles.length !== prev.length - 10) {
-          console.log('🆕 Changement de parcelles détecté');
-          return [...donneesExemple, ...currentParcelles];
-        }
-        return prev;
-      });
-    }, 2000);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
-    };
-  }, [farmers]);
-
-  // Récupération des agriculteurs depuis l'API
-  useEffect(() => {
-    const fetchFarmers = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        if (!token) {
-          console.warn('No authentication token found. Cannot fetch farmers.');
-          return;
+        
+        // Chargement des agriculteurs
+        const farmersResponse = await fetch(`http://localhost:5000/api/parcelles/farmers`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (farmersResponse.ok) {
+          const farmersData = await farmersResponse.json();
+          setFarmers(farmersData.farmers || farmersData.data || []);
         }
 
-        const response = await fetch('http://localhost:5000/api/farmers', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+        // Chargement des parcelles
+        const parcellesResponse = await fetch(' http://localhost:5000/api/parcelles/', {
+          headers: { Authorization: `Bearer ${token}` }
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setFarmers(data.farmers || data.data || []);
-          console.log('👥 Agriculteurs chargés:', data.farmers?.length || 0);
-        } else {
-          console.error("Erreur lors de la récupération des agriculteurs:", response.status, response.statusText);
+        if (parcellesResponse.ok) {
+          const parcellesData = await parcellesResponse.json();
+          setParcelles(parcellesData);
         }
       } catch (error) {
-        console.error("Erreur lors de la récupération des agriculteurs:", error);
+        console.error("Erreur lors du chargement des données:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchFarmers();
+    fetchData();
   }, []);
+
+  const fetchParcelleComplete = async (id: number): Promise<ParcelleComplete | null> => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5000/api/parcelles/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        return await response.json();
+      }
+      return null;
+    } catch (error) {
+      console.error("Erreur lors du chargement de la parcelle:", error);
+      return null;
+    }
+  };
 
   const getStatutConfig = (statut: string) => {
     switch (statut) {
-      case 'active': 
-        return { 
-          color: 'status-active', 
-          text: 'Active',
-          dot: 'dot-active'
-        };
-      case 'repos': 
-        return { 
-          color: 'status-repos', 
-          text: 'En repos',
-          dot: 'dot-repos'
-        };
-      case 'preparation': 
-        return { 
-          color: 'status-preparation', 
-          text: 'Preparation',
-          dot: 'dot-preparation'
-        };
-      default: 
-        return { 
-          color: 'status-default', 
-          text: 'Inconnu',
-          dot: 'dot-default'
-        };
+      case 'active': return { color: 'status-active', text: 'Active', dot: 'dot-active' };
+      case 'repos': return { color: 'status-repos', text: 'En repos', dot: 'dot-repos' };
+      case 'preparation': return { color: 'status-preparation', text: 'Preparation', dot: 'dot-preparation' };
+      default: return { color: 'status-default', text: 'Inconnu', dot: 'dot-default' };
     }
   };
 
@@ -283,159 +158,123 @@ const ListeParcelle: React.FC = () => {
     }
   };
 
-  // Fonction pour gérer la modification d'une parcelle
-  const handleEditParcelle = (parcelle: Parcelle) => {
-    console.log("🖊️ Modification de la parcelle:", parcelle.id);
-    
-    const parcelleComplete = getParcelleCompleteData(parcelle.id);
-    
-    if (parcelleComplete) {
-      console.log("📋 Données complètes récupérées pour l'édition:", parcelleComplete);
-      setParcelleCompleteToEdit(parcelleComplete);
+  const handleEditParcelle = async (parcelle: Parcelle) => {
+    try {
+      setIsLoading(true);
+      const completeData = await fetchParcelleComplete(parcelle.id);
       
-      const farmer = farmers.find(f => f._id._id === parcelleComplete.farmerId);
-      if (farmer) {
-        setSelectedFarmer(farmer);
-        console.log("👤 Agriculteur trouvé et sélectionné:", farmer._id.name, farmer._id.prenom);
+      if (completeData) {
+        setParcelleCompleteToEdit(completeData);
+        
+        // Trouver l'agriculteur correspondant
+        if (completeData.farmerId) {
+          const farmer = farmers.find(f => f._id._id === completeData.farmerId);
+          if (farmer) setSelectedFarmer(farmer);
+        }
+      } else {
+        setEditingParcelle(parcelle);
       }
-    } else {
-      console.log("⚠️ Données complètes non trouvées, utilisation des données de base");
-      setEditingParcelle(parcelle);
       
-      const farmerName = parcelle.nom.toLowerCase();
-      const correspondingFarmer = farmers.find(farmer => {
-        const fullName = `${farmer._id.name} ${farmer._id.prenom}`.toLowerCase();
-        return farmerName.includes(fullName);
-      });
-      
-      if (correspondingFarmer) {
-        setSelectedFarmer(correspondingFarmer);
-      }
+      setShowModal(true);
+    } catch (error) {
+      console.error("Erreur lors de la préparation de l'édition:", error);
+      toast.error("Erreur lors du chargement des données de la parcelle");
+    } finally {
+      setIsLoading(false);
     }
-    
-    setShowModal(true);
   };
 
-  // Fonction pour gérer la suppression d'une parcelle
-  const handleDeleteParcelle = (parcelle: Parcelle) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete the plot ${parcelle.nom}?\n\n` +
-      `Area: ${parcelle.surface} ha\n` +
-      `Crop: ${parcelle.culture}\n` +
-      `Status: ${getStatutConfig(parcelle.statut).text}\n\n` +
-      `This action cannot be undone.`
-    );
+  const handleDeleteParcelle = async (parcelle: Parcelle) => {
+    const confirmDelete = window.confirm(`Êtes-vous sûr de vouloir supprimer la parcelle ${parcelle.nom}?`);
 
     if (confirmDelete) {
-      console.log("🗑️ Suppression de la parcelle:", parcelle.id);
-      
-      setParcelles(prev => prev.filter(p => p.id !== parcelle.id));
-      
       try {
-        const savedParcelles = localStorage.getItem('parcellesEnregistrees');
-        if (savedParcelles) {
-          const parcellesData = JSON.parse(savedParcelles);
-          const updatedParcelles = parcellesData.filter((p: any) => p.id !== parcelle.id);
-          localStorage.setItem('parcellesEnregistrees', JSON.stringify(updatedParcelles));
-          console.log("✅ Parcelle supprimée du localStorage");
+        setIsLoading(true);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelle.id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          setParcelles(prev => prev.filter(p => p.id !== parcelle.id));
+          toast.success(`Parcelle "${parcelle.nom}" supprimée avec succès!`);
         }
       } catch (error) {
-        console.error("❌ Erreur lors de la suppression du localStorage:", error);
+        console.error("Erreur lors de la suppression:", error);
+        toast.error("Une erreur est survenue lors de la suppression");
+      } finally {
+        setIsLoading(false);
       }
-
-      setTimeout(() => {
-        toast.success(`✅ "${parcelle.nom}" plot deleted successfully!`);
-      }, 200);
     }
   };
 
-  // Fonction principale pour gérer la soumission du formulaire
-  const handleParcelleSubmit = (parcelleData: any) => {
-    console.log("📤 Données reçues du formulaire:", parcelleData);
+  const handleParcelleSubmit = async (parcelleData: any) => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem('token');
+      const nomAgriculteur = selectedFarmer 
+        ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`
+        : 'Agriculteur inconnu';
 
-    const nomAgriculteur = selectedFarmer 
-      ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}` 
-      : 'Farmer is not selected ';
+      let updatedParcelles = [...parcelles];
+      
+      if (editingParcelle || parcelleCompleteToEdit) {
+        // Mode modification
+        const parcelleId = parcelleCompleteToEdit?.id || editingParcelle?.id;
+        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelleId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            ...parcelleData,
+            farmerId: selectedFarmer?._id._id
+          })
+        });
 
-    if (editingParcelle || parcelleCompleteToEdit) {
-      // Mode modification
-      const parcelleId = parcelleCompleteToEdit?.id || editingParcelle?.id;
-      
-      console.log("🔄 Mode modification pour parcelle ID:", parcelleId);
-      
-      const updatedParcelle: Parcelle = {
-        id: parcelleId!,
-        nom: nomAgriculteur,
-        surface: parcelleData.surfaceTotale ? (parcelleData.surfaceTotale / 10000) : 0,
-        culture: parcelleData.culture,
-        statut: parcelleData.statut,
-      };
-
-      console.log("🔄 Parcelle modifiée:", updatedParcelle);
-      
-      setParcelles(prev => prev.map(p => p.id === parcelleId ? updatedParcelle : p));
-      
-      try {
-        const savedParcelles = localStorage.getItem('parcellesEnregistrees');
-        if (savedParcelles) {
-          const parcellesData = JSON.parse(savedParcelles);
-          const updatedParcellesData = parcellesData.map((p: any) => 
-            p.id === parcelleId ? { 
-              ...parcelleData,
-              id: parcelleId,
-              nom: nomAgriculteur,
-              farmerId: selectedFarmer?._id._id
-            } : p
-          );
-          localStorage.setItem('parcellesEnregistrees', JSON.stringify(updatedParcellesData));
-          console.log("✅ Parcelle mise à jour dans localStorage avec données complètes");
+        if (response.ok) {
+          const updatedParcelle = await response.json();
+          updatedParcelles = parcelles.map(p => p.id === parcelleId ? updatedParcelle : p);
+          toast.success(`Parcelle "${nomAgriculteur}" modifiée avec succès!`);
         }
-      } catch (error) {
-        console.error("❌ Erreur lors de la mise à jour localStorage:", error);
+      } else {
+        // Mode ajout
+        const response = await fetch('http://localhost:5000/api/parcelles', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            ...parcelleData,
+            farmerId: selectedFarmer?._id._id
+          })
+        });
+
+        if (response.ok) {
+          const newParcelle = await response.json();
+          updatedParcelles = [...parcelles, newParcelle];
+          toast.success(`Parcelle "${nomAgriculteur}" ajoutée avec succès!`);
+        }
       }
 
+      setParcelles(updatedParcelles);
       setShowModal(false);
       setEditingParcelle(null);
       setParcelleCompleteToEdit(null);
-
-      setTimeout(() => {
-        toast.success(`✅ Plot for farmer "${nomAgriculteur}" was successfully modified!\n📐 Area: ${(parcelleData.surfaceTotale / 10000).toFixed(2)} hectares\n🌾 Crop type: ${parcelleData.culture}\n📊 Current status: ${parcelleData.statut}`);
-      }, 300);
-    } else {
-      // Mode ajout
-      const newParcelle: Parcelle = {
-        id: parcelleData.id || Date.now(),
-        nom: nomAgriculteur,
-        surface: parcelleData.surfaceTotale ? (parcelleData.surfaceTotale / 10000) : 0,
-        culture: parcelleData.culture,
-        statut: parcelleData.statut,
-      };
-
-      console.log("🆕 Nouvelle parcelle avec nom automatique:", newParcelle);
-      setParcelles(prev => [...prev, newParcelle]);
-      setShowModal(false);
-
-      setTimeout(() => {
-        toast.success(`✅ Plot for "${nomAgriculteur}" successfully added!\n📐 Area: ${(parcelleData.surfaceTotale / 10000).toFixed(2)} ha\n🌾 Crop: ${parcelleData.culture}\n📊 Status: ${parcelleData.statut}`);
-      }, 300);
+    } catch (error) {
+      console.error("Erreur lors de l'envoi des données:", error);
+      toast.error("Une erreur est survenue");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // ✨ FONCTION UTILITAIRE pour convertir les données vers le format attendu par le formulaire
-  const prepareEditingData = (): any => {
-    if (parcelleCompleteToEdit) {
-      // Données complètes disponibles
-      return parcelleCompleteToEdit;
-    } else if (editingParcelle) {
-      // Données de base uniquement - conversion vers format compatible
-      return {
-        id: editingParcelle.id,
-        nom: editingParcelle.nom,
-        surface: editingParcelle.surface,
-        culture: editingParcelle.culture,
-        statut: editingParcelle.statut
-      };
-    }
+  const prepareEditingData = () => {
+    if (parcelleCompleteToEdit) return parcelleCompleteToEdit;
+    if (editingParcelle) return editingParcelle;
     return null;
   };
 
@@ -453,11 +292,11 @@ const ListeParcelle: React.FC = () => {
   return (
     <div className="parcelle-container">
       <div className="parcelle-wrapper">
-        
+
         {/* Barre de contrôles */}
         <div className="controls-section">
           <div className="controls-row">
-            
+
             {/* Sélecteur d'agriculteur */}
             <div className="farmer-selector-container">
               <div className="farmer-selector">
@@ -469,14 +308,14 @@ const ListeParcelle: React.FC = () => {
                     <div className="farmer-selector-left">
                       <User size={20} className="farmer-icon" />
                       <span className={selectedFarmer ? "farmer-selected" : "farmer-placeholder"}>
-                        {selectedFarmer 
+                        {selectedFarmer
                           ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`
                           : "Sélectionner un agriculteur..."
                         }
                       </span>
                     </div>
-                    <ChevronDown 
-                      size={20} 
+                    <ChevronDown
+                      size={20}
                       className={`dropdown-arrow ${isDropdownOpen ? 'dropdown-arrow-open' : ''}`}
                     />
                   </div>
@@ -486,7 +325,7 @@ const ListeParcelle: React.FC = () => {
                 {isDropdownOpen && (
                   <div className="farmer-dropdown">
                     <div className="farmer-dropdown-content">
-                      <div 
+                      <div
                         onClick={() => {
                           setSelectedFarmer(null);
                           setIsDropdownOpen(false);
@@ -517,17 +356,17 @@ const ListeParcelle: React.FC = () => {
                 )}
               </div>
             </div>
-            
+
             {/* Boutons d'action */}
             <div className="actions-container">
-              <button 
+              <button
                 className="action-button-parcel action-button-filter"
                 onClick={handleFiltrerClick}
               >
                 <Filter size={20} />
                 <span className="button-text">Filter</span>
               </button>
-              <button 
+              <button
                 className="action-button-parcel action-button-primary"
                 onClick={handleAjouterClick}
               >
@@ -540,7 +379,7 @@ const ListeParcelle: React.FC = () => {
 
         {/* Tableau principal */}
         <div className="table-container">
-          
+
           {/* En-tête du tableau */}
           <div className="table-header">
             <div className="table-header-row">
@@ -556,7 +395,7 @@ const ListeParcelle: React.FC = () => {
           <div className="table-body">
             {filteredParcelles.map((parcelle, index) => {
               const statutConfig = getStatutConfig(parcelle.statut);
-              
+
               return (
                 <div
                   key={parcelle.id}
@@ -601,7 +440,7 @@ const ListeParcelle: React.FC = () => {
                   {/* Actions */}
                   <div className="table-cell cell-actions">
                     <div className="actions-buttons">
-                      <button 
+                      <button
                         className="action-btn action-btn-edit"
                         onClick={(e) => {
                           e.preventDefault();
@@ -613,7 +452,7 @@ const ListeParcelle: React.FC = () => {
                       >
                         <Edit size={16} />
                       </button>
-                      <button 
+                      <button
                         className="action-btn action-btn-delete"
                         onClick={(e) => {
                           e.preventDefault();
@@ -624,7 +463,7 @@ const ListeParcelle: React.FC = () => {
                         title="Remove Parcel"
                       >
                         <Trash2 size={16} />
-                      </button> 
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -675,10 +514,10 @@ const ListeParcelle: React.FC = () => {
                   gap: '4px'
                 }}>
                   {parcelleCompleteToEdit ? (
-                      <>✅ Full dataset available for editing</>
-                    ) : (
-                      <>⚠️ Only core information available</>
-                    )}
+                    <>✅ Full dataset available for editing</>
+                  ) : (
+                    <>⚠️ Only core information available</>
+                  )}
                 </div>
               )}
               <button className="modal-close-btn" onClick={handleCloseModal}>
@@ -687,10 +526,10 @@ const ListeParcelle: React.FC = () => {
             </div>
             <div className="modal-body">
               {/* ✅ FORMULAIRE AVEC PROPS CORRECTEMENT TYPÉES */}
-              <FormulaireParcelle 
-                onSubmit={handleParcelleSubmit} 
+              <FormulaireParcelle
+                onSubmit={handleParcelleSubmit}
                 onClose={handleCloseModal}
-                farmerId={selectedFarmer?._id._id || ''} 
+                farmerId={selectedFarmer?._id._id || ''}
                 useInternalNavigation={false}
                 // ✅ Props d'édition avec types compatibles
                 editingParcelle={prepareEditingData()}
@@ -700,7 +539,7 @@ const ListeParcelle: React.FC = () => {
           </div>
         </div>
       )}
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };
