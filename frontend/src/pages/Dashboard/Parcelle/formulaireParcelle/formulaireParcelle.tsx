@@ -27,7 +27,7 @@ interface ParcelleData {
 interface ParcelleEditData {
   id: number;
   nom: string;
-  surface: number;
+  superficie: number;
   culture: string;
   statut: 'active' | 'repos' | 'preparation';
 }
