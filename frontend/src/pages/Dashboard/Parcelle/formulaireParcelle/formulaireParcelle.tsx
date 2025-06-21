@@ -100,7 +100,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
     setIsNavigating(true);
     console.log('📋 Navigation vers la liste des parcelles...');
     
-    showToast('📋 Returning to the list of plots...', 2000);
+    showToast('📋 Returning to plot dashboard...', 2000);
     
     setTimeout(() => {
       if (onNavigateToListe) {
@@ -108,7 +108,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
         onNavigateToListe();
       } else {
         // Navigation par défaut vers la route de la liste
-        navigate('/listeparcelle');
+        navigate('/dashboard-parcelles');
       }
       setIsNavigating(false);
     }, 800);
@@ -1336,7 +1336,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
 
         <div className="form-section-parcel" ref={addToRefs}>
           <h2 className="section-title">
-            🇹🇳 {modeEdition ? 'Modifier' : 'Créer'} Agricultural Plot - Tunisia
+            🇹🇳 {modeEdition ? 'Edit' : 'Create'} Agricultural Plot - Tunisia
           </h2>
 
           <div className="form-group">
@@ -1526,10 +1526,10 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             <div className="submit-btn-content">
               <span className="submit-btn-badge">
                 {isNavigating 
-                  ? '⏳ ENREGISTREMENT...' 
+                  ? '⏳ SAVING...' 
                   : modeEdition 
-                    ? '🔧 MODIFIER ET VOIR SUR CARTE'
-                    : '✅ ENREGISTRER ET VOIR SUR CARTE'
+                    ? '🔧 EDIT AND SEE THE WHOLE MAP'
+                    : '✅ SAVING AND SEE THE WHOLE MAP'
                 }
               </span>
             </div>

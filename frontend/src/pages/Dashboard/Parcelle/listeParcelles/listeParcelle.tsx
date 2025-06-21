@@ -123,6 +123,33 @@ const ListeParcelle: React.FC = () => {
     }
   };
 
+
+  useEffect(() => {
+  const fetchFarmers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.warn('Token non trouvé');
+        return;
+      }
+
+      const response = await fetch('http://localhost:5000/api/farmers', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFarmers(data.farmers || data.data || []);
+        console.log('Agriculteurs chargés:', data.farmers?.length || 0);
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+    }
+  };
+
+  fetchFarmers();
+}, []);
+
   const getStatutConfig = (statut: string) => {
     switch (statut) {
       case 'active': return { color: 'status-active', text: 'Active', dot: 'dot-active' };
