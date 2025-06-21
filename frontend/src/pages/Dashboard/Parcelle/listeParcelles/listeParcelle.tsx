@@ -150,6 +150,71 @@ const ListeParcelle: React.FC = () => {
   fetchFarmers();
 }, []);
 
+
+  const handleParcelleSubmit = async (parcelleData: any) => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem('token');
+      const nomAgriculteur = selectedFarmer 
+        ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`
+        : 'Agriculteur inconnu';
+
+      let updatedParcelles = [...parcelles];
+      
+      if (editingParcelle || parcelleCompleteToEdit) {
+        // Mode modification
+        const parcelleId = parcelleCompleteToEdit?.id || editingParcelle?.id;
+        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelleId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            ...parcelleData,
+            farmerId: selectedFarmer?._id._id
+          })
+        });
+
+        if (response.ok) {
+          const updatedParcelle = await response.json();
+          updatedParcelles = parcelles.map(p => p.id === parcelleId ? updatedParcelle : p);
+          toast.success(`Parcelle "${nomAgriculteur}" modifiée avec succès!`);
+        }
+      } else {
+        // Mode ajout
+        const response = await fetch('http://localhost:5000/api/parcelles', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            ...parcelleData,
+            farmerId: selectedFarmer?._id._id
+          })
+        });
+
+        if (response.ok) {
+          const newParcelle = await response.json();
+          updatedParcelles = [...parcelles, newParcelle];
+          toast.success(`Parcelle "${nomAgriculteur}" ajoutée avec succès!`);
+        }
+      }
+
+      setParcelles(updatedParcelles);
+      setShowModal(false);
+      setEditingParcelle(null);
+      setParcelleCompleteToEdit(null);
+    } catch (error) {
+      console.error("Erreur lors de l'envoi des données:", error);
+      toast.error("Une erreur est survenue");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
   const getStatutConfig = (statut: string) => {
     switch (statut) {
       case 'active': return { color: 'status-active', text: 'Active', dot: 'dot-active' };
@@ -261,68 +326,7 @@ const ListeParcelle: React.FC = () => {
     }
   };
 
-  const handleParcelleSubmit = async (parcelleData: any) => {
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem('token');
-      const nomAgriculteur = selectedFarmer 
-        ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`
-        : 'Agriculteur inconnu';
-
-      let updatedParcelles = [...parcelles];
-      
-      if (editingParcelle || parcelleCompleteToEdit) {
-        // Mode modification
-        const parcelleId = parcelleCompleteToEdit?.id || editingParcelle?.id;
-        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelleId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            ...parcelleData,
-            farmerId: selectedFarmer?._id._id
-          })
-        });
-
-        if (response.ok) {
-          const updatedParcelle = await response.json();
-          updatedParcelles = parcelles.map(p => p.id === parcelleId ? updatedParcelle : p);
-          toast.success(`Parcelle "${nomAgriculteur}" modifiée avec succès!`);
-        }
-      } else {
-        // Mode ajout
-        const response = await fetch('http://localhost:5000/api/parcelles', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            ...parcelleData,
-            farmerId: selectedFarmer?._id._id
-          })
-        });
-
-        if (response.ok) {
-          const newParcelle = await response.json();
-          updatedParcelles = [...parcelles, newParcelle];
-          toast.success(`Parcelle "${nomAgriculteur}" ajoutée avec succès!`);
-        }
-      }
-
-      setParcelles(updatedParcelles);
-      setShowModal(false);
-      setEditingParcelle(null);
-      setParcelleCompleteToEdit(null);
-    } catch (error) {
-      console.error("Erreur lors de l'envoi des données:", error);
-      toast.error("Une erreur est survenue");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  
 
   const prepareEditingData = () => {
     if (parcelleCompleteToEdit) return parcelleCompleteToEdit;
