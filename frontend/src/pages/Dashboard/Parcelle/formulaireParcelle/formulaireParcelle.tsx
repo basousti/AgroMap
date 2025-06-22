@@ -25,7 +25,7 @@ interface ParcelleData {
 }
 
 interface ParcelleEditData {
-  id: number;
+  _id: string;
   nom: string;
   superficie: number;
   culture: string;
@@ -167,11 +167,11 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
     { value: 'Poivron', label: '🫑 Poivron', icon: '🫑' },
     { value: 'Tomate', label: '🍅 Tomate', icon: '🍅' },
     { value: 'Piment', label: '🌶️ Piment', icon: '🌶️' },
-    { value: 'Olive', label: '🫒 Olive', icon: '🫒' },
-    { value: 'Citron', label: '🍋 Citron', icon: '🍋' },
-    { value: 'Orange', label: '🍊 Orange', icon: '🍊' },
-    { value: 'Blé', label: '🌾 Blé', icon: '🌾' },
-    { value: 'Orge', label: '🌾 Orge', icon: '🌾' },
+    // { value: 'Olive', label: '🫒 Olive', icon: '🫒' },
+    // { value: 'Citron', label: '🍋 Citron', icon: '🍋' },
+    // { value: 'Orange', label: '🍊 Orange', icon: '🍊' },
+    // { value: 'Blé', label: '🌾 Blé', icon: '🌾' },
+    // { value: 'Orge', label: '🌾 Orge', icon: '🌾' },
   ];
 
   // FONCTION TOAST AMÉLIORÉE

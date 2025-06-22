@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface Parcelle {
-  id: number;
+  _id: string;
   nom: string;
   superficie: number;
   culture: string;
@@ -62,12 +62,12 @@ const ListeParcelle: React.FC = () => {
         }
 
         const result = await response.json();
-        
+
         // Handle both array and object responses
         const parcellesData = Array.isArray(result) ? result : result.data || result.parcelles || [];
 
-        console.log("nnnnnnnnnnnn",parcellesData)
-        
+        console.log("nnnnnnnnnnnn", parcellesData)
+
         if (!Array.isArray(parcellesData)) {
           throw new Error("API response is not an array");
         }
@@ -76,7 +76,7 @@ const ListeParcelle: React.FC = () => {
 
         // Extract unique farmers safely
         const uniqueFarmers: Record<string, Farmer> = {};
-        
+
         parcellesData.forEach((parcelle: ParcelleComplete) => {
           if (parcelle.farmerId) {
             uniqueFarmers[parcelle.farmerId] = {
@@ -106,7 +106,7 @@ const ListeParcelle: React.FC = () => {
 
 
 
-  const fetchParcelleComplete = async (id: number): Promise<ParcelleComplete | null> => {
+  const fetchParcelleComplete = async (id: string): Promise<ParcelleComplete | null> => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/parcelles/${id}`, {
@@ -125,75 +125,125 @@ const ListeParcelle: React.FC = () => {
 
 
   useEffect(() => {
-  const fetchFarmers = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.warn('Token non trouvé');
-        return;
+    const fetchFarmers = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.warn('Token non trouvé');
+          return;
+        }
+
+        const response = await fetch('http://localhost:5000/api/farmers', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setFarmers(data.farmers || data.data || []);
+          console.log('Agriculteurs chargés:', data.farmers?.length || 0);
+        }
+      } catch (error) {
+        console.error("Erreur:", error);
       }
+    };
 
-      const response = await fetch('http://localhost:5000/api/farmers', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setFarmers(data.farmers || data.data || []);
-        console.log('Agriculteurs chargés:', data.farmers?.length || 0);
-      }
-    } catch (error) {
-      console.error("Erreur:", error);
-    }
-  };
-
-  fetchFarmers();
-}, []);
+    fetchFarmers();
+  }, []);
 
 
   const handleParcelleSubmit = async (parcelleData: any) => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem('token');
-      const nomAgriculteur = selectedFarmer 
+      const nomAgriculteur = selectedFarmer
         ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`
         : 'Agriculteur inconnu';
 
       let updatedParcelles = [...parcelles];
-      
+
       if (editingParcelle || parcelleCompleteToEdit) {
         // Mode modification
-        const parcelleId = parcelleCompleteToEdit?.id || editingParcelle?.id;
-        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelleId}`, {
+        const parcelleId =  parcelleCompleteToEdit?._id || editingParcelle?._id;
+
+                    if (!parcelleId) {
+                      console.error("❌ ID de parcelle manquant", {
+                        parcelleCompleteToEdit,
+                        editingParcelle
+                      });
+                      toast.error("ID de la parcelle non défini !");
+                      setIsLoading(false);
+                      return;
+                    }
+
+        const shape = parcelleData.coordonnees?.shapes?.[0];
+
+          const coordonnees = Array.isArray(shape?.coords?.[0])
+            ? shape.coords[0] // C’est un tableau imbriqué [[{lat, lng}]]
+            : shape?.coords || []; // Sinon tableau simple
+
+          const requestBody = {
+            ...parcelleData,
+            coordonnees,
+            farmerId: selectedFarmer?._id._id,
+            farmerName: selectedFarmer ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}` : ''
+          };
+
+          console.log("✅ Données corrigées envoyées :", requestBody);
+          
+       const response = await fetch(`http://localhost:5000/api/parcelles/${parcelleId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           },
-          body: JSON.stringify({
-            ...parcelleData,
-            farmerId: selectedFarmer?._id._id
-          })
+          body: JSON.stringify(requestBody)
         });
+
+
+         if (!response.ok) {
+            const errorText = await response.text(); // Lire le corps brut
+            console.error("Réponse du serveur avec erreur:", errorText);
+          }
+
 
         if (response.ok) {
           const updatedParcelle = await response.json();
-          updatedParcelles = parcelles.map(p => p.id === parcelleId ? updatedParcelle : p);
+          updatedParcelles = parcelles.map(p => p._id === parcelleId ? updatedParcelle : p);
           toast.success(`Parcelle "${nomAgriculteur}" modifiée avec succès!`);
         }
       } else {
         // Mode ajout
-        const response = await fetch('http://localhost:5000/api/parcelles', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
+        // Extraire les coordonnées du premier polygone
+          const shape = parcelleData.coordonnees?.shapes?.[0];
+
+          const coordonnees = Array.isArray(shape?.coords?.[0])
+            ? shape.coords[0] // C’est un tableau imbriqué [[{lat, lng}]]
+            : shape?.coords || []; // Sinon tableau simple
+
+          const requestBody = {
             ...parcelleData,
-            farmerId: selectedFarmer?._id._id
-          })
-        });
+            coordonnees,
+            farmerId: selectedFarmer?._id._id,
+            farmerName: selectedFarmer ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}` : ''
+          };
+
+          console.log("✅ Données corrigées envoyées :", requestBody);
+
+
+          const response = await fetch('http://localhost:5000/api/parcelles/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(requestBody)
+          });
+
+        if (!response.ok) {
+            const errorText = await response.text(); // Lire le corps brut
+            console.error("Réponse du serveur avec erreur:", errorText);
+          }
+
 
         if (response.ok) {
           const newParcelle = await response.json();
@@ -207,7 +257,7 @@ const ListeParcelle: React.FC = () => {
       setEditingParcelle(null);
       setParcelleCompleteToEdit(null);
     } catch (error) {
-      console.error("Erreur lors de l'envoi des données:", error);
+      console.log("Erreur lors de l'envoi des données:", error);
       toast.error("Une erreur est survenue");
     } finally {
       setIsLoading(false);
@@ -231,7 +281,7 @@ const ListeParcelle: React.FC = () => {
   })).filter(parcelle => {
     if (!selectedFarmer) return true;
     const farmerFullName = `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`.toLowerCase();
-    const parcelleName = parcelle.nom.toLowerCase();
+    const parcelleName = (parcelle.nom ?? '').toLowerCase();
     return parcelleName.includes(farmerFullName);
   });
 
@@ -278,11 +328,11 @@ const ListeParcelle: React.FC = () => {
   const handleEditParcelle = async (parcelle: Parcelle) => {
     try {
       setIsLoading(true);
-      const completeData = await fetchParcelleComplete(parcelle.id);
-      
+      const completeData = await fetchParcelleComplete(parcelle._id);
+
       if (completeData) {
         setParcelleCompleteToEdit(completeData);
-        
+
         // Trouver l'agriculteur correspondant
         if (completeData.farmerId) {
           const farmer = farmers.find(f => f._id._id === completeData.farmerId);
@@ -291,7 +341,7 @@ const ListeParcelle: React.FC = () => {
       } else {
         setEditingParcelle(parcelle);
       }
-      
+
       setShowModal(true);
     } catch (error) {
       console.error("Erreur lors de la préparation de l'édition:", error);
@@ -308,13 +358,13 @@ const ListeParcelle: React.FC = () => {
       try {
         setIsLoading(true);
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelle.id}`, {
+        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelle._id}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` }
         });
 
         if (response.ok) {
-          setParcelles(prev => prev.filter(p => p.id !== parcelle.id));
+          setParcelles(prev => prev.filter(p => p._id !== parcelle._id));
           toast.success(`Parcel"${parcelle.nom}" deleyed successfully!`);
         }
       } catch (error) {
@@ -326,7 +376,7 @@ const ListeParcelle: React.FC = () => {
     }
   };
 
-  
+
 
   const prepareEditingData = () => {
     if (parcelleCompleteToEdit) return parcelleCompleteToEdit;
@@ -454,7 +504,7 @@ const ListeParcelle: React.FC = () => {
 
               return (
                 <div
-                  key={parcelle.id}
+                  key={parcelle._id}
                   className="table-row"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
@@ -465,7 +515,7 @@ const ListeParcelle: React.FC = () => {
                       <h3 className="parcelle-name">
                         {parcelle.nom}
                       </h3>
-                      <p className="parcelle-id">ID: {parcelle.id}</p>
+                      <p className="parcelle-id">ID: {parcelle._id}</p>
                     </div>
                   </div>
 
@@ -473,7 +523,7 @@ const ListeParcelle: React.FC = () => {
                   <div className="table-cell cell-surface">
                     <div className="surface-badge">
                       <span className="surface-value">
-                        {(parcelle.superficie || 0)} 
+                        {(parcelle.superficie || 0)}
                       </span>
                       <span className="surface-unit">m²</span>
                     </div>
@@ -501,7 +551,7 @@ const ListeParcelle: React.FC = () => {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log("🖊️ Clic sur modifier pour parcelle:", parcelle.id);
+                          console.log("🖊️ Clic sur modifier pour parcelle:", parcelle._id);
                           handleEditParcelle(parcelle);
                         }}
                         title="Modifier la parcelle"
@@ -513,7 +563,7 @@ const ListeParcelle: React.FC = () => {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log("🗑️ Clic sur supprimer pour parcelle:", parcelle.id);
+                          console.log("🗑️ Clic sur supprimer pour parcelle:", parcelle._id);
                           handleDeleteParcelle(parcelle);
                         }}
                         title="Remove Parcel"

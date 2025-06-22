@@ -10,11 +10,12 @@ export class ParcelleController {
     try {
       // Vérifier les erreurs de validation
       const errors = validationResult(req);
-      if (!errors.isEmpty()) {
+      if (!errors.isEmpty() ) {
         res.status(400).json({
           success: false,
           error: 'Données invalides',
           details: errors.array()
+          
         });
         return;
       }
@@ -56,6 +57,7 @@ export class ParcelleController {
       if (!finalFarmerId && finalFarmerName) {
         finalFarmerId = finalFarmerName.toLowerCase().replace(/\s+/g, '_');
       }
+
 
       const donneesNettoyees = {
         nom: nom?.trim(),
