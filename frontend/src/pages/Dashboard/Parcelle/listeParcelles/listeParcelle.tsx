@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface Parcelle {
-  _id: string;
+  id: string;
   nom: string;
   superficie: number;
   culture: string;
@@ -48,6 +48,7 @@ const ListeParcelle: React.FC = () => {
   const [editingParcelle, setEditingParcelle] = useState<Parcelle | null>(null);
   const [parcelleCompleteToEdit, setParcelleCompleteToEdit] = useState<ParcelleComplete | null>(null);
 
+
   // Chargement initial des parcelles
   useEffect(() => {
     const fetchData = async () => {
@@ -66,7 +67,6 @@ const ListeParcelle: React.FC = () => {
         // Handle both array and object responses
         const parcellesData = Array.isArray(result) ? result : result.data || result.parcelles || [];
 
-        console.log("nnnnnnnnnnnn", parcellesData)
 
         if (!Array.isArray(parcellesData)) {
           throw new Error("API response is not an array");
@@ -163,40 +163,31 @@ const ListeParcelle: React.FC = () => {
 
       if (editingParcelle || parcelleCompleteToEdit) {
         // Mode modification
-        const parcelleId =  parcelleCompleteToEdit?._id || editingParcelle?._id;
+        const parcelleId =  parcelleCompleteToEdit?.id || editingParcelle?.id;
 
-                    if (!parcelleId) {
-                      console.error("❌ ID de parcelle manquant", {
-                        parcelleCompleteToEdit,
-                        editingParcelle
-                      });
-                      toast.error("ID de la parcelle non défini !");
-                      setIsLoading(false);
-                      return;
-                    }
-
-        const shape = parcelleData.coordonnees?.shapes?.[0];
-
-          const coordonnees = Array.isArray(shape?.coords?.[0])
-            ? shape.coords[0] // C’est un tableau imbriqué [[{lat, lng}]]
-            : shape?.coords || []; // Sinon tableau simple
-
-          const requestBody = {
-            ...parcelleData,
-            coordonnees,
-            farmerId: selectedFarmer?._id._id,
-            farmerName: selectedFarmer ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}` : ''
-          };
-
-          console.log("✅ Données corrigées envoyées :", requestBody);
+           if (!parcelleId) {
+              console.error("❌ ID de parcelle manquant", {
+              parcelleCompleteToEdit,
+              editingParcelle
+              });
+              toast.error("ID plot is not defined !"); 
+              setIsLoading(false);
+              return;
+              }
           
+       // Prepare updated data to send in PUT request
+       const updatedData = {
+         ...parcelleData,
+         _id: parcelleId
+       };
+
        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelleId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(updatedData)
         });
 
 
@@ -207,11 +198,16 @@ const ListeParcelle: React.FC = () => {
 
 
         if (response.ok) {
-          const updatedParcelle = await response.json();
-          updatedParcelles = parcelles.map(p => p._id === parcelleId ? updatedParcelle : p);
+          const responseData = await response.json();
+          const updatedParcelle = responseData.data || responseData;
+          updatedParcelles = parcelles.map(p => p.id === parcelleId ? updatedParcelle : p);
           toast.success(`Parcelle "${nomAgriculteur}" modifiée avec succès!`);
         }
-      } else {
+
+      } 
+      
+      
+      else {
         // Mode ajout
         // Extraire les coordonnées du premier polygone
           const shape = parcelleData.coordonnees?.shapes?.[0];
@@ -328,7 +324,7 @@ const ListeParcelle: React.FC = () => {
   const handleEditParcelle = async (parcelle: Parcelle) => {
     try {
       setIsLoading(true);
-      const completeData = await fetchParcelleComplete(parcelle._id);
+      const completeData = await fetchParcelleComplete(parcelle.id);
 
       if (completeData) {
         setParcelleCompleteToEdit(completeData);
@@ -358,13 +354,13 @@ const ListeParcelle: React.FC = () => {
       try {
         setIsLoading(true);
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelle._id}`, {
+        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelle.id}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` }
         });
 
         if (response.ok) {
-          setParcelles(prev => prev.filter(p => p._id !== parcelle._id));
+          setParcelles(prev => prev.filter(p => p.id !== parcelle.id));
           toast.success(`Parcel"${parcelle.nom}" deleyed successfully!`);
         }
       } catch (error) {
@@ -504,7 +500,7 @@ const ListeParcelle: React.FC = () => {
 
               return (
                 <div
-                  key={parcelle._id}
+                  key={parcelle.id}
                   className="table-row"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
@@ -515,7 +511,7 @@ const ListeParcelle: React.FC = () => {
                       <h3 className="parcelle-name">
                         {parcelle.nom}
                       </h3>
-                      <p className="parcelle-id">ID: {parcelle._id}</p>
+                      <p className="parcelle-id">ID: {parcelle.id}</p>
                     </div>
                   </div>
 
@@ -551,7 +547,7 @@ const ListeParcelle: React.FC = () => {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log("🖊️ Clic sur modifier pour parcelle:", parcelle._id);
+                          console.log("🖊️ Clic sur modifier pour parcelle:", parcelle.id);
                           handleEditParcelle(parcelle);
                         }}
                         title="Modifier la parcelle"
@@ -563,7 +559,7 @@ const ListeParcelle: React.FC = () => {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log("🗑️ Clic sur supprimer pour parcelle:", parcelle._id);
+                          console.log("🗑️ Clic sur supprimer pour parcelle:", parcelle.id);
                           handleDeleteParcelle(parcelle);
                         }}
                         title="Remove Parcel"

@@ -7,6 +7,7 @@ interface LeafletHTMLElement extends HTMLDivElement {
 
 // Interface pour les données de parcelle à envoyer
 interface ParcelleData {
+  _id?: string;
   id: number;
   nom: string;
   culture: string;
@@ -25,11 +26,12 @@ interface ParcelleData {
 }
 
 interface ParcelleEditData {
-  _id: string;
+  id: string;
   nom: string;
   superficie: number;
   culture: string;
   statut: 'active' | 'repos' | 'preparation';
+  montantInvestissement?: number;
 }
 
 interface FormulaireParcelleProps {
