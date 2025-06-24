@@ -783,14 +783,6 @@ export class ParcelleController {
     }
   }
 
-   
-  /**
- * Obtenir tous les agriculteurs avec leurs parcelles associées kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
- */
-
-
-
-
   // ✅ VALIDER COORDONNÉES
   async validerCoordonnees(req: Request, res: Response): Promise<void> {
     try {

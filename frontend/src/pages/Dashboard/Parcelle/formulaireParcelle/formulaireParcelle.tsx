@@ -8,7 +8,7 @@ interface LeafletHTMLElement extends HTMLDivElement {
 // Interface pour les données de parcelle à envoyer
 interface ParcelleData {
   _id?: string;
-  id: number;
+  id: string;
   nom: string;
   culture: string;
   statut: 'active' | 'repos' | 'preparation';
@@ -734,7 +734,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
           layers.eachLayer((layer: any) => {
             setParcellesDessinees(prev => prev.filter(p => p.layer !== layer));
           });
-          showToast('🗑️ Parcelles supprimées', 2000);
+          showToast('🗑️ Parcel deleted', 2000);
         });
 
         setMap(mapInstance);
@@ -767,7 +767,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
     if (drawnItems && mapInstanceRef.current) {
       drawnItems.clearLayers();
       setParcellesDessinees([]);
-      showToast('🗑️ Toutes les parcelles supprimées', 2000);
+      showToast('🗑️ all aprcel are deleted', 2000);
     }
   };
 
@@ -871,7 +871,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
       onSubmit(parcelleData);
     }
     
-    const messageSucces = `✅ Parcelle "${titreParcelle}" enregistrée avec succès!`;
+    const messageSucces = `✅ Parcel "${titreParcelle}" saved successully!`;
     showToast(messageSucces, 2000);
     
     // Réinitialiser le formulaire
@@ -942,7 +942,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
           border: '1px solid #e9ecef',
           boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
         }}>
-          <button
+          {/* <button
             onClick={navigateToListe}
             disabled={isNavigating}
             style={{
@@ -977,7 +977,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
           >
             <span style={{ fontSize: '18px' }}>📋</span>
             <span>Retour à la Liste</span>
-          </button>
+          </button> */}
 
           <h1 style={{
             margin: 0,
@@ -987,7 +987,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             textAlign: 'center',
             flex: 1
           }}>
-            🇹🇳 Nouvelle Parcelle Agricole
+            🇹🇳 Parcel agricol informations
           </h1>
 
           <div style={{ width: '160px' }}></div>
@@ -1011,7 +1011,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             alignItems: 'center',
             gap: '12px'
           }}>
-            📝 Informations de la Parcelle
+            📝 Parcel informations
           </h2>
 
           <form onSubmit={handleFormSubmit}>
@@ -1030,7 +1030,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                   color: '#374151',
                   marginBottom: '8px'
                 }}>
-                  📝 Nom de la Parcelle
+                  📝 Parcel name 
                 </label>
                 <input
                   type="text"
@@ -1066,7 +1066,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                   color: '#374151',
                   marginBottom: '8px'
                 }}>
-                  🌾 Type de Culture
+                  🌾 Culture type
                 </label>
                 <select 
                   value={selectedCulture}
@@ -1090,7 +1090,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                     e.target.style.boxShadow = 'none';
                   }}
                 >
-                  <option value="">🌱 Sélectionner le type de culture</option>
+                  <option value="">🌱 Select the type of culture</option>
                   {cultures.map((culture) => (
                     <option key={culture.value} value={culture.value}>
                       {culture.label}
@@ -1108,7 +1108,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                   color: '#374151',
                   marginBottom: '8px'
                 }}>
-                  📊 Statut de la Parcelle
+                  📊 Parcel status
                 </label>
                 <select 
                   value={statutParcelle}
@@ -1132,10 +1132,10 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                     e.target.style.boxShadow = 'none';
                   }}
                 >
-                  <option value="">📈 Sélectionner le statut</option>
-                  <option value="active">✅ Active - En production</option>
-                  <option value="preparation">🚧 En préparation</option>
-                  <option value="repos">😴 Au repos</option>
+                  <option value="">📈 Select status</option>
+                  <option value="active">✅ Active - in production</option>
+                  <option value="preparation">🚧 in preparation</option>
+                  <option value="repos">😴 resting</option>
                 </select>
               </div>
 
@@ -1148,7 +1148,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                   color: '#374151',
                   marginBottom: '8px'
                 }}>
-                  📐 Surface Totale
+                  📐 Total area
                 </label>
                 <input 
                   type="text" 
@@ -1215,7 +1215,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                     color: '#374151',
                     marginBottom: '8px'
                   }}>
-                    🎯 Coordonnées GPS
+                    🎯 Coordinates GPS
                   </label>
                   <input 
                     type="text" 
@@ -1292,7 +1292,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             alignItems: 'center',
             gap: '12px'
           }}>
-            🗺️ Carte Interactive de la Tunisie
+            🗺️ Tunisian card
           </h2>
 
           {/* Barre de recherche stylée */}
@@ -1304,7 +1304,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
               color: '#374151',
               marginBottom: '12px'
             }}>
-              🔍 Rechercher un lieu en Tunisie
+              🔍 Search
             </label>
             <div className="search-container" style={{ position: 'relative' }}>
               <div style={{ position: 'relative' }}>
@@ -1440,10 +1440,10 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                   }}>
                     <div style={{ fontSize: '24px', marginBottom: '8px' }}>🔍</div>
                     <div style={{ fontWeight: '600', marginBottom: '4px' }}>
-                      Aucun résultat trouvé
+                      No result found
                     </div>
                     <div style={{ fontSize: '14px' }}>
-                      pour "{searchQuery}"
+                     for "{searchQuery}"
                     </div>
                   </div>
                 </div>
@@ -1481,7 +1481,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(220, 38, 38, 0.3)';
               }}
             >
-              🗑️ Effacer parcelles
+              🗑️ Delete parcel
             </button>
             
             <button 
@@ -1507,7 +1507,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
               }}
             >
-              🔄 Actualiser carte
+              🔄 Refresh
             </button>
 
             {parcellesDessinees.length > 0 && (
@@ -1522,7 +1522,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                📊 {parcellesDessinees.length} parcelle(s) - {(calculateTotalArea()/10000).toFixed(3)} ha
+                📊 {parcellesDessinees.length} parcel - {(calculateTotalArea()/10000).toFixed(3)} ha
               </div>
             )}
           </div>
@@ -1565,7 +1565,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                     🗺️
                   </div>
                   <div style={{ marginBottom: '8px' }}>
-                    Chargement de la carte satellite de la Tunisie...
+                    Charging card ....
                   </div>
                   <div style={{
                     fontSize: '14px',
@@ -1573,7 +1573,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                     textAlign: 'center',
                     maxWidth: '400px'
                   }}>
-                    Carte interactive avec images satellite haute résolution, villes et routes principales
+                   Interactive map with high-resolution satellite images, cities, and main roads
                   </div>
                 </div>
               )}
@@ -1597,7 +1597,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
               alignItems: 'center',
               gap: '8px'
             }}>
-              💡 Instructions d'utilisation
+              💡 Instraction use
             </h3>
             <div style={{
               display: 'grid',
@@ -1608,19 +1608,19 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '16px' }}>🔍</span>
-                <span>Recherchez une ville tunisienne dans la barre ci-dessus</span>
+                <span>Search for a Tunisian city in the bar above</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '16px' }}>🖱️</span>
-                <span>Utilisez les outils à gauche pour dessiner vos parcelles</span>
+                <span>Use the tools on the left to draw your plots</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '16px' }}>🎨</span>
-                <span>Sélectionnez d'abord la culture pour colorer automatiquement</span>
+                <span>First select the crop to automatically apply the color</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '16px' }}>📐</span>
-                <span>La surface se calcule automatiquement en temps réel</span>
+                <span>The area is calculated automatically in real time</span>
               </div>
             </div>
           </div>
@@ -1643,7 +1643,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                📊 Détail des Parcelles Dessinées
+                📊 Parcel details drowing
               </h3>
               
               <div style={{
@@ -1709,7 +1709,7 @@ const FormulaireParcelle: React.FC<FormulaireParcelleProps> = ({
                   fontWeight: '700',
                   color: '#059669'
                 }}>
-                  Surface Totale: {calculateTotalArea()} m² ({(calculateTotalArea()/10000).toFixed(4)} hectares)
+                  Total area : {calculateTotalArea()} m² ({(calculateTotalArea()/10000).toFixed(4)} hectares)
                 </div>
               </div>
             </div>

@@ -344,7 +344,7 @@ const navigate = useNavigate();
       </div>
 
       {/* Boutons flottants pour actions rapides */}
-      <div className="dashboard-floating-actions">
+      {/* <div className="dashboard-floating-actions">
         <button 
           className="floating-action-btn primary"
           onClick={synchroniserDonnees}
@@ -360,7 +360,7 @@ const navigate = useNavigate();
         >
           <BarChart3 size={20} />
         </button>
-      </div>
+      </div> */}
 
       {/* Overlay pour les modes expanded */}
       {(isLeftPanelExpanded || isRightPanelExpanded) && (

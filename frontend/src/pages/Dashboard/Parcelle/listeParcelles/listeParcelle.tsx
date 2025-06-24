@@ -105,23 +105,29 @@ const ListeParcelle: React.FC = () => {
   }, []);
 
 
-
+//Obtenir une parcelle par ID
   const fetchParcelleComplete = async (id: string): Promise<ParcelleComplete | null> => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/parcelles/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+  try {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:5000/api/parcelles/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
 
-      if (response.ok) {
-        return await response.json();
-      }
-      return null;
-    } catch (error) {
-      console.error("Erreur lors du chargement de la parcelle:", error);
+    // Only call .json() once and store the result
+    const data = await response.json();
+    
+    if (response.ok) {
+      console.log("Fetched parcel data:", data);
+      return data;
+    } else {
+      console.log("Fetch error response:", data);
       return null;
     }
-  };
+  } catch (error) {
+    console.error("Erreur lors du chargement de la parcelle:", error);
+    return null;
+  }
+};
 
 
   useEffect(() => {
@@ -151,63 +157,211 @@ const ListeParcelle: React.FC = () => {
   }, []);
 
 
-  const handleParcelleSubmit = async (parcelleData: any) => {
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem('token');
-      const nomAgriculteur = selectedFarmer
-        ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`
-        : 'Agriculteur inconnu';
+//   const handleParcelleSubmit = async (parcelleData: any) => {
+//     try {
+//       setIsLoading(true);
+//       const token = localStorage.getItem('token');
+//       const nomAgriculteur = selectedFarmer
+//         ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`
+//         : 'Agriculteur inconnu';
 
-      let updatedParcelles = [...parcelles];
+//       let updatedParcelles = [...parcelles];
+//       // ✅ Validate farmer ID first
+//         if (!selectedFarmer?._id?._id) {
+//           toast.error("Please select a valid farmer first");
+//           setIsLoading(false);
+//           return;
+//         }
 
-      if (editingParcelle || parcelleCompleteToEdit) {
-        // Mode modification
-        const parcelleId =  parcelleCompleteToEdit?.id || editingParcelle?.id;
+//         const farmerId = selectedFarmer._id._id;
+//         const farmerName = `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`;
 
-           if (!parcelleId) {
-              console.error("❌ ID de parcelle manquant", {
-              parcelleCompleteToEdit,
-              editingParcelle
-              });
-              toast.error("ID plot is not defined !"); 
-              setIsLoading(false);
-              return;
-              }
+//       if (editingParcelle || parcelleCompleteToEdit) {
+//         // Mode modification
+//        const getParcelleId = (parcelle: any) => {
+//         // Check for nested data structure
+//         if (parcelle?.data) {
+//           return parcelle.data.id || parcelle.data._id;
+//         }
+//         return parcelle?.id || parcelle?._id;
+//       };
+
+//       const parcelleId = getParcelleId(parcelleCompleteToEdit) || getParcelleId(editingParcelle);
+//       console.log("iddddddddddd", parcelleId)
+//           if (!parcelleId) {
+//             console.error("❌ Missing parcel ID:", { parcelleCompleteToEdit, editingParcelle });
+//             toast.error("Parcel ID is not defined!");
+//             setIsLoading(false);
+//             return;
+//           }
           
-       // Prepare updated data to send in PUT request
-       const updatedData = {
-         ...parcelleData,
-         _id: parcelleId
-       };
+//        // Prepare updated data to send in PUT request
+//        const updatedData = {
+//          ...parcelleData,
+//          _id: parcelleId
+//        };
+// const shape = parcelleData.coordonnees?.shapes?.[0];
 
-       const response = await fetch(`http://localhost:5000/api/parcelles/${parcelleId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify(updatedData)
-        });
+//           const coordonnees = Array.isArray(shape?.coords?.[0])
+//             ? shape.coords[0] // C’est un tableau imbriqué [[{lat, lng}]]
+//             : shape?.coords || []; // Sinon tableau simple
+//        const requestBody = {
+//             ...parcelleData,
+//             coordonnees,
+//             farmerId: selectedFarmer?._id._id,
+//             farmerName: selectedFarmer ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}` : ''
+//           };
+
+//        const response = await fetch(`http://localhost:5000/api/parcelles/${parcelleId}`, {
+//           method: 'PUT',
+//           headers: {
+//             'Content-Type': 'application/json',
+//             Authorization: `Bearer ${token}`
+//           },
+//           body: JSON.stringify(updatedData)
+//         });
 
 
-         if (!response.ok) {
-            const errorText = await response.text(); // Lire le corps brut
-            console.error("Réponse du serveur avec erreur:", errorText);
-          }
+//          if (!response.ok) {
+//             const errorText = await response.text(); // Lire le corps brut
+//             console.error("Réponse du serveur avec erreur:", errorText);
+//           }
 
 
-        if (response.ok) {
-          const responseData = await response.json();
-          const updatedParcelle = responseData.data || responseData;
-          updatedParcelles = parcelles.map(p => p.id === parcelleId ? updatedParcelle : p);
-          toast.success(`Parcelle "${nomAgriculteur}" modifiée avec succès!`);
-        }
+//         if (response.ok) {
+//           const responseData = await response.json();
+//           const updatedParcelle = responseData.data || responseData;
+//           updatedParcelles = parcelles.map(p => p.id === parcelleId ? updatedParcelle : p);
+//           toast.success(`Parcelle "${nomAgriculteur}" modifiée avec succès!`);
+//         }
 
-      } 
+//       } 
       
       
-      else {
+//       else {
+//         // Mode ajout
+//         // Extraire les coordonnées du premier polygone
+//           const shape = parcelleData.coordonnees?.shapes?.[0];
+
+//           const coordonnees = Array.isArray(shape?.coords?.[0])
+//             ? shape.coords[0] // C’est un tableau imbriqué [[{lat, lng}]]
+//             : shape?.coords || []; // Sinon tableau simple
+
+//           const requestBody = {
+//             ...parcelleData,
+//             coordonnees,
+//             farmerId: selectedFarmer?._id._id,
+//             farmerName: selectedFarmer ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}` : ''
+//           };
+
+//           console.log("✅ Données corrigées envoyées :", requestBody);
+
+
+//           const response = await fetch('http://localhost:5000/api/parcelles/', {
+//             method: 'POST',
+//             headers: {
+//               'Content-Type': 'application/json',
+//               Authorization: `Bearer ${token}`
+//             },
+//             body: JSON.stringify(requestBody)
+//           });
+
+//         if (!response.ok) {
+//             const errorText = await response.text(); // Lire le corps brut
+//             console.error("Réponse du serveur avec erreur:", errorText);
+//           }
+
+
+//         if (response.ok) {
+//           const newParcelle = await response.json();
+//           updatedParcelles = [...parcelles, newParcelle];
+//           toast.success(`Parcelle "${nomAgriculteur}" ajoutée avec succès!`);
+//         }
+//       }
+
+//       setParcelles(updatedParcelles);
+//       setShowModal(false);
+//       setEditingParcelle(null);
+//       setParcelleCompleteToEdit(null);
+//     } catch (error) {
+//       console.log("Erreur lors de l'envoi des données:", error);
+//       toast.error("Une erreur est survenue");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+const handleParcelleSubmit = async (parcelleData: ParcelleComplete) => {
+  try {
+    setIsLoading(true);
+    const token = localStorage.getItem('token');
+
+    // Validate farmer selection using ParcelleComplete's farmerId
+    if (!parcelleData.farmerId) {
+      toast.error("Please select a valid farmer first");
+      setIsLoading(false);
+      return;
+    }
+
+    // Find the complete farmer data from farmers state
+    const selectedFarmer = farmers.find(f => f._id._id === parcelleData.farmerId);
+    
+    // Prepare farmer data
+    const farmerId = parcelleData.farmerId; // From ParcelleComplete
+    const farmerName = selectedFarmer 
+      ? `${selectedFarmer._id.name} ${selectedFarmer._id.prenom}`.trim()
+      : parcelleData.farmerName || 'Agriculteur inconnu';
+
+    // Extract coordinates
+    const shape = parcelleData.coordonnees?.shapes?.[0];
+    const coordonnees = Array.isArray(shape?.coords?.[0]) 
+      ? shape.coords[0] 
+      : shape?.coords || [];
+
+    // Prepare base request body
+    const requestBody: ParcelleComplete = {
+      ...parcelleData,
+      coordonnees,
+      farmerId,
+      farmerName
+    };
+
+    let response;
+    let updatedParcelles = [...parcelles];
+
+    if (editingParcelle || parcelleCompleteToEdit) {
+      // EDIT MODE
+      const getParcelleId = (parcelle: any) => {
+        if (parcelle?.data) return parcelle.data.id || parcelle.data._id;
+        return parcelle?.id || parcelle?._id;
+      };
+
+      const parcelleId = getParcelleId(parcelleCompleteToEdit) || getParcelleId(editingParcelle);
+
+      if (!parcelleId) {
+        toast.error("Parcel ID is not defined!");
+        setIsLoading(false);
+        return;
+      }
+
+      response = await fetch(`http://localhost:5000/api/parcelles/${parcelleId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const updatedParcelle = responseData.data || responseData;
+        updatedParcelles = parcelles.map(p => 
+          p.id === parcelleId || p.id === parcelleId ? updatedParcelle : p
+        );
+        toast.success(`Parcelle updated successfully!`);
+      }
+    }  else {
         // Mode ajout
         // Extraire les coordonnées du premier polygone
           const shape = parcelleData.coordonnees?.shapes?.[0];
@@ -244,7 +398,7 @@ const ListeParcelle: React.FC = () => {
         if (response.ok) {
           const newParcelle = await response.json();
           updatedParcelles = [...parcelles, newParcelle];
-          toast.success(`Parcelle "${nomAgriculteur}" ajoutée avec succès!`);
+          toast.success(`Parcel added sucessfully! `);
         }
       }
 
@@ -259,7 +413,6 @@ const ListeParcelle: React.FC = () => {
       setIsLoading(false);
     }
   };
-
 
   const getStatutConfig = (statut: string) => {
     switch (statut) {
@@ -321,31 +474,86 @@ const ListeParcelle: React.FC = () => {
     }
   };
 
+  // const handleEditParcelle = async (parcelle: Parcelle) => {
+  //   try {
+  //     setIsLoading(true);
+  //     const completeData = await fetchParcelleComplete(parcelle.id);
+
+  //     if (completeData) {
+  //       setParcelleCompleteToEdit(completeData);
+
+  //       // Trouver l'agriculteur correspondant
+  //       if (completeData.farmerId) {
+  //         const farmer = farmers.find(f => f._id._id === completeData.farmerId);
+  //         if (farmer) setSelectedFarmer(farmer);
+  //       }
+  //     } else {
+  //       setEditingParcelle(parcelle);
+  //     }
+
+  //     setShowModal(true);
+  //   } catch (error) {
+  //     console.error("Erreur lors de la préparation de l'édition:", error);
+  //     toast.error("Erreur lors du chargement des données de la parcelle");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handleEditParcelle = async (parcelle: Parcelle) => {
-    try {
-      setIsLoading(true);
-      const completeData = await fetchParcelleComplete(parcelle.id);
-
-      if (completeData) {
-        setParcelleCompleteToEdit(completeData);
-
-        // Trouver l'agriculteur correspondant
-        if (completeData.farmerId) {
-          const farmer = farmers.find(f => f._id._id === completeData.farmerId);
-          if (farmer) setSelectedFarmer(farmer);
-        }
-      } else {
-        setEditingParcelle(parcelle);
-      }
-
+  try {
+    setIsLoading(true);
+    
+    // 1. Fetch complete parcel data
+    const completeData = await fetchParcelleComplete(parcelle.id);
+    
+    if (!completeData) {
+      // Fallback to basic parcel data if complete fetch fails
+      console.log("Using basic parcel data as fallback",completeData);
+      setEditingParcelle(parcelle);
       setShowModal(true);
-    } catch (error) {
-      console.error("Erreur lors de la préparation de l'édition:", error);
-      toast.error("Erreur lors du chargement des données de la parcelle");
-    } finally {
-      setIsLoading(false);
+      return;
     }
-  };
+
+    // 2. Update state with complete data
+    setParcelleCompleteToEdit(completeData);
+
+    // 3. Find and set corresponding farmer
+    if (completeData.farmerId) {
+      const farmer = farmers.find(f => {
+        // Handle both string and object _id cases
+        const farmerId = typeof f._id === 'string' ? f._id : f._id?._id;
+        return farmerId === completeData.farmerId;
+      });
+
+      if (!farmer) {
+        console.warn(`Farmer not found for ID: ${completeData.farmerId}`);
+      }
+      setSelectedFarmer(farmer || null);
+    }
+
+    // 4. Show the edit modal
+    setShowModal(true);
+
+  } catch (error) {
+    console.error("Edit preparation error:", error);
+    
+    // Show different error messages based on error type
+    const errorMessage = error instanceof Error 
+      ? `Failed to load parcel: ${error.message}`
+      : "Erreur lors du chargement des données de la parcelle";
+    
+    toast.error(errorMessage);
+
+    // Fallback to basic editing mode
+    setEditingParcelle(parcelle);
+    setShowModal(true);
+    
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleDeleteParcelle = async (parcelle: Parcelle) => {
     const confirmDelete = window.confirm(`Are you sure you want to delete parcel ${parcelle.nom}?`);
@@ -521,7 +729,6 @@ const ListeParcelle: React.FC = () => {
                       <span className="surface-value">
                         {(parcelle.superficie || 0)}
                       </span>
-                      <span className="surface-unit">m²</span>
                     </div>
                   </div>
 
