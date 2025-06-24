@@ -54,7 +54,6 @@ const navigate = useNavigate();
   // Récupérer les parcelles depuis l'API
   const chargerParcellesAPI = async (): Promise<Parcelle[]> => {
     try {
-      console.log('🔄 Chargement des parcelles depuis l\'API...');
       
       const response = await fetch(`${API_BASE_URL}/api/parcelles/`, {
         method: 'GET',
@@ -70,7 +69,6 @@ const navigate = useNavigate();
       }
 
       const data = await response.json();
-      console.log('📊 Données API reçues:', data);
 
       // Gestion des différents formats de réponse
       let parcellesData: any[] = [];
@@ -106,7 +104,7 @@ const navigate = useNavigate();
         drawnParcels: parcelle.drawnParcels || []
       }));
 
-      console.log(`✅ ${parcellesNormalisees.length} parcelles normalisées`);
+      
       return parcellesNormalisees;
 
     } catch (error) {
@@ -131,7 +129,6 @@ const navigate = useNavigate();
       const parcellesAPI = await chargerParcellesAPI();
       
       if (parcellesAPI.length > 0) {
-        console.log('📊 Utilisation des données API pour les statistiques');
         calculerStatistiques(parcellesAPI);
         
         // Mettre à jour les parcelles filtrées avec les données API
@@ -143,7 +140,6 @@ const navigate = useNavigate();
       }
 
       // 2. Fallback vers localStorage si l'API ne fonctionne pas
-      console.log('📊 Fallback vers localStorage');
       const savedParcelles = localStorage.getItem('parcellesEnregistrees');
       if (savedParcelles) {
         const parcelles = JSON.parse(savedParcelles);
@@ -187,12 +183,6 @@ const navigate = useNavigate();
       totalInvestissement
     });
 
-    console.log('📊 Statistiques calculées:', {
-      totalParcelles,
-      totalSurface,
-      parcellesActives,
-      totalInvestissement
-    });
   };
 
   // Vérifier la disponibilité de l'API

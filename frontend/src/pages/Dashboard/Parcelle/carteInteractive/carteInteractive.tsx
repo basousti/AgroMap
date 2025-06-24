@@ -594,8 +594,6 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
             markersRef.current.push(layer);
           }
         });
-
-        // console.log('✅ Parcelle du formulaire dessinée:', parcelle.nom);
         return;
       }
 
@@ -722,7 +720,6 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
       const saved = localStorage.getItem('parcellesEnregistrees');
       if (saved) {
         const parcelles = JSON.parse(saved);
-        console.log('📋 Parcelles chargées depuis localStorage:', parcelles.length);
         return parcelles;
       }
     } catch (error) {
@@ -737,7 +734,6 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
       const savedParcelles = chargerParcellesSauvegardees();
       if (savedParcelles.length > 0) {
         setParcellesEnregistrees(savedParcelles);
-        console.log('🔄 Parcelles chargées au démarrage:', savedParcelles.length);
       }
     }
   }, [isInitialized]);
@@ -751,7 +747,6 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
         
         if (fromFormulaire === 'true' && derniereParcelle) {
           const parcelleData = JSON.parse(derniereParcelle);
-          console.log('🔍 Nouvelle parcelle trouvée dans localStorage:', parcelleData);
           
           setParcellesEnregistrees(prev => {
             const existe = prev.some(p => p.id === parcelleData.id);
@@ -797,15 +792,13 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
   // ✨ MODIFIÉ: Effet pour traiter les nouvelles parcelles du formulaire (avec gestion édition)
   useEffect(() => {
     if (nouvelleParcelle && mapInstanceRef.current && window.L && isInitialized) {
-      console.log('🆕 Nouvelle parcelle reçue via props/state:', nouvelleParcelle);
-      
+    
       setParcellesEnregistrees(prev => {
         // Vérifier si c'est une édition (même ID) ou une nouvelle parcelle
         const existingIndex = prev.findIndex(p => p.id === nouvelleParcelle.id);
         
         if (existingIndex !== -1) {
           // C'est une édition, remplacer la parcelle existante
-          console.log('🔧 Mise à jour de la parcelle existante:', nouvelleParcelle.nom);
           const updated = [...prev];
           updated[existingIndex] = nouvelleParcelle;
           
@@ -909,8 +902,6 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
 
         if (!window.L) return;
 
-        console.log('🗺️ Initialisation de la carte interactive globale...');
-
         const map = window.L.map(mapRef.current, {
           center: [34.0, 9.5],
           zoom: 8,
@@ -950,7 +941,6 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
         mapInstanceRef.current = map;
         setIsInitialized(true);
         setIsLoading(false);
-        console.log('✅ Carte interactive globale initialisée et prête');
       } catch (error) {
         console.error('Erreur lors de l\'initialisation de la carte:', error);
         setIsLoading(false);
@@ -972,12 +962,9 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
   useEffect(() => {
     if (!mapInstanceRef.current || !window.L || !isInitialized) return;
 
-    console.log('🔄 Mise à jour des parcelles sur la carte...');
-
     nettoyerMarqueurs();
 
     const toutesLesParcelles = [...parcellesFiltrees, ...parcellesEnregistrees];
-    console.log('📊 Total des parcelles à afficher:', toutesLesParcelles.length);
 
     if (toutesLesParcelles.length > 0) {
       toutesLesParcelles.forEach((parcelle: Parcelle) => {
@@ -986,7 +973,6 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
             parcelle.longitude >= 7.0 && parcelle.longitude <= 12.0) {
           
           if ((parcelle.coordonnees && parcelle.formeType) || (parcelle.drawnParcels && parcelle.drawnParcels.length > 0)) {
-            console.log('🎨 Dessin de parcelle complexe:', parcelle.nom);
             dessinerParcelleSurCarte(parcelle);
             return;
           }
@@ -1072,7 +1058,6 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
       });
     }
 
-    console.log('✅ Toutes les parcelles affichées sur la carte');
   }, [parcellesFiltrees, parcellesEnregistrees, onParcelleClick, isInitialized, forceUpdate]);
 
   // Fonction pour effacer toutes les parcelles
@@ -1081,7 +1066,6 @@ const CarteInteractive: React.FC<CarteInteractiveProps> = ({
       setParcellesEnregistrees([]);
       localStorage.removeItem('parcellesEnregistrees');
       nettoyerMarqueurs();
-      console.log('🗑️ Toutes les parcelles effacées');
     }
   };
 

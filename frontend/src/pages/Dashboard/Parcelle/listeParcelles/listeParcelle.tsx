@@ -500,6 +500,17 @@ const handleParcelleSubmit = async (parcelleData: ParcelleComplete) => {
   //   }
   // };
 
+  useEffect(() => {
+  const testing = async () => {
+    const completeData = await fetchParcelleComplete('685830653d78adc1573f14ae'); // Replace 123 with actual parcel ID
+    console.log("Using basic parcel data as fallback", completeData);
+  };
+
+  testing();
+}, []);
+
+
+
   const handleEditParcelle = async (parcelle: Parcelle) => {
   try {
     setIsLoading(true);
