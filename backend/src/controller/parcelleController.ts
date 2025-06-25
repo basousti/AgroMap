@@ -183,7 +183,7 @@ export class ParcelleController {
         type,
         search
       } = req.query;
-
+ 
       // Construction du filtre
       const filtre: any = {};
       

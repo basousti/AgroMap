@@ -291,14 +291,14 @@ const ListeParcelle: React.FC = () => {
 //     }
 //   };
 
-const handleParcelleSubmit = async (parcelleData: ParcelleComplete) => {
+const handleParcelleSubmit = async (parcelleData: any) => {
   try {
     setIsLoading(true);
     const token = localStorage.getItem('token');
 
     // Validate farmer selection using ParcelleComplete's farmerId
     if (!parcelleData.farmerId) {
-      toast.error("Please select a valid farmer first");
+      // toast.error("Please select a valid farmer first");
       setIsLoading(false);
       return;
     }
